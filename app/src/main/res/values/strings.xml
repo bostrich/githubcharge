@@ -1,4 +1,16 @@
 <resources>
     <string name="app_name">充电加速器</string>
     <string name="umeng_appkey">527380a356240b90511da762</string>
+
+    <string name="tab_charge">充电</string>
+    <string name="tab_recover">修复</string>
+    <string name="tab_discovery">发现</string>
+    <string name="tab_hot">热点</string>
+    <string name="setting">设置</string>
+    <string name="feedback">意见反馈</string>
+
+    <string name="charge_title">充电加速</string>
+    <string name="charge_optimize">耗电优化</string>
+
+
 </resources>

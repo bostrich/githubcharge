@@ -22,9 +22,18 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
 
-        debug{
+        debug {
             buildConfigField("boolean", "LOG_DEBUG", "true")
         }
+    }
+
+    // 实现渠道名替换
+    productFlavors.all { flavors ->
+        flavors.manifestPlaceholders = [CHANNEL_NAME: name]
+    }
+
+    productFlavors {
+        ABC {}
     }
 }
 
@@ -39,19 +48,21 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:25.3.1'
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    testCompile 'junit:junit:4.12'
-    compile 'com.android.support:multidex:1.0.1'
 
     //umeng
-    compile'com.umeng.sdk:analytics:latest.integration'
-    compile 'com.umeng.sdk:common:latest.integration'
-
-    compile 'com.jakewharton:butterknife:8.5.1'
-    apt 'com.jakewharton:butterknife-compiler:8.5.1'
+    
 
     //greenDao
+    compile 'com.android.support:appcompat-v7:25.3.1'
+    compile 'com.android.support:design:25.3.1'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile 'com.android.support:multidex:1.0.1'
+    compile 'com.umeng.sdk:analytics:latest.integration'
+    compile 'com.umeng.sdk:common:latest.integration'
+    compile 'com.jakewharton:butterknife:8.5.1'
     compile 'org.greenrobot:greendao-generator:3.0.0'
     compile 'org.greenrobot:greendao:3.2.2'
+    compile 'com.android.support:support-v4:25.3.1'
+    testCompile 'junit:junit:4.12'
+    apt 'com.jakewharton:butterknife-compiler:8.5.1'
 }

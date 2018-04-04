@@ -9,4 +9,14 @@
     <color name="transparent">#00000000</color>
     <color name="white">#ffffff</color>
     <color name="bg_logo_count">#66000000</color>
+    <color name="bg_main">#f6f5fb</color>
+
+    <color name="tv_tab_n">#909090</color>
+    <color name="tv_tab_p">#17a6fa</color>
+
+    <color name="tv_slide">#272727</color>
+    <color name="charge_percentage">#25a6fd</color>
+    <color name="charge_remain">#efeff4</color>
+    <color name="charge_btn">#17a6fa</color>
+    <color name="charge_daily_p">#E7E7E7</color>
 </resources>
