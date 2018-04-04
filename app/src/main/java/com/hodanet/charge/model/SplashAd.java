@@ -171,7 +171,7 @@ public class SplashAd {
             //将数据库中旧数据全部删除
             StandardInfoDao dao = GreenDaoManager.getInstance(context).getSession().getStandardInfoDao();
             dao.queryBuilder().where(StandardInfoDao.Properties.Position.eq(StandardInfo.SPLASH))
-                    .buildDelete();
+                    .buildDelete().forCurrentThread().executeDeleteWithoutDetachingEntities();
             return;
         }
         TaskManager.getInstance().executorNewTask(new Runnable() {
@@ -230,7 +230,7 @@ public class SplashAd {
                             //将数据库中旧数据全部删除
                             StandardInfoDao dao = GreenDaoManager.getInstance(context).getSession().getStandardInfoDao();
                             dao.queryBuilder().where(StandardInfoDao.Properties.Position.eq(StandardInfo.SPLASH))
-                                    .buildDelete();
+                                    .buildDelete().executeDeleteWithoutDetachingEntities();
 
                             if(welcomeAdInfos.size() == 0) return;
 
@@ -285,7 +285,7 @@ public class SplashAd {
                     //出现异常将数据库中旧数据全部删除
                     StandardInfoDao dao = GreenDaoManager.getInstance(context).getSession().getStandardInfoDao();
                     dao.queryBuilder().where(StandardInfoDao.Properties.Position.eq(StandardInfo.SPLASH))
-                            .buildDelete();
+                            .buildDelete().forCurrentThread().executeDeleteWithoutDetachingEntities();
                 }
             }
         });
