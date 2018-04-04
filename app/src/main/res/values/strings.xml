@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">charge</string>
+    <string name="app_name">充电加速器</string>
+    <string name="umeng_appkey">527380a356240b90511da762</string>
 </resources>

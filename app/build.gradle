@@ -1,4 +1,7 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.jakewharton.butterknife'
+apply plugin: 'com.neenbedankt.android-apt'
+apply plugin: 'org.greenrobot.greendao'
 
 android {
     compileSdkVersion 25
@@ -10,13 +13,25 @@ android {
         versionCode 13
         versionName "2.2.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
     }
     buildTypes {
         release {
             minifyEnabled false
+            buildConfigField("boolean", "LOG_DEBUG", "false")
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+
+        debug{
+            buildConfigField("boolean", "LOG_DEBUG", "true")
+        }
     }
+}
+
+greendao {
+    schemaVersion 1
+    daoPackage 'com.hodanet.charge.greendao.gen'
+    targetGenDir 'src/main/java'
 }
 
 dependencies {
@@ -24,7 +39,19 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:25.+'
+    compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     testCompile 'junit:junit:4.12'
+    compile 'com.android.support:multidex:1.0.1'
+
+    //umeng
+    compile'com.umeng.sdk:analytics:latest.integration'
+    compile 'com.umeng.sdk:common:latest.integration'
+
+    compile 'com.jakewharton:butterknife:8.5.1'
+    apt 'com.jakewharton:butterknife-compiler:8.5.1'
+
+    //greenDao
+    compile 'org.greenrobot:greendao-generator:3.0.0'
+    compile 'org.greenrobot:greendao:3.2.2'
 }

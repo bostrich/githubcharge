@@ -3,4 +3,10 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="bg_main_color">#1f96f2</color>
+
+
+    <color name="transparent">#00000000</color>
+    <color name="white">#ffffff</color>
+    <color name="bg_logo_count">#66000000</color>
 </resources>
