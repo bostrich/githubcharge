@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.hodanet.charge.activity.BaseActivity;
 import com.hodanet.charge.fragment.ChargeFragment;
+import com.hodanet.charge.fragment.RecoverFragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -65,6 +66,7 @@ public class MainActivity extends BaseActivity {
     DrawerLayout drawerLayout;
 
     private ChargeFragment chargeFragment;
+    private RecoverFragment recoverFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +87,7 @@ public class MainActivity extends BaseActivity {
             case R.id.ll_tab_charge:
                 break;
             case R.id.ll_tab_recover:
+                tabClick(view.getId());
                 break;
             case R.id.ll_tab_discovery:
                 break;
@@ -99,5 +102,22 @@ public class MainActivity extends BaseActivity {
             case R.id.rl_feedback:
                 break;
         }
+    }
+
+    private void tabClick(int id) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        switch(id){
+            case R.id.ll_tab_recover:
+                if(recoverFragment == null) recoverFragment = new RecoverFragment();
+                if(recoverFragment.isAdded()){
+                    transaction.show(recoverFragment);
+                }else{
+                    transaction.add(R.id.fl_content_fragment, recoverFragment).show(recoverFragment);
+                }
+                transaction.commit();
+                break;
+        }
+
+
     }
 }

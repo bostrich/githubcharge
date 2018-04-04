@@ -10,7 +10,15 @@
     <string name="feedback">意见反馈</string>
 
     <string name="charge_title">充电加速</string>
+    <string name="recover_title">电池修复</string>
     <string name="charge_optimize">耗电优化</string>
+    <string name="recover_optimize">立即修复</string>
+    <string name="recover_energy">电量</string>
+    <string name="recover_tem">温度</string>
+    <string name="recover_voltage">电压</string>
+    <string name="recover_status">状态</string>
+
+
 
 
 </resources>

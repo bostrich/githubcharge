@@ -1,5 +1,8 @@
 package com.hodanet.charge.config;
 
+import android.content.Context;
+
+import com.hodanet.charge.model.SplashAd;
 import com.hodanet.charge.utils.HttpUtils;
 import com.hodanet.charge.utils.TaskManager;
 
@@ -12,12 +15,14 @@ import org.json.JSONObject;
 
 public class ChannelConfig {
 
+    public static final String URL_EAST_NEWS = "https://newswifiapi.dftoutiao.com/jsonnew/refresh?type=toutiao&qid=wifixhwy&ispc=0&num=20";
+
     public static boolean SPLASH;
     public static String VER;
     public static boolean JMWALL;
     public static String NEWSSRC;
 
-    public static void initChannelConfig(){
+    public static void initChannelConfig(final Context context){
         TaskManager.getInstance().executorNewTask(new Runnable() {
             @Override
             public void run() {
@@ -38,6 +43,7 @@ public class ChannelConfig {
                         }
                         if(channel.equals(AppConfig.CHANNEL)){
                             SPLASH = channelInfo.optInt("splash") == 1;
+
                             isSet = true;
                             break;
                         }
@@ -45,12 +51,18 @@ public class ChannelConfig {
                     if(!isSet) SPLASH = defaultValue;
                 } catch (Exception e) {
                     e.printStackTrace();
-                    SPLASH = false;
-                    JMWALL = false;
-                    NEWSSRC = "df";
+                    reSetParams(context);
+                }finally{
+                    SplashAd.getSelfAd(context, SPLASH);
                 }
             }
         });
+    }
+
+    private static void reSetParams(Context context) {
+        SPLASH = false;
+        JMWALL = false;
+        NEWSSRC = "df";
     }
 
 }

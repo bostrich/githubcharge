@@ -12,13 +12,13 @@ import android.widget.TextView;
 
 import com.hodanet.charge.R;
 import com.hodanet.charge.config.AppConfig;
-import com.hodanet.charge.config.ChannelConfig;
 import com.hodanet.charge.config.DeviceConfig;
 import com.hodanet.charge.greendao.GreenDaoManager;
 import com.hodanet.charge.greendao.StandardInfo;
 import com.hodanet.charge.greendao.gen.StandardInfoDao;
 import com.hodanet.charge.utils.HttpUtils;
 import com.hodanet.charge.utils.LogUtil;
+import com.hodanet.charge.utils.SpUtil;
 import com.hodanet.charge.utils.Stats;
 import com.hodanet.charge.utils.TaskManager;
 import com.hodanet.charge.utils.Tools;
@@ -82,31 +82,14 @@ public class SplashAd {
         }
         view.addView(tv);
 
-        // 判断是否是首发版
-        if (AppConfig.IS_LINE_UP) { // yes表示开，其他表示关
-            img.setImageResource(R.mipmap.img_splash_top);
-        }else{
-            img.setImageResource(R.mipmap.img_splash_top);
-        }
-
-        tv.setVisibility(View.GONE);
-
-//        Stats.event(context,"wk_splash_show");
-
-        //获取开屏广告
-        if(ChannelConfig.SPLASH) getSelfAd();
-    }
-
-    /**
-     *
-     */
-    public void showSplash(){
         //从数据库获取数据
+        GreenDaoManager.getInstance(context).getSession().clear();
         StandardInfoDao dao = GreenDaoManager.getInstance(context).getSession().getStandardInfoDao();
         List<StandardInfo> ad = dao.queryBuilder().where(StandardInfoDao.Properties.Position.eq(StandardInfo.SPLASH)).build().list();
         LogUtil.e("time",ad.size() + "");
         if(ad.size() > 0 ){
-            info = ad.get(0);
+            int order = SpUtil.getSplashOrder(context);
+            info = ad.get(order++ % ad.size());
             //加载图片
             File file = Tools.getDownloadFile(context, "ImgCach", "wifi_logo_" + info.getAdId());
             if (file != null && file.length() > 1000) { // 判断是否获取广告图成功
@@ -120,11 +103,19 @@ public class SplashAd {
                             isClick = true;
                         }
                     });
+                    SpUtil.saveSplashOrder(context, order);
                     Stats.event(context, "wk_splash_image_show" , info.getName());
                     Stats.reportAdv(info.getAdId(), Stats.REPORT_TYPE_EXTERNAL_SHOW, Stats.ADV_TYPE_WELCOME, Stats.LOGO_ADV);
                 }
+            }else{
+                img.setImageResource(R.mipmap.img_splash_top);
+                tv.setVisibility(View.GONE);
             }
+        }else{
+            img.setImageResource(R.mipmap.img_splash_top);
+            tv.setVisibility(View.GONE);
         }
+
     }
 
     /**
@@ -175,7 +166,14 @@ public class SplashAd {
     /**
      * 获取自有平台广告
      */
-    public void getSelfAd() {
+    public static void getSelfAd(final Context context,boolean isShowAd) {
+        if(!isShowAd){
+            //将数据库中旧数据全部删除
+            StandardInfoDao dao = GreenDaoManager.getInstance(context).getSession().getStandardInfoDao();
+            dao.queryBuilder().where(StandardInfoDao.Properties.Position.eq(StandardInfo.SPLASH))
+                    .buildDelete();
+            return;
+        }
         TaskManager.getInstance().executorNewTask(new Runnable() {
             @Override
             public void run() {
@@ -232,16 +230,17 @@ public class SplashAd {
                             //将数据库中旧数据全部删除
                             StandardInfoDao dao = GreenDaoManager.getInstance(context).getSession().getStandardInfoDao();
                             dao.queryBuilder().where(StandardInfoDao.Properties.Position.eq(StandardInfo.SPLASH))
-                                    .buildDelete().forCurrentThread();
+                                    .buildDelete();
 
+                            if(welcomeAdInfos.size() == 0) return;
 
                             for (StandardInfo info :welcomeAdInfos) {
                                 dao.insertOrReplace(info);
                             }
 
                             LogUtil.e("data", dao.loadAll().size() +"");
-
-                            StandardInfo adInfo = welcomeAdInfos.get(0);
+                            int order = SpUtil.getSplashOrder(context);
+                            StandardInfo adInfo = welcomeAdInfos.get(order % welcomeAdArray.length());
 
                             //下载广告图片
                             File logoPicFile = Tools.getDownloadFile(context, "ImgCach", "wifi_logo_" + adInfo.getAdId());
@@ -281,10 +280,12 @@ public class SplashAd {
                             }
                         }
                     }
-                } catch (IOException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                    //出现异常将数据库中旧数据全部删除
+                    StandardInfoDao dao = GreenDaoManager.getInstance(context).getSession().getStandardInfoDao();
+                    dao.queryBuilder().where(StandardInfoDao.Properties.Position.eq(StandardInfo.SPLASH))
+                            .buildDelete();
                 }
             }
         });

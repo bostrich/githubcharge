@@ -39,7 +39,7 @@ public class SplashActivity extends BaseActivity {
         DeviceConfig.getDeviceConfig(this);
         AppConfig.getAppConfig(this);
         //初始化配置信息
-        ChannelConfig.initChannelConfig();
+        ChannelConfig.initChannelConfig(this.getApplicationContext());
         initHandler();
 
         Message msg = mHandler.obtainMessage();
