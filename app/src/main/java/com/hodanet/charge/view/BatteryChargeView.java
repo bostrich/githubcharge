@@ -80,6 +80,8 @@ public class BatteryChargeView extends View {
                 , centerWidth + stripWidth, top + thickness);
         canvas.drawRoundRect(rectF, 0, 0, paint);
 
+
+
     }
 
 
