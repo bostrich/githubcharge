@@ -45,7 +45,7 @@ public class MainActivity extends BaseActivity {
     @BindView(R.id.img_tab_hot)
     ImageView imgTabHot;
     @BindView(R.id.tv_tab_found)
-    TextView tvTabFound;
+    TextView tvTabHot;
     @BindView(R.id.ll_tab_hot)
     LinearLayout llTabHot;
     @BindView(R.id.fl_content_fragment)
@@ -85,7 +85,7 @@ public class MainActivity extends BaseActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.ll_tab_charge:
-
+                tabClick(view.getId());
                 break;
             case R.id.ll_tab_recover:
                 tabClick(view.getId());
@@ -106,7 +106,10 @@ public class MainActivity extends BaseActivity {
     }
 
     private void tabClick(int id) {
+        setTab(id);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        if(recoverFragment != null && recoverFragment.isVisible()) transaction.hide(recoverFragment);
+        if(chargeFragment != null && chargeFragment.isVisible()) transaction.hide(chargeFragment);
         switch(id){
             case R.id.ll_tab_recover:
                 if(recoverFragment == null) recoverFragment = new RecoverFragment();
@@ -117,8 +120,48 @@ public class MainActivity extends BaseActivity {
                 }
                 transaction.commit();
                 break;
+            case R.id.ll_tab_charge:
+                if(chargeFragment == null) chargeFragment = new ChargeFragment();
+                if(chargeFragment.isAdded()){
+                    transaction.show(chargeFragment);
+                }else{
+                    transaction.add(R.id.fl_content_fragment, chargeFragment).show(chargeFragment);
+                }
+                transaction.commit();
+                break;
+
         }
 
 
+    }
+
+    private void setTab(int id) {
+        imgTabCharge.setImageResource(R.mipmap.tab_charge_n);
+        imgTabRecover.setImageResource(R.mipmap.tab_recover_n);
+        imgTabHot.setImageResource(R.mipmap.tab_hot_n);
+        imgTabDiscovery.setImageResource(R.mipmap.tab_discovery_n);
+        int color = getResources().getColor(R.color.tv_tab_n);
+        tvTabCharge.setTextColor(color);
+        tvTabRecover.setTextColor(color);
+        tvTabDiscovery.setTextColor(color);
+        tvTabHot.setTextColor(color);
+        switch(id){
+            case R.id.ll_tab_charge:
+                imgTabCharge.setImageResource(R.mipmap.tab_charge_p);
+                tvTabCharge.setTextColor(getResources().getColor(R.color.tv_tab_p));
+                break;
+            case R.id.ll_tab_recover:
+                imgTabRecover.setImageResource(R.mipmap.tab_recover_p);
+                tvTabRecover.setTextColor(getResources().getColor(R.color.tv_tab_p));
+                break;
+            case R.id.ll_tab_discovery:
+                imgTabDiscovery.setImageResource(R.mipmap.tab_discovery_p);
+                tvTabDiscovery.setTextColor(getResources().getColor(R.color.tv_tab_p));
+                break;
+            case R.id.ll_tab_hot:
+                imgTabHot.setImageResource(R.mipmap.tab_hot_p);
+                tvTabHot.setTextColor(getResources().getColor(R.color.tv_tab_p));
+                break;
+        }
     }
 }

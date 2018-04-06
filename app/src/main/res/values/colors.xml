@@ -19,4 +19,6 @@
     <color name="charge_remain">#efeff4</color>
     <color name="charge_btn">#17a6fa</color>
     <color name="charge_daily_p">#E7E7E7</color>
+
+    <color name="charge_battery_red">#fe846d</color>
 </resources>
