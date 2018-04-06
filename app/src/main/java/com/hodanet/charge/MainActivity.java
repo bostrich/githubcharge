@@ -85,6 +85,7 @@ public class MainActivity extends BaseActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.ll_tab_charge:
+
                 break;
             case R.id.ll_tab_recover:
                 tabClick(view.getId());
