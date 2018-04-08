@@ -30,6 +30,17 @@ public class WebHelper {
         context.startActivity(intent);
     }
 
+    /**
+     * @param callBack
+     */
+    public static void showAdDetail(Context context, String title, String url, WebLoadCallBack callBack) {
+        NewsDetailActivity.setWebLoadCallBack(callBack);
+        Intent intent = new Intent(context, NewsDetailActivity.class);
+        intent.putExtra("TITLE", title);
+        intent.putExtra("URL", url);
+        context.startActivity(intent);
+    }
+
     public interface WebLoadCallBack {
         void loadBefore(String url);
 

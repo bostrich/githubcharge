@@ -1,9 +1,12 @@
 package com.hodanet.charge.fragment;
 
 
-import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,16 +16,29 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.hodanet.charge.R;
+import com.hodanet.charge.adapter.NewsAdapter;
 import com.hodanet.charge.config.ChannelConfig;
+import com.hodanet.charge.config.ConsConfig;
 import com.hodanet.charge.event.SlideMenuClickEvent;
+import com.hodanet.charge.info.news.BaseNewInfo;
+import com.hodanet.charge.info.news.EastNewsInfo;
 import com.hodanet.charge.info.report.DailyChargeReport;
 import com.hodanet.charge.info.report.FloatChargeReport;
 import com.hodanet.charge.info.report.SpecialChargeReport;
 import com.hodanet.charge.model.DailyAd;
 import com.hodanet.charge.model.FloatAd;
 import com.hodanet.charge.model.SpecialAd;
+import com.hodanet.charge.utils.HttpUtils;
+import com.hodanet.charge.utils.TaskManager;
 
 import org.greenrobot.eventbus.EventBus;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,6 +51,7 @@ import butterknife.Unbinder;
 public class ChargeFragment extends Fragment {
 
 
+    private static final int GET_NEWS_OK = 1;
     @BindView(R.id.img_slide_menu)
     ImageView imgSlideMenu;
     @BindView(R.id.tv_title)
@@ -67,6 +84,10 @@ public class ChargeFragment extends Fragment {
     private SpecialAd specialView;
     private DailyAd dailyView;
 
+    private Handler mHandler;
+    private List<BaseNewInfo> list = new ArrayList<>();
+    private NewsAdapter newsAdapter;
+
     public ChargeFragment() {
 
     }
@@ -79,6 +100,8 @@ public class ChargeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_charge, container, false);
         unbinder = ButterKnife.bind(this, view);
 
+        iniHandler();
+        initView();
         initData();
         return view;
     }
@@ -86,7 +109,7 @@ public class ChargeFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if(floatView != null) floatView.showView();
+        if (floatView != null) floatView.showView();
     }
 
     @Override
@@ -98,13 +121,13 @@ public class ChargeFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if(floatView != null) floatView.onDestroy();
-        if(specialView != null) specialView.onDestroy();
-        if(dailyView != null) dailyView.onDestroy();
+        if (floatView != null) floatView.onDestroy();
+        if (specialView != null) specialView.onDestroy();
+        if (dailyView != null) dailyView.onDestroy();
     }
 
     private void initData() {
-        if(ChannelConfig.SPLASH){
+        if (ChannelConfig.SPLASH) {
             floatView = new FloatAd.Builder().setContext(getContext()).setView(rlFloat)
                     .setReportInfo(new FloatChargeReport()).build();
 
@@ -114,12 +137,84 @@ public class ChargeFragment extends Fragment {
             dailyView = new DailyAd.Builder().setContext(getContext()).setView(rlDaily)
                     .setReportInfo(new DailyChargeReport()).build();
         }
+        initNews();
     }
 
-    public void changeTab(){
-        if(floatView != null) floatView.showView();
-        if(specialView != null) specialView.showView();
-        if(dailyView != null) dailyView.showView();
+    private void initView() {
+        newsAdapter = new NewsAdapter(getContext(), list);
+        rv.setAdapter(newsAdapter);
+        rv.setLayoutManager(new LinearLayoutManager(getContext()));
+
+    }
+
+
+    private void iniHandler() {
+        mHandler = new Handler(Looper.getMainLooper()){
+            @Override
+            public void handleMessage(Message msg) {
+                switch(msg.what){
+                    case GET_NEWS_OK:
+                        list.addAll((List<BaseNewInfo>) msg.obj);
+                        newsAdapter.notifyDataSetChanged();
+                        break;
+                }
+            }
+        };
+    }
+
+    /**
+     * 获取新闻信息
+     */
+    private void initNews() {
+        if (ChannelConfig.NEWSSRC.equals(ConsConfig.NEWS_SOURCE_DF)) {
+            TaskManager.getInstance().executorNewTask(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        String response = HttpUtils.getResponse(ConsConfig.URL_EAST_NEWS);
+                        List<BaseNewInfo> news = new ArrayList<>();
+                        JSONObject json = new JSONObject(response);
+                        JSONArray jsonArray = json.optJSONArray("data");
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject bean = jsonArray.optJSONObject(i);
+                            EastNewsInfo info = new EastNewsInfo();
+                            info.setSource(bean.optString("source"));
+                            info.setUrl(bean.optString("url"));
+                            info.setDate(bean.optString("date"));
+                            info.setRowkey(bean.optString("rowkey"));
+                            info.setDescription(bean.optString("topic"));
+                            info.setTitle(bean.optString("topic"));
+                            JSONArray imgs = bean.optJSONArray("miniimg02");
+                            List<String> imgPaths = new ArrayList<>();
+                            for (int j = 0; j < imgs.length(); j++) {
+                                JSONObject temp = imgs.optJSONObject(j);
+                                imgPaths.add(temp.optString("src"));
+                            }
+                            info.setImages(imgPaths);
+                            if (imgPaths.size() >= 3) {
+                                info.setShowType(ConsConfig.NEWS_SHOW_THREE_PIC);
+                            } else {
+                                info.setShowType(ConsConfig.NEWS_TYPE_PIC_TEXT);
+                            }
+                            news.add(info);
+                        }
+                        Message msg = mHandler.obtainMessage();
+                        msg.what = GET_NEWS_OK;
+                        msg.obj = news;
+                        mHandler.sendMessage(msg);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+
+        }
+    }
+
+    public void changeTab() {
+        if (floatView != null) floatView.showView();
+        if (specialView != null) specialView.showView();
+        if (dailyView != null) dailyView.showView();
     }
 
     @OnClick({R.id.img_slide_menu, R.id.tv_title, R.id.tv_charge_btn})
