@@ -40,4 +40,6 @@ public class SpUtil {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         return sp.getInt(SPLASH_ORDER, 0);
     }
+
+
 }

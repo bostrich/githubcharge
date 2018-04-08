@@ -176,51 +176,16 @@
                 android:background="@drawable/bg_slide_top"
                 />
 
-            <RelativeLayout
-                android:id="@+id/rl_ring"
+            <LinearLayout
+                android:id="@+id/ll_ring"
+                android:orientation="vertical"
                 android:layout_marginLeft="20dp"
                 android:layout_width="match_parent"
                 android:layout_height="66dp"
                 android:visibility="gone">
 
-                <ImageView
-                    android:id="@+id/img_slide_recommand"
-                    android:layout_width="33dp"
-                    android:layout_height="33dp"
-                    android:layout_centerVertical="true" />
 
-                <View
-                    android:id="@+id/view_ring_dot"
-                    android:layout_width="8dp"
-                    android:layout_height="8dp"
-                    android:layout_toRightOf="@id/img_slide_recommand"
-                    android:layout_marginLeft="-4dp"
-                    android:layout_marginTop="12dp"
-                    android:background="@drawable/bg_red_dot"/>
-
-                <TextView
-                    android:id="@+id/tv_ring"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_toRightOf="@id/img_slide_recommand"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="10dp"
-                    android:textSize="16sp"
-                    android:ellipsize="marquee"
-                    android:marqueeRepeatLimit="marquee_forever"
-                    android:scrollHorizontally="true"
-                    android:singleLine="true"
-                    android:textColor="@color/tv_slide"
-                    android:text="广告"/>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_alignParentBottom="true"
-                    android:background="#e7f4fd"/>
-
-            </RelativeLayout>
+            </LinearLayout>
 
             <RelativeLayout
                 android:id="@+id/rl_setting"

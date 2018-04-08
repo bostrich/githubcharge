@@ -61,6 +61,7 @@ public class HttpUtils {
 //    private static final String getAdvReport = "http://60.191.52.101:43001/advplat-server/doc/adv_report.htm";//其它广告的展示和点击流水统计
     private static final String getHdAppReport = "http://cdn-stwifi.playbobo.com/doc/hdadvreport.htm";//自有积分墙激活下载统计
     private static final String getChannel = "http://res.ipingke.com/adsw/charge.html";
+    private static final String getRing = "http://stwifi.playbobo.com/doc/static/ring_adv.html";
 
     /**
      * 发送HTTP POST请求，获取服务器返回的接口数据（带参数）
@@ -314,6 +315,15 @@ public class HttpUtils {
      */
     public static String requestHotRecommend() throws IOException {
         return getResult( getHotRecommend, "", 0);
+    }
+
+    /**
+     * 导航栏ring广告
+     *
+     * @return
+     */
+    public static String requestRingAd() throws IOException {
+        return getResult(getRing, "");
     }
 
     /**

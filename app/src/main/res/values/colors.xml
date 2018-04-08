@@ -21,4 +21,6 @@
     <color name="charge_daily_p">#E7E7E7</color>
 
     <color name="charge_battery_red">#fe846d</color>
+
+    <color name="setting_tv">#262626</color>
 </resources>

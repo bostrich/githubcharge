@@ -158,14 +158,14 @@
                 android:layout_height="wrap_content">
 
                 <RelativeLayout
-                    android:id="@+id/layout_special_ad"
+                    android:id="@+id/rl_special"
                     android:layout_width="0dp"
                     android:layout_height="72dp"
                     android:layout_weight="1"
                     android:background="@drawable/bg_btn_hot_click"/>
 
                 <RelativeLayout
-                    android:id="@+id/layout_daily_ad"
+                    android:id="@+id/rl_daily"
                     android:layout_width="0dp"
                     android:layout_height="72dp"
                     android:layout_weight="1"
@@ -183,7 +183,15 @@
 
     </android.support.v4.widget.NestedScrollView>
 
-
+    <!-- 悬浮球 -->
+    <RelativeLayout
+        android:id="@+id/rl_float"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="10dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="30dp"
+        android:layout_width="55dp"
+        android:layout_height="55dp"/>
 
 
 

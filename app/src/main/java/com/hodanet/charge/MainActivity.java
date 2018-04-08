@@ -1,8 +1,10 @@
 package com.hodanet.charge;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -11,8 +13,16 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.hodanet.charge.activity.BaseActivity;
+import com.hodanet.charge.activity.SettingActivity;
+import com.hodanet.charge.config.ChannelConfig;
+import com.hodanet.charge.event.SlideMenuClickEvent;
 import com.hodanet.charge.fragment.ChargeFragment;
 import com.hodanet.charge.fragment.RecoverFragment;
+import com.hodanet.charge.info.report.RingSlideMenuInfo;
+import com.hodanet.charge.model.RingAd;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -50,14 +60,8 @@ public class MainActivity extends BaseActivity {
     LinearLayout llTabHot;
     @BindView(R.id.fl_content_fragment)
     FrameLayout flContentFragment;
-    @BindView(R.id.img_slide_recommand)
-    ImageView imgSlideRecommand;
-    @BindView(R.id.view_ring_dot)
-    View viewRingDot;
-    @BindView(R.id.tv_ring)
-    TextView tvRing;
-    @BindView(R.id.rl_ring)
-    RelativeLayout rlRing;
+    @BindView(R.id.ll_ring)
+    LinearLayout llRing;
     @BindView(R.id.rl_setting)
     RelativeLayout rlSetting;
     @BindView(R.id.rl_feedback)
@@ -67,21 +71,65 @@ public class MainActivity extends BaseActivity {
 
     private ChargeFragment chargeFragment;
     private RecoverFragment recoverFragment;
+    private RingAd ring;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        EventBus.getDefault().register(this);
 
         chargeFragment = new ChargeFragment();
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.add(R.id.fl_content_fragment, chargeFragment).show(chargeFragment).commit();
 
+        initView();
+
+        initData();
 
     }
 
-    @OnClick({R.id.ll_tab_charge, R.id.ll_tab_recover, R.id.ll_tab_discovery, R.id.ll_tab_hot, R.id.fl_content_fragment, R.id.rl_ring, R.id.rl_setting, R.id.rl_feedback})
+
+    private void initData() {
+        //初始化铃音广告
+        if(ChannelConfig.SPLASH){
+            ring = new RingAd.Builder().setContext(this).setReportInfo(new RingSlideMenuInfo()).setView(llRing).build();
+        }
+    }
+
+    private void initView() {
+        drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                if(ring != null) ring.showView();
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+
+            }
+
+            @Override
+            public void onDrawerStateChanged(int newState) {
+
+            }
+        });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+        if(ring != null) ring.onDestroy();
+    }
+
+    @OnClick({R.id.ll_tab_charge, R.id.ll_tab_recover, R.id.ll_tab_discovery, R.id.ll_tab_hot, R.id.fl_content_fragment, R.id.rl_setting, R.id.rl_feedback})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.ll_tab_charge:
@@ -91,16 +139,18 @@ public class MainActivity extends BaseActivity {
                 tabClick(view.getId());
                 break;
             case R.id.ll_tab_discovery:
+                tabClick(view.getId());
                 break;
             case R.id.ll_tab_hot:
+                tabClick(view.getId());
                 break;
             case R.id.fl_content_fragment:
                 break;
-            case R.id.rl_ring:
-                break;
             case R.id.rl_setting:
+                startActivity(new Intent(this, SettingActivity.class));
                 break;
             case R.id.rl_feedback:
+
                 break;
         }
     }
@@ -123,6 +173,7 @@ public class MainActivity extends BaseActivity {
             case R.id.ll_tab_charge:
                 if(chargeFragment == null) chargeFragment = new ChargeFragment();
                 if(chargeFragment.isAdded()){
+                    chargeFragment.changeTab();
                     transaction.show(chargeFragment);
                 }else{
                     transaction.add(R.id.fl_content_fragment, chargeFragment).show(chargeFragment);
@@ -131,8 +182,6 @@ public class MainActivity extends BaseActivity {
                 break;
 
         }
-
-
     }
 
     private void setTab(int id) {
@@ -149,19 +198,28 @@ public class MainActivity extends BaseActivity {
             case R.id.ll_tab_charge:
                 imgTabCharge.setImageResource(R.mipmap.tab_charge_p);
                 tvTabCharge.setTextColor(getResources().getColor(R.color.tv_tab_p));
+                drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
                 break;
             case R.id.ll_tab_recover:
                 imgTabRecover.setImageResource(R.mipmap.tab_recover_p);
                 tvTabRecover.setTextColor(getResources().getColor(R.color.tv_tab_p));
+                drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
                 break;
             case R.id.ll_tab_discovery:
                 imgTabDiscovery.setImageResource(R.mipmap.tab_discovery_p);
                 tvTabDiscovery.setTextColor(getResources().getColor(R.color.tv_tab_p));
+                drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
                 break;
             case R.id.ll_tab_hot:
                 imgTabHot.setImageResource(R.mipmap.tab_hot_p);
                 tvTabHot.setTextColor(getResources().getColor(R.color.tv_tab_p));
+                drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
                 break;
         }
+    }
+
+    @Subscribe
+    public void slideMenuClick(SlideMenuClickEvent event){
+        drawerLayout.openDrawer(Gravity.LEFT);
     }
 }

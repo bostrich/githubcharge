@@ -19,6 +19,7 @@ public class StandardInfo {
     public static final int TYPE_NEWS = 1;
     public static final int TYPE_WEB = 2;
     public static final int TYPE_APK = 3;
+    public static final int TYPE_RING = 12;
     @NotNull
     @Unique
     private long adId;//广告ID

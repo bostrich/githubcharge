@@ -7,15 +7,26 @@ package com.hodanet.charge.info;
 public class Constants {
 
     public static final int REPORT_AD_TYPE_INTERGRAL_WALL = 1;
+    public static final int REPORT_AD_TYPE_SPECIAL = 7;
     public static final int REPORT_AD_TYPE_RECOMMEND = 8;
+    public static final int REPORT_AD_TYPE_BANNER = 9;
+    public static final int REPORT_AD_TYPE_RING = 12;
 
 
     public static final String UMENG_ID_INTERGRAL_WALL = "intergral_wall";
     public static final String UMENG_ID_RECOMMEND = "recommend";
+    public static final String UMENG_ID_RING = "ring";
+    public static final String UMENG_ID_FLOAT = "float";
+    public static final String UMENG_ID_SPECIAL = "special";
+    public static final String UMENG_ID_DAILY = "daily";
 
 
     public static final String UMENG_ID_INTERGRAL_WALL_LOCATION_CHECK_PWD = "check_pwd-";//查看密码页面
-    public static final int UMENG_ID_INTERGRAL_WALL_POSITION_CHECK_PWD = 101;
+    public static final int UMENG_ID_INTERGRAL_WALL_POSITION_CHECK_PWD = 11;
+
+
+    public static final int UMENG_ID_SLIDE_MEMU = 121;
+    public static final int UMENG_ID_CHARGE = 91;
 
 
     public static final String UMENG_ID_RECOMMEND_LOCATION_SLIDE_MENU = "slide_menu-";//侧滑菜单
@@ -26,6 +37,8 @@ public class Constants {
     public static final int UMENG_ID_RECOMMEND_POSITION_STRONG_CRACK = 802;
     public static final int UMENG_ID_RECOMMEND_POSITION_COMMON_SECRET = 803;
     public static final int UMENG_ID_RECOMMEND_POSITION_SPEED_TEST_RESULT = 804;
+
+    public static final String UMENG_ID_FLOAT_LOCATION_CHARGE = "charge-";//充电
 
 
     public static final int INFO_TYPE_WEB = 1;

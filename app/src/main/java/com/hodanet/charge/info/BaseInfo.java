@@ -14,9 +14,9 @@ public abstract class BaseInfo<T extends BaseReportInfo> {
     private long id;
     private String name;
     private String pkgName;
-    private int infoType;
-    private String url;
-    private T reportInfo;
+    private int infoType;//1:网页；2:apk；
+    private String url;//链接地址
+    private T reportInfo;//上报信息
 
     public long getId() {
         return id;
