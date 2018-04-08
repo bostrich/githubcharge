@@ -204,6 +204,7 @@ public class ChargeFragment extends Fragment {
                         mHandler.sendMessage(msg);
                     } catch (Exception e) {
                         e.printStackTrace();
+
                     }
                 }
             });
