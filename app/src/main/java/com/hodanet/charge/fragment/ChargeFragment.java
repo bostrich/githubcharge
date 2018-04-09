@@ -143,7 +143,12 @@ public class ChargeFragment extends Fragment {
     private void initView() {
         newsAdapter = new NewsAdapter(getContext(), list);
         rv.setAdapter(newsAdapter);
-        rv.setLayoutManager(new LinearLayoutManager(getContext()));
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        linearLayoutManager.setSmoothScrollbarEnabled(true);
+        linearLayoutManager.setAutoMeasureEnabled(true);
+        rv.setLayoutManager(linearLayoutManager);
+        rv.setHasFixedSize(true);
+        rv.setNestedScrollingEnabled(false);
 
     }
 
@@ -202,10 +207,8 @@ public class ChargeFragment extends Fragment {
                         msg.what = GET_NEWS_OK;
                         msg.obj = news;
                         mHandler.sendMessage(msg);
-
                     } catch (Exception e) {
                         e.printStackTrace();
-
                     }
                 }
             });

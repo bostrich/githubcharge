@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ViewSwitcher xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/viewSwitcherSurfingGirl"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/viewPager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="33dp"
+            android:layout_alignParentBottom="true">
+
+            <RelativeLayout
+                android:id="@+id/layout_bottom"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_surfing_beautiful">
+
+                <LinearLayout
+                    android:id="@+id/layout_wallpaper"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:paddingLeft="26dp"
+                    android:paddingRight="26dp">
+
+                    <ImageView
+                        android:id="@+id/imageView4"
+                        android:layout_width="20dp"
+                        android:layout_height="16dp"
+                        android:src="@mipmap/girl_set_wallpaper" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="6dp"
+                        android:gravity="center"
+                        android:text="@string/set_wallpaper"
+                        android:textColor="@color/white"
+                        android:textSize="12sp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layout_download"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentRight="true"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:paddingLeft="26dp"
+                    android:paddingRight="26dp">
+
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="18dp"
+                        android:src="@mipmap/download_set" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="10dp"
+                        android:gravity="center"
+                        android:text="@string/download_girl_picture"
+                        android:textColor="@color/white"
+                        android:textSize="12sp" />
+
+                </LinearLayout>
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/arrow_left"
+            android:layout_width="64dp"
+            android:layout_height="85dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true">
+
+            <View
+                android:layout_width="34dp"
+                android:layout_height="45dp"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:background="@android:color/transparent" />
+
+            <ImageView
+                android:layout_width="38dp"
+                android:layout_height="38dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="8dp"
+                android:src="@mipmap/arrow_beautiful_left" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/arrow_right"
+            android:layout_width="64dp"
+            android:layout_height="85dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true">
+
+            <View
+                android:layout_width="34dp"
+                android:layout_height="45dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:background="@android:color/transparent" />
+
+            <ImageView
+                android:layout_width="38dp"
+                android:layout_height="38dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="8dp"
+                android:src="@mipmap/arrow_beautiful_right" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <include layout="@layout/include_http_error" />
+</ViewSwitcher>

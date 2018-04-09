@@ -1,0 +1,23 @@
+<ViewSwitcher xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/viewSwitcherSurfingJoke"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <ViewSwitcher
+        android:id="@+id/viewSwitcherSurfingJokeLoading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#f5f5f9">
+
+        <com.hodanet.charge.view.refreshview.RefreshRecyclerView
+            android:id="@+id/refreshRecyclerViewJoke"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="8dp" />
+
+        <include layout="@layout/include_loading" />
+    </ViewSwitcher>
+
+    <include layout="@layout/include_http_error" />
+</ViewSwitcher>

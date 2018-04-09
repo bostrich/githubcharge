@@ -20,5 +20,16 @@
 
     <string name="setting_title">设置</string>
 
+    <string name="listview_header_hint_normal">下拉刷新</string>
+    <string name="listview_header_hint_release">松开开始刷新</string>
+    <string name="listview_header_last_time">上次更新：</string>
+    <string name="refreshing">刷新中...</string>
+    <string name="refresh_done">刷新完成</string>
+    <string name="listview_loading">正在加载更多...</string>
+    <string name="nomore_loading">没有更多了</string>
+
+    <string name="set_wallpaper">设置壁纸</string>
+    <string name="download_girl_picture">下载</string>
+
 
 </resources>

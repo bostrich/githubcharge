@@ -17,6 +17,7 @@ import com.hodanet.charge.activity.SettingActivity;
 import com.hodanet.charge.config.ChannelConfig;
 import com.hodanet.charge.event.SlideMenuClickEvent;
 import com.hodanet.charge.fragment.ChargeFragment;
+import com.hodanet.charge.fragment.NewSurfingFragment;
 import com.hodanet.charge.fragment.RecoverFragment;
 import com.hodanet.charge.info.report.RingSlideMenuInfo;
 import com.hodanet.charge.model.RingAd;
@@ -71,6 +72,7 @@ public class MainActivity extends BaseActivity {
 
     private ChargeFragment chargeFragment;
     private RecoverFragment recoverFragment;
+    private NewSurfingFragment surfingFragment;
     private RingAd ring;
 
     @Override
@@ -160,6 +162,7 @@ public class MainActivity extends BaseActivity {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         if(recoverFragment != null && recoverFragment.isVisible()) transaction.hide(recoverFragment);
         if(chargeFragment != null && chargeFragment.isVisible()) transaction.hide(chargeFragment);
+        if(surfingFragment != null && surfingFragment.isVisible()) transaction.hide(surfingFragment);
         switch(id){
             case R.id.ll_tab_recover:
                 if(recoverFragment == null) recoverFragment = new RecoverFragment();
@@ -177,6 +180,15 @@ public class MainActivity extends BaseActivity {
                     transaction.show(chargeFragment);
                 }else{
                     transaction.add(R.id.fl_content_fragment, chargeFragment).show(chargeFragment);
+                }
+                transaction.commit();
+                break;
+            case R.id.ll_tab_hot:
+                if(surfingFragment == null) surfingFragment = NewSurfingFragment.newInstance(false);
+                if(surfingFragment.isAdded()){
+                    transaction.show(surfingFragment);
+                }else{
+                    transaction.add(R.id.fl_content_fragment, surfingFragment).show(surfingFragment);
                 }
                 transaction.commit();
                 break;

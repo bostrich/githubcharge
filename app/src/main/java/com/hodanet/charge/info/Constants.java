@@ -19,6 +19,7 @@ public class Constants {
     public static final String UMENG_ID_FLOAT = "float";
     public static final String UMENG_ID_SPECIAL = "special";
     public static final String UMENG_ID_DAILY = "daily";
+    public static final String UMENG_ID_BANNER = "banner";
 
 
     public static final String UMENG_ID_INTERGRAL_WALL_LOCATION_CHECK_PWD = "check_pwd-";//查看密码页面
@@ -27,6 +28,7 @@ public class Constants {
 
     public static final int UMENG_ID_SLIDE_MEMU = 121;
     public static final int UMENG_ID_CHARGE = 91;
+    public static final int UMENG_ID_HOT = 92;
 
 
     public static final String UMENG_ID_RECOMMEND_LOCATION_SLIDE_MENU = "slide_menu-";//侧滑菜单
@@ -39,6 +41,7 @@ public class Constants {
     public static final int UMENG_ID_RECOMMEND_POSITION_SPEED_TEST_RESULT = 804;
 
     public static final String UMENG_ID_FLOAT_LOCATION_CHARGE = "charge-";//充电
+    public static final String UMENG_ID_FLOAT_LOCATION_HOT= "hot-";//热点
 
 
     public static final int INFO_TYPE_WEB = 1;

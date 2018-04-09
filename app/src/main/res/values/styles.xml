@@ -43,4 +43,18 @@
         <item name="android:windowCloseOnTouchOutside">false</item>
     </style>
 
+    <style name="MyCustomTabLayout" parent="Widget.Design.TabLayout">
+        <item name="tabIndicatorColor">@color/bg_main_wifi_top</item>
+        <item name="tabIndicatorHeight">2dp</item>
+        <item name="tabPaddingStart">12dp</item>
+        <item name="tabPaddingEnd">12dp</item>
+        <item name="tabBackground">@color/bg_main_wifi_top</item>
+        <item name="tabSelectedTextColor">@color/white</item>
+    </style>
+
+    <style name="MyTabLayoutTextAppearance" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/surfingTabTextColor</item>
+    </style>
+
 </resources>

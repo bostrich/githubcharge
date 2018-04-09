@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black">
+
+    <RelativeLayout
+        android:id="@+id/layout_top"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_marginTop="5dp"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="5dp"
+            android:src="@mipmap/icon_back" />
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:text="视频标题"
+            android:textSize="20sp" />
+
+    </RelativeLayout>
+
+    <com.syezon.wifikey.view.FullScreenVideoView
+        android:id="@+id/videoview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true" />
+
+    <ImageView
+        android:id="@+id/close"
+        android:layout_width="27dp"
+        android:layout_height="27dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="30dp"
+        android:src="@mipmap/icon_closed_inside_ad" />
+
+    <RelativeLayout
+        android:id="@+id/loading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black">
+
+        <ImageView
+            android:id="@+id/loading_anim"
+            android:layout_width="41dp"
+            android:layout_height="41dp"
+            android:layout_centerInParent="true"
+            android:src="@mipmap/ic_web_load" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/loading_anim"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="8dp"
+            android:text="正在加载..."
+            android:textColor="@color/white"
+            android:textSize="12sp" />
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

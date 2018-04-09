@@ -1,6 +1,10 @@
 package com.hodanet.charge.greendao;
 
 
+import com.hodanet.charge.info.BannerInfo;
+import com.hodanet.charge.info.BaseInfo;
+import com.hodanet.charge.info.report.BaseReportInfo;
+
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.NotNull;
@@ -139,6 +143,20 @@ public class StandardInfo {
     }
     public void setDesc1(String desc1) {
         this.desc1 = desc1;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public static BannerInfo convertInfo(StandardInfo adInfo, BaseReportInfo reportInfo){
+        BannerInfo info = new BannerInfo();
+        info.setInfoType(adInfo.getType());
+        info.setId(adInfo.getAdId());
+        info.setUrl(adInfo.getDesUrl());
+        info.setName(adInfo.getName());
+        info.setReportInfo(reportInfo);
+        return info;
     }
 
 }
