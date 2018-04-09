@@ -19,6 +19,7 @@
     <string name="recover_status">状态</string>
 
     <string name="setting_title">设置</string>
+    <string name="power_optimize_title">耗电优化</string>
 
     <string name="listview_header_hint_normal">下拉刷新</string>
     <string name="listview_header_hint_release">松开开始刷新</string>

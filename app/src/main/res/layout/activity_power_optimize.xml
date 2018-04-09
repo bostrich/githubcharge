@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.hodanet.charge.activity.PowerOptimizeActivity">
+
+    <!-- title-->
+    <RelativeLayout
+        android:id="@+id/rl_title"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:background="@color/bg_main_color">
+
+        <ImageView
+            android:id="@+id/img_back"
+            android:layout_width="51dp"
+            android:layout_height="22dp"
+            android:layout_centerVertical="true"
+            android:scaleType="fitCenter"
+            android:src="@mipmap/ic_back" />
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/power_optimize_title"
+            android:textColor="@color/white"
+            android:textSize="24sp" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_below="@id/rl_title"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:gravity="center_vertical"
+            android:layout_height="170dp">
+
+        </LinearLayout>
+
+        
+    </RelativeLayout>
+
+
+</RelativeLayout>
