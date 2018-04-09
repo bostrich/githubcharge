@@ -82,7 +82,7 @@ public class DailyAd {
      * 初始化视图
      */
     private void initView() {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_special, null);
+        View view = LayoutInflater.from(context).inflate(R.layout.item_daily, null);
         imgSpecial = (ImageView) view.findViewById(R.id.img_special);
         viewRedDot = view.findViewById(R.id.view_red_dot);
         tvSpecialName = (TextView) view.findViewById(R.id.tv_special_name);

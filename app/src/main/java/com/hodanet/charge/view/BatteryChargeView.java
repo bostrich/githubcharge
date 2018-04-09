@@ -3,6 +3,9 @@ package com.hodanet.charge.view;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Path;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -55,10 +58,17 @@ public class BatteryChargeView extends View {
         thickness = ScreenUtil.dipTopx(getContext(), 9);
         int interval = ScreenUtil.dipTopx(getContext(), 6);
         int top = (int)(centerHeight + 1.5 * thickness + 2 * interval);
+        int radius = ScreenUtil.dipTopx(getContext(), 3);
+
+        Path path = new Path();
+        rectF = new RectF(centerWidth - stripWidth, top - 4 * interval - 4 * thickness
+                , centerWidth + stripWidth, top + thickness);
+        path.addRoundRect(rectF, radius, radius, Path.Direction.CW);
+        canvas.clipPath(path);
 
         rectF = new RectF(centerWidth - stripWidth, top
                 , centerWidth + stripWidth, top + thickness);
-        canvas.drawRoundRect(rectF, 10, 10, paint);
+        canvas.drawRoundRect(rectF, 0, 0, paint);
 
         top -= interval + thickness;
         rectF = new RectF(centerWidth - stripWidth, top
@@ -79,8 +89,6 @@ public class BatteryChargeView extends View {
         rectF = new RectF(centerWidth  - stripWidth, top
                 , centerWidth + stripWidth, top + thickness);
         canvas.drawRoundRect(rectF, 0, 0, paint);
-
-
 
     }
 

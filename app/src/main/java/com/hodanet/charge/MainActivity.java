@@ -129,6 +129,7 @@ public class MainActivity extends BaseActivity {
 
             }
         });
+        setTab(R.id.ll_tab_charge);
     }
 
     @Override

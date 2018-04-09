@@ -142,6 +142,7 @@ public class FoundFragment extends Fragment {
     private void initView() {
         rlContent.setVisibility(View.GONE);
         rlLoading.setVisibility(View.VISIBLE);
+        tab.setSelectedTabIndicatorHeight(0);
         Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.anim_rotate);
         animation.setInterpolator(new LinearInterpolator());
         imgRotation.startAnimation(animation);
