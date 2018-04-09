@@ -17,10 +17,12 @@ import com.hodanet.charge.activity.SettingActivity;
 import com.hodanet.charge.config.ChannelConfig;
 import com.hodanet.charge.event.SlideMenuClickEvent;
 import com.hodanet.charge.fragment.ChargeFragment;
+import com.hodanet.charge.fragment.FoundFragment;
 import com.hodanet.charge.fragment.NewSurfingFragment;
 import com.hodanet.charge.fragment.RecoverFragment;
 import com.hodanet.charge.info.report.RingSlideMenuInfo;
 import com.hodanet.charge.model.RingAd;
+import com.syezon.component.AdManager;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -73,6 +75,7 @@ public class MainActivity extends BaseActivity {
     private ChargeFragment chargeFragment;
     private RecoverFragment recoverFragment;
     private NewSurfingFragment surfingFragment;
+    private FoundFragment foundFragment;
     private RingAd ring;
 
     @Override
@@ -89,6 +92,10 @@ public class MainActivity extends BaseActivity {
         initView();
 
         initData();
+
+        //初始化发现广告信息
+        AdManager.getInstance(this).initData();
+        AdManager.setSwitch(ChannelConfig.SPLASH);
 
     }
 
@@ -163,7 +170,8 @@ public class MainActivity extends BaseActivity {
         if(recoverFragment != null && recoverFragment.isVisible()) transaction.hide(recoverFragment);
         if(chargeFragment != null && chargeFragment.isVisible()) transaction.hide(chargeFragment);
         if(surfingFragment != null && surfingFragment.isVisible()) transaction.hide(surfingFragment);
-        switch(id){
+        if(foundFragment != null && foundFragment.isVisible()) transaction.hide(foundFragment);
+         switch(id){
             case R.id.ll_tab_recover:
                 if(recoverFragment == null) recoverFragment = new RecoverFragment();
                 if(recoverFragment.isAdded()){
@@ -192,6 +200,15 @@ public class MainActivity extends BaseActivity {
                 }
                 transaction.commit();
                 break;
+             case R.id.ll_tab_discovery:
+                 if(foundFragment == null) foundFragment = new FoundFragment();
+                 if(foundFragment.isAdded()){
+                     transaction.show(foundFragment);
+                 }else{
+                     transaction.add(R.id.fl_content_fragment, foundFragment).show(foundFragment);
+                 }
+                 transaction.commit();
+                 break;
 
         }
     }

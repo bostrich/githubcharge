@@ -31,5 +31,8 @@
     <string name="set_wallpaper">设置壁纸</string>
     <string name="download_girl_picture">下载</string>
 
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 
 </resources>
