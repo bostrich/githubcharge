@@ -11,6 +11,9 @@ import android.preference.PreferenceManager;
 public class SpUtil {
     public static final String IMEI = "IMEI_DEFAULT_VALUE";
     public static final String SPLASH_ORDER = "SPLASH_ORDER";
+    private static String CONFIG = "config";
+
+    private static SharedPreferences sharedPreferences;
 
 
 
@@ -39,6 +42,35 @@ public class SpUtil {
     public static synchronized int getSplashOrder(Context context){
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         return sp.getInt(SPLASH_ORDER, 0);
+    }
+
+
+    public static void saveBooleanData(Context context, String key, boolean value) {
+        if (sharedPreferences == null) {
+            sharedPreferences = context.getSharedPreferences(CONFIG, Context.MODE_PRIVATE);
+        }
+        sharedPreferences.edit().putBoolean(key, value).apply();
+    }
+
+    public static boolean getBooleanData(Context context, String key, boolean defValue) {
+        if (sharedPreferences == null) {
+            sharedPreferences = context.getSharedPreferences(CONFIG, Context.MODE_PRIVATE);
+        }
+        return sharedPreferences.getBoolean(key, defValue);
+    }
+
+    public static void saveLongData(Context context, String key, long value) {
+        if (sharedPreferences == null) {
+            sharedPreferences = context.getSharedPreferences(CONFIG, Context.MODE_PRIVATE);
+        }
+        sharedPreferences.edit().putLong(key, value).apply();
+    }
+
+    public static long getLongData(Context context, String key, long defValue) {
+        if (sharedPreferences == null) {
+            sharedPreferences = context.getSharedPreferences(CONFIG, Context.MODE_PRIVATE);
+        }
+        return sharedPreferences.getLong(key, defValue);
     }
 
 

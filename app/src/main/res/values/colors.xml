@@ -3,11 +3,12 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
-    <color name="bg_main_color">#1f96f2</color>
+    <color name="bg_main_color">#009ffd</color>
 
 
     <color name="transparent">#00000000</color>
     <color name="white">#ffffff</color>
+    <color name="white_20">#ccffffff</color>
     <color name="bg_logo_count">#66000000</color>
     <color name="bg_main">#f6f5fb</color>
 
@@ -34,4 +35,7 @@
     <color name="bg_main_wifi_top">#0285f0</color>
     <color name="surfingTabTextColor">#99ffffff</color>
     <color name="battery_empty">#c9e6ff</color>
+
+    <color name="power_optimize_time_remain">#fe846d</color>
+    <color name="ignore_btn_pressed">#8852B2FF</color>
 </resources>

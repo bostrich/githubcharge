@@ -11,6 +11,7 @@ import android.view.View;
 import com.hodanet.charge.R;
 import com.hodanet.charge.utils.ScreenUtil;
 
+import java.util.Timer;
 import java.util.TimerTask;
 
 /**
@@ -22,6 +23,8 @@ public class BatteryRotateView extends View {
     private int angles;
     private boolean isAnimation;
     private int dotRadius;
+    private Timer timer;
+    private TimerTask task;
 
     public BatteryRotateView(Context context) {
         super(context);
@@ -59,23 +62,25 @@ public class BatteryRotateView extends View {
 
     public void rotate(boolean showAnimation){
         if(showAnimation){
+            if(isAnimation) return;
             isAnimation = true;
-            new Thread(new Runnable() {
+            timer = new Timer();
+            task = new TimerTask() {
                 @Override
                 public void run() {
-                    while(isAnimation){
-                        angles += 2;
-                        postInvalidate();
-                        try {
-                            Thread.sleep(80);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
+                    angles += 2;
+                    postInvalidate();
                 }
-            }).start();
+            };
+            timer.scheduleAtFixedRate(task, 0, 80);
         }else{
             isAnimation = false;
+            if(timer != null){
+                timer.cancel();
+                timer = null;
+                task.cancel();
+                task = null;
+            }
         }
     }
 }

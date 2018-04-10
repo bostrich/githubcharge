@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.hodanet.charge.activity.PowerOptimizeActivity">
 
     <!-- title-->
@@ -16,9 +17,11 @@
             android:id="@+id/img_back"
             android:layout_width="51dp"
             android:layout_height="22dp"
-            android:layout_centerVertical="true"
             android:scaleType="fitCenter"
-            android:src="@mipmap/ic_back" />
+            android:src="@mipmap/ic_back"
+            android:layout_alignTop="@+id/tv_title"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
 
         <TextView
             android:id="@+id/tv_title"
@@ -31,9 +34,11 @@
 
     </RelativeLayout>
 
-    <RelativeLayout
-        android:layout_below="@id/rl_title"
+    <LinearLayout
+        android:id="@+id/ll_dsc"
         android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:background="@mipmap/power_optimize_bg"
         android:layout_height="match_parent">
         
         <LinearLayout
@@ -42,10 +47,146 @@
             android:gravity="center_vertical"
             android:layout_height="170dp">
 
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_height="match_parent">
+                
+                <ImageView
+                    android:id="@+id/img_rotate"
+                    android:layout_width="113dp"
+                    android:layout_height="113dp"
+                    android:layout_centerInParent="true"
+                    android:src="@mipmap/power_optimize_circle"/>
+
+                <TextView
+                    android:layout_width="90dp"
+                    android:layout_height="90dp"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:layout_centerInParent="true"
+                    android:text="60%"
+                    android:background="@mipmap/power_optimize_circle2"
+                    android:gravity="center"
+                    android:textStyle="bold" />
+
+
+
+            </RelativeLayout>
+
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:paddingRight="50dp"
+                android:orientation="vertical"
+                android:layout_height="match_parent">
+                
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="15sp"
+                    android:textColor="@color/charge_remain"
+                    android:text="全面耗电检测"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp"
+                    android:textColor="@color/charge_remain"
+                    android:text="优化可延长用时"/>
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp"
+                    android:textColor="@color/power_optimize_time_remain"
+                    android:text="2小时15分钟"/>
+
+
+            </LinearLayout>
+
+
+
         </LinearLayout>
 
-        
-    </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:background="#44b3f4"
+            android:layout_height="20dp">
+
+            <ImageView
+                android:id="@+id/img_application"
+                android:layout_width="17dp"
+                android:layout_height="17dp"
+                android:layout_marginLeft="17dp"
+                android:src="@mipmap/power_optimize_application"/>
 
 
-</RelativeLayout>
+            <LinearLayout
+                android:layout_toRightOf="@id/img_application"
+                android:layout_centerVertical="true"
+                android:layout_width="match_parent"
+                android:gravity="center"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/tv_count"
+                    android:textSize="11sp"
+                    android:textColor="@color/power_optimize_time_remain"
+                    android:text="7"
+                    android:gravity="center_vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:textColor="@color/charge_remain"
+                    android:textSize="11sp"
+                    android:gravity="center_vertical"
+                    android:text="@string/power_optimize_dsc"/>
+
+
+            </LinearLayout>
+
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/tv_optimize"
+                android:textColor="@color/charge_btn"
+                android:textSize="20sp"
+                android:layout_width="185dp"
+                android:layout_height="48dp"
+                android:text="@string/power_optimize"
+                android:gravity="center"
+                android:layout_centerHorizontal="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="80dp"
+                android:background="@drawable/charge_btn"/>
+
+
+            <GridView
+                android:id="@+id/grid"
+                android:layout_marginTop="15dp"
+                android:scrollbars="none"
+                android:numColumns="6"
+                android:layout_above="@id/tv_optimize"
+                android:layoutAnimation="@anim/layout_animation"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

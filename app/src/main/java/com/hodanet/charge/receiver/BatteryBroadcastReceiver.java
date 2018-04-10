@@ -7,6 +7,7 @@ import android.net.ConnectivityManager;
 import android.os.BatteryManager;
 
 import com.hodanet.charge.event.BatteryChangeEvent;
+import com.hodanet.charge.event.BatteryConnectEvent;
 import com.hodanet.charge.utils.LogUtil;
 
 import org.greenrobot.eventbus.EventBus;
@@ -103,10 +104,11 @@ public class BatteryBroadcastReceiver extends BroadcastReceiver{
                     default:
                         break;
                 }
+                EventBus.getDefault().post(new BatteryConnectEvent(true));
                 break;
             case Intent.ACTION_POWER_DISCONNECTED:
                 LogUtil.d("BatteryState", "ACTION_POWER_DISCONNECTED");
-
+                EventBus.getDefault().post(new BatteryConnectEvent(false));
                 break;
             case Intent.ACTION_POWER_USAGE_SUMMARY:
                 LogUtil.d("BatteryState", "ACTION_POWER_USAGE_SUMMARY");

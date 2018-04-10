@@ -77,7 +77,7 @@
             android:layout_height="48dp"
             android:text="@string/recover_optimize"
             android:gravity="center"
-            android:background="@drawable/charge_btn"/>
+            android:background="@drawable/charge_btn_n"/>
 
 
         <LinearLayout

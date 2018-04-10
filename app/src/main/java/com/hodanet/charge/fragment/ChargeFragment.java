@@ -2,6 +2,7 @@ package com.hodanet.charge.fragment;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.BatteryManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -19,10 +20,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.hodanet.charge.R;
+import com.hodanet.charge.activity.PowerOptimizeActivity;
 import com.hodanet.charge.adapter.NewsAdapter;
 import com.hodanet.charge.config.ChannelConfig;
 import com.hodanet.charge.config.ConsConfig;
 import com.hodanet.charge.event.BatteryChangeEvent;
+import com.hodanet.charge.event.BatteryConnectEvent;
 import com.hodanet.charge.event.SlideMenuClickEvent;
 import com.hodanet.charge.info.news.BaseNewInfo;
 import com.hodanet.charge.info.news.EastNewsInfo;
@@ -32,7 +35,6 @@ import com.hodanet.charge.info.report.SpecialChargeReport;
 import com.hodanet.charge.model.DailyAd;
 import com.hodanet.charge.model.FloatAd;
 import com.hodanet.charge.model.SpecialAd;
-import com.hodanet.charge.receiver.BatteryBroadcastReceiver;
 import com.hodanet.charge.utils.HttpUtils;
 import com.hodanet.charge.utils.TaskManager;
 import com.hodanet.charge.view.BatteryChargeView;
@@ -75,8 +77,6 @@ public class ChargeFragment extends Fragment {
     TextView tvMinute;
     @BindView(R.id.tv_minute_unit)
     TextView tvMinuteUnit;
-    @BindView(R.id.tv_charge_btn)
-    TextView tvChargeBtn;
     @BindView(R.id.rl_special)
     RelativeLayout rlSpecial;
     @BindView(R.id.rl_daily)
@@ -92,6 +92,8 @@ public class ChargeFragment extends Fragment {
     BatteryRotateView brv;
     @BindView(R.id.battery_charge)
     BatteryChargeView batteryCharge;
+    @BindView(R.id.tv_charge_btn)
+    TextView tvChargeBtn;
 
     private FloatAd floatView;
     private SpecialAd specialView;
@@ -255,17 +257,19 @@ public class ChargeFragment extends Fragment {
             case R.id.tv_title:
                 break;
             case R.id.tv_charge_btn:
+                startActivity(new Intent(getContext(), PowerOptimizeActivity.class));
                 break;
         }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getBatteryChange(BatteryChangeEvent event) {
-        batteryCharge.setBattery(event.getPercent());
+
         switch (event.getStatus()) {
             case BatteryManager.BATTERY_STATUS_CHARGING:
                 tvStatus.setText("正在充电");
                 tvChargeBtn.setText("开启充电加速");
+                batteryCharge.setBattery(event.getPercent(), true);
                 brv.rotate(false);
                 break;
             case BatteryManager.BATTERY_STATUS_DISCHARGING:
@@ -290,5 +294,18 @@ public class ChargeFragment extends Fragment {
 
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void connectedChange(BatteryConnectEvent event) {
+        if (!event.isConnected()) {//未连接
+            brv.rotate(true);
+            tvStatus.setText("正在耗电");
+            tvChargeBtn.setText("耗电优化");
+            batteryCharge.setBattery(false);
+        }
+    }
 
+
+    @OnClick(R.id.tv_charge_btn)
+    public void onViewClicked() {
+    }
 }

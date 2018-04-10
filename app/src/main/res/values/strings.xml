@@ -20,6 +20,7 @@
 
     <string name="setting_title">设置</string>
     <string name="power_optimize_title">耗电优化</string>
+    <string name="power_optimize_dsc">个应用程序在偷偷耗电（点击列表中的图片可避免被清理）</string>
 
     <string name="listview_header_hint_normal">下拉刷新</string>
     <string name="listview_header_hint_release">松开开始刷新</string>
@@ -32,8 +33,7 @@
     <string name="set_wallpaper">设置壁纸</string>
     <string name="download_girl_picture">下载</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="power_optimize">立即省电</string>
 
 
 </resources>

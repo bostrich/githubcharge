@@ -12,7 +12,11 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.hodanet.charge.R;
+import com.hodanet.charge.utils.LogUtil;
 import com.hodanet.charge.utils.ScreenUtil;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  *
@@ -20,14 +24,19 @@ import com.hodanet.charge.utils.ScreenUtil;
 
 public class BatteryChargeView extends View {
 
+    private static final String TAG = BatteryChargeView.class.getName();
+
     private int centerWidth;
     private int centerHeight;
     private float thickness;
     private Paint paint;
 
     private int percent;//电量百分比
+    private int fakePercent;//充电时的假电量
     private boolean isCharging;//判断是否在充电
     private RectF rectF;
+    private TimerTask task;
+    private Timer timer;
 
     public BatteryChargeView(Context context) {
         super(context);
@@ -49,6 +58,7 @@ public class BatteryChargeView extends View {
         paint = new Paint();
         paint.setAntiAlias(false);
         paint.setColor(getResources().getColor(R.color.charge_battery_red));
+
     }
 
     @Override
@@ -67,42 +77,134 @@ public class BatteryChargeView extends View {
         path.addRoundRect(rectF, radius, radius, Path.Direction.CW);
         canvas.clipPath(path);
 
-        if(isCharging || percent == 100) paint.setColor(getResources().getColor(R.color.bg_main_color));
+        if(isCharging){//判断是否在充电中
+            paint.setColor(getResources().getColor(R.color.bg_main_color));
+            LogUtil.e(TAG, "假分数:" + fakePercent);
+            for (int i = 1; i < 6; i++) {
+                if(fakePercent / 20  >= i){
+                    paint.setColor(getResources().getColor(R.color.bg_main_color));
+                }else{
+                    paint.setColor(getResources().getColor(R.color.battery_empty));
+                }
+                rectF = new RectF(centerWidth - stripWidth, top
+                        , centerWidth + stripWidth, top + thickness);
+                canvas.drawRoundRect(rectF, 0, 0, paint);
+                top -= interval + thickness;
+            }
+            fakePercent += 20;
+            if(fakePercent >= 120) fakePercent = percent;
 
-        rectF = new RectF(centerWidth - stripWidth, top
-                , centerWidth + stripWidth, top + thickness);
-        canvas.drawRoundRect(rectF, 0, 0, paint);
+        }else{
+            if(percent <= 20){
+                paint.setColor(getResources().getColor(R.color.charge_battery_red));
+            }else{
+                paint.setColor(getResources().getColor(R.color.bg_main_color));
+            }
+            rectF = new RectF(centerWidth - stripWidth, top
+                    , centerWidth + stripWidth, top + thickness);
+            canvas.drawRoundRect(rectF, 0, 0, paint);
 
-        if(percent < 40 && !isCharging) paint.setColor(getResources().getColor(R.color.battery_empty));
-        top -= interval + thickness;
-        rectF = new RectF(centerWidth - stripWidth, top
-                , centerWidth + stripWidth, top + thickness);
-        canvas.drawRoundRect(rectF, 0, 0, paint);
+            if(percent <= 20){
+                paint.setColor(getResources().getColor(R.color.battery_empty));
+            }else{
+                paint.setColor(getResources().getColor(R.color.bg_main_color));
+            }
 
-        if(percent < 60 && !isCharging) paint.setColor(getResources().getColor(R.color.battery_empty));
-        top -= interval + thickness;
-        rectF = new RectF(centerWidth - stripWidth, top
-                , centerWidth + stripWidth, top + thickness);
-        canvas.drawRoundRect(rectF, 0, 0, paint);
+            top -= interval + thickness;
+            rectF = new RectF(centerWidth - stripWidth, top
+                    , centerWidth + stripWidth, top + thickness);
+            canvas.drawRoundRect(rectF, 0, 0, paint);
 
-        if(percent < 80 && !isCharging) paint.setColor(getResources().getColor(R.color.battery_empty));
-        top -= interval + thickness;
-        rectF = new RectF(centerWidth - stripWidth, top
-                , centerWidth + stripWidth, top + thickness);
-        canvas.drawRoundRect(rectF, 0, 0, paint);
+            if(percent <= 40){
+                paint.setColor(getResources().getColor(R.color.battery_empty));
+            }else{
+                paint.setColor(getResources().getColor(R.color.bg_main_color));
+            }
 
-        if(percent < 95 && !isCharging) paint.setColor(getResources().getColor(R.color.battery_empty));
-        top -= interval + thickness;
-        rectF = new RectF(centerWidth  - stripWidth, top
-                , centerWidth + stripWidth, top + thickness);
-        canvas.drawRoundRect(rectF, 0, 0, paint);
+            top -= interval + thickness;
+            rectF = new RectF(centerWidth - stripWidth, top
+                    , centerWidth + stripWidth, top + thickness);
+            canvas.drawRoundRect(rectF, 0, 0, paint);
+
+            if(percent <= 60){
+                paint.setColor(getResources().getColor(R.color.battery_empty));
+            }else{
+                paint.setColor(getResources().getColor(R.color.bg_main_color));
+            }
+
+            top -= interval + thickness;
+            rectF = new RectF(centerWidth - stripWidth, top
+                    , centerWidth + stripWidth, top + thickness);
+            canvas.drawRoundRect(rectF, 0, 0, paint);
+
+            if(percent <= 80){
+                paint.setColor(getResources().getColor(R.color.battery_empty));
+            }else{
+                paint.setColor(getResources().getColor(R.color.bg_main_color));
+            }
+
+            top -= interval + thickness;
+            rectF = new RectF(centerWidth - stripWidth, top
+                    , centerWidth + stripWidth, top + thickness);
+            canvas.drawRoundRect(rectF, 0, 0, paint);
+        }
 
     }
 
     public void setBattery(int percent, boolean isCharging){
         this.percent = percent;
-        this.isCharging = isCharging;
-        invalidate();
+        if(!isCharging){
+            invalidate();
+            if(timer != null){
+                timer.cancel();
+                timer = null;
+                task.cancel();
+                task = null;
+            }
+            this.isCharging = isCharging;
+        }else{
+            LogUtil.e(TAG, "进行动画");
+            if(!this.isCharging){//防止重复进入
+                this.isCharging = isCharging;
+                fakePercent = percent;
+                timer = new Timer();
+                task = new TimerTask() {
+                    @Override
+                    public void run() {
+                        postInvalidate();
+                    }
+                };
+                timer.scheduleAtFixedRate(task, 0, 1000L);
+            }
+        }
+    }
+
+    public void setBattery(boolean isCharging){
+        if(!isCharging){
+            LogUtil.e(TAG, "停止动画");
+            invalidate();
+            if(timer != null){
+                timer.cancel();
+                timer = null;
+                task.cancel();
+                task = null;
+            }
+            this.isCharging = isCharging;
+        }else{
+            LogUtil.e(TAG, "进行动画");
+            if(!this.isCharging){//防止重复进入
+                this.isCharging = isCharging;
+                fakePercent = percent;
+                timer = new Timer();
+                task = new TimerTask() {
+                    @Override
+                    public void run() {
+                        postInvalidate();
+                    }
+                };
+                timer.scheduleAtFixedRate(task, 0, 1000L);
+            }
+        }
     }
 
 
