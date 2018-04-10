@@ -1,10 +1,13 @@
 package com.hodanet.charge.fragment;
 
 
+import android.content.Context;
+import android.os.BatteryManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,6 +22,7 @@ import com.hodanet.charge.R;
 import com.hodanet.charge.adapter.NewsAdapter;
 import com.hodanet.charge.config.ChannelConfig;
 import com.hodanet.charge.config.ConsConfig;
+import com.hodanet.charge.event.BatteryChangeEvent;
 import com.hodanet.charge.event.SlideMenuClickEvent;
 import com.hodanet.charge.info.news.BaseNewInfo;
 import com.hodanet.charge.info.news.EastNewsInfo;
@@ -28,16 +32,19 @@ import com.hodanet.charge.info.report.SpecialChargeReport;
 import com.hodanet.charge.model.DailyAd;
 import com.hodanet.charge.model.FloatAd;
 import com.hodanet.charge.model.SpecialAd;
+import com.hodanet.charge.receiver.BatteryBroadcastReceiver;
 import com.hodanet.charge.utils.HttpUtils;
 import com.hodanet.charge.utils.TaskManager;
+import com.hodanet.charge.view.BatteryChargeView;
+import com.hodanet.charge.view.BatteryRotateView;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import butterknife.BindView;
@@ -79,6 +86,12 @@ public class ChargeFragment extends Fragment {
     Unbinder unbinder;
     @BindView(R.id.rl_float)
     RelativeLayout rlFloat;
+    @BindView(R.id.tv_battery_percent)
+    TextView tvBatteryPercent;
+    @BindView(R.id.rotate)
+    BatteryRotateView brv;
+    @BindView(R.id.battery_charge)
+    BatteryChargeView batteryCharge;
 
     private FloatAd floatView;
     private SpecialAd specialView;
@@ -92,6 +105,11 @@ public class ChargeFragment extends Fragment {
 
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -99,6 +117,7 @@ public class ChargeFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_charge, container, false);
         unbinder = ButterKnife.bind(this, view);
+        EventBus.getDefault().register(this);
 
         iniHandler();
         initView();
@@ -124,6 +143,7 @@ public class ChargeFragment extends Fragment {
         if (floatView != null) floatView.onDestroy();
         if (specialView != null) specialView.onDestroy();
         if (dailyView != null) dailyView.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 
     private void initData() {
@@ -138,6 +158,10 @@ public class ChargeFragment extends Fragment {
                     .setReportInfo(new DailyChargeReport()).build();
         }
         initNews();
+
+        //获取电池信息
+        BatteryManager manager = (BatteryManager) getContext().getSystemService(Context.BATTERY_SERVICE);
+
     }
 
     private void initView() {
@@ -154,10 +178,10 @@ public class ChargeFragment extends Fragment {
 
 
     private void iniHandler() {
-        mHandler = new Handler(Looper.getMainLooper()){
+        mHandler = new Handler(Looper.getMainLooper()) {
             @Override
             public void handleMessage(Message msg) {
-                switch(msg.what){
+                switch (msg.what) {
                     case GET_NEWS_OK:
                         list.addAll((List<BaseNewInfo>) msg.obj);
                         newsAdapter.notifyDataSetChanged();
@@ -233,6 +257,37 @@ public class ChargeFragment extends Fragment {
             case R.id.tv_charge_btn:
                 break;
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getBatteryChange(BatteryChangeEvent event) {
+        batteryCharge.setBattery(event.getPercent());
+        switch (event.getStatus()) {
+            case BatteryManager.BATTERY_STATUS_CHARGING:
+                tvStatus.setText("正在充电");
+                tvChargeBtn.setText("开启充电加速");
+                brv.rotate(false);
+                break;
+            case BatteryManager.BATTERY_STATUS_DISCHARGING:
+                brv.rotate(true);
+                tvStatus.setText("正在耗电");
+                tvChargeBtn.setText("耗电优化");
+                break;
+            case BatteryManager.BATTERY_STATUS_NOT_CHARGING:
+
+                break;
+            case BatteryManager.BATTERY_STATUS_FULL:
+                tvStatus.setText("充满电了");
+                brv.rotate(false);
+                break;
+            case BatteryManager.BATTERY_STATUS_UNKNOWN:
+                tvStatus.setText("未知");
+                break;
+            default:
+                break;
+        }
+        tvBatteryPercent.setText(event.getBatteryPercent());
+
     }
 
 

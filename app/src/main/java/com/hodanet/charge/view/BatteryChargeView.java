@@ -25,7 +25,8 @@ public class BatteryChargeView extends View {
     private float thickness;
     private Paint paint;
 
-    private int percentage;
+    private int percent;//电量百分比
+    private boolean isCharging;//判断是否在充电
     private RectF rectF;
 
     public BatteryChargeView(Context context) {
@@ -66,30 +67,42 @@ public class BatteryChargeView extends View {
         path.addRoundRect(rectF, radius, radius, Path.Direction.CW);
         canvas.clipPath(path);
 
+        if(isCharging || percent == 100) paint.setColor(getResources().getColor(R.color.bg_main_color));
+
         rectF = new RectF(centerWidth - stripWidth, top
                 , centerWidth + stripWidth, top + thickness);
         canvas.drawRoundRect(rectF, 0, 0, paint);
 
+        if(percent < 40 && !isCharging) paint.setColor(getResources().getColor(R.color.battery_empty));
         top -= interval + thickness;
         rectF = new RectF(centerWidth - stripWidth, top
                 , centerWidth + stripWidth, top + thickness);
         canvas.drawRoundRect(rectF, 0, 0, paint);
 
+        if(percent < 60 && !isCharging) paint.setColor(getResources().getColor(R.color.battery_empty));
         top -= interval + thickness;
         rectF = new RectF(centerWidth - stripWidth, top
                 , centerWidth + stripWidth, top + thickness);
         canvas.drawRoundRect(rectF, 0, 0, paint);
 
+        if(percent < 80 && !isCharging) paint.setColor(getResources().getColor(R.color.battery_empty));
         top -= interval + thickness;
         rectF = new RectF(centerWidth - stripWidth, top
                 , centerWidth + stripWidth, top + thickness);
         canvas.drawRoundRect(rectF, 0, 0, paint);
 
+        if(percent < 95 && !isCharging) paint.setColor(getResources().getColor(R.color.battery_empty));
         top -= interval + thickness;
         rectF = new RectF(centerWidth  - stripWidth, top
                 , centerWidth + stripWidth, top + thickness);
         canvas.drawRoundRect(rectF, 0, 0, paint);
 
+    }
+
+    public void setBattery(int percent, boolean isCharging){
+        this.percent = percent;
+        this.isCharging = isCharging;
+        invalidate();
     }
 
 

@@ -56,10 +56,15 @@
                     android:layout_height="185dp"
                     android:layout_marginTop="28dp">
 
-                    <ImageView
+                    <!--<ImageView-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:src="@mipmap/charge_bg_circle" />-->
+                    <com.hodanet.charge.view.BatteryRotateView
+                        android:id="@+id/rotate"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:src="@mipmap/charge_bg_circle" />
+                        android:background="@mipmap/charge_bg_circle"/>
 
                     <LinearLayout
                         android:orientation="vertical"
@@ -68,12 +73,14 @@
                         android:layout_height="wrap_content">
 
                         <com.hodanet.charge.view.BatteryChargeView
+                            android:id="@+id/battery_charge"
                             android:layout_width="51dp"
                             android:layout_height="99dp"
                             android:layout_centerInParent="true"
                             android:background="@mipmap/charge_bg_battery" />
 
                         <TextView
+                            android:id="@+id/tv_battery_percent"
                             android:layout_marginTop="5dp"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"

@@ -1,6 +1,8 @@
 package com.hodanet.charge;
 
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
@@ -22,6 +24,7 @@ import com.hodanet.charge.fragment.NewSurfingFragment;
 import com.hodanet.charge.fragment.RecoverFragment;
 import com.hodanet.charge.info.report.RingSlideMenuInfo;
 import com.hodanet.charge.model.RingAd;
+import com.hodanet.charge.receiver.BatteryBroadcastReceiver;
 import com.syezon.component.AdManager;
 
 import org.greenrobot.eventbus.EventBus;
@@ -78,6 +81,8 @@ public class MainActivity extends BaseActivity {
     private FoundFragment foundFragment;
     private RingAd ring;
 
+    private BatteryBroadcastReceiver receiver;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,6 +95,7 @@ public class MainActivity extends BaseActivity {
         fragmentTransaction.add(R.id.fl_content_fragment, chargeFragment).show(chargeFragment).commit();
 
         initView();
+        initBroadcast();
 
         initData();
 
@@ -97,6 +103,29 @@ public class MainActivity extends BaseActivity {
         AdManager.getInstance(this).initData();
         AdManager.setSwitch(ChannelConfig.SPLASH);
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+        if(ring != null) ring.onDestroy();
+        if(receiver != null) unregisterReceiver(receiver);
+    }
+
+    private void initBroadcast() {
+        receiver = new BatteryBroadcastReceiver();
+        //注册系统状态的各种监听
+        IntentFilter statusIntentFilter = new IntentFilter();
+        //电池电量监听
+        statusIntentFilter.addAction(Intent.ACTION_BATTERY_CHANGED);
+        statusIntentFilter.addAction(Intent.ACTION_BATTERY_LOW);
+        statusIntentFilter.addAction(Intent.ACTION_BATTERY_OKAY);
+        statusIntentFilter.addAction(Intent.ACTION_POWER_CONNECTED);
+        statusIntentFilter.addAction(Intent.ACTION_POWER_DISCONNECTED);
+        statusIntentFilter.addAction(Intent.ACTION_POWER_USAGE_SUMMARY);
+        statusIntentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(receiver, statusIntentFilter);
     }
 
 
@@ -132,12 +161,6 @@ public class MainActivity extends BaseActivity {
         setTab(R.id.ll_tab_charge);
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        EventBus.getDefault().unregister(this);
-        if(ring != null) ring.onDestroy();
-    }
 
     @OnClick({R.id.ll_tab_charge, R.id.ll_tab_recover, R.id.ll_tab_discovery, R.id.ll_tab_hot, R.id.fl_content_fragment, R.id.rl_setting, R.id.rl_feedback})
     public void onViewClicked(View view) {

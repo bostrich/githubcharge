@@ -33,4 +33,5 @@
 
     <color name="bg_main_wifi_top">#0285f0</color>
     <color name="surfingTabTextColor">#99ffffff</color>
+    <color name="battery_empty">#c9e6ff</color>
 </resources>
