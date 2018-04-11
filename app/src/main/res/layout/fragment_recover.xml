@@ -56,9 +56,17 @@
                     android:layout_height="185dp">
 
                     <ImageView
+                        android:id="@+id/img_rotate_inner"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:src="@mipmap/charge_bg_circle"/>
+
+                    <ImageView
+                        android:id="@+id/img_rotate_outer"
+                        android:padding="6dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:src="@mipmap/recover_circle_rotate"/>
 
 
                     <LinearLayout
@@ -67,13 +75,15 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content">
 
-                        <ImageView
+                        <com.hodanet.charge.view.BatteryHorizontalView
+                            android:id="@+id/battery"
                             android:layout_marginTop="30dp"
                             android:layout_width="109dp"
                             android:layout_height="56dp"
-                            android:src="@mipmap/recover_battery"/>
+                            android:background="@mipmap/recover_battery"/>
 
                         <TextView
+                            android:id="@+id/tv_score"
                             android:layout_width="match_parent"
                             android:gravity="center"
                             android:layout_marginTop="5dp"
@@ -100,7 +110,7 @@
                     android:layout_height="48dp"
                     android:text="@string/recover_optimize"
                     android:gravity="center"
-                    android:background="@drawable/charge_btn_n"/>
+                    android:background="@drawable/charge_btn"/>
 
                 <View
                     android:layout_width="match_parent"
@@ -111,8 +121,8 @@
                 <LinearLayout
                     android:orientation="horizontal"
                     android:layout_marginTop="20dp"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
@@ -133,8 +143,9 @@
                             android:textSize="18sp"/>
 
                         <RelativeLayout
-                            android:layout_width="57dp"
-                            android:layout_height="57dp">
+                            android:layout_marginTop="3dp"
+                            android:layout_width="60dp"
+                            android:layout_height="60dp">
 
                             <TextView
                                 android:id="@+id/tv_percent"
@@ -146,6 +157,7 @@
                                 android:text="85%"/>
 
                             <ImageView
+                                android:id="@+id/img_circle_percent"
                                 android:padding="3dp"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
@@ -170,8 +182,9 @@
                             android:textSize="18sp"/>
 
                         <RelativeLayout
-                            android:layout_width="57dp"
-                            android:layout_height="57dp">
+                            android:layout_marginTop="3dp"
+                            android:layout_width="60dp"
+                            android:layout_height="60dp">
 
                             <TextView
                                 android:id="@+id/tv_temp"
@@ -183,6 +196,7 @@
                                 android:text="32.6"/>
 
                             <ImageView
+                                android:id="@+id/img_circle_temp"
                                 android:padding="3dp"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
@@ -207,8 +221,9 @@
                             android:textSize="18sp"/>
 
                         <RelativeLayout
-                            android:layout_width="57dp"
-                            android:layout_height="57dp">
+                            android:layout_marginTop="3dp"
+                            android:layout_width="60dp"
+                            android:layout_height="60dp">
 
                             <TextView
                                 android:id="@+id/tv_voltage"
@@ -220,6 +235,7 @@
                                 android:text="4.2V"/>
 
                             <ImageView
+                                android:id="@+id/img_circle_voltage"
                                 android:padding="3dp"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
@@ -244,8 +260,9 @@
                             android:textSize="18sp"/>
 
                         <RelativeLayout
-                            android:layout_width="57dp"
-                            android:layout_height="57dp">
+                            android:layout_marginTop="3dp"
+                            android:layout_width="60dp"
+                            android:layout_height="60dp">
 
                             <TextView
                                 android:id="@+id/tv_status"
@@ -257,6 +274,7 @@
                                 android:text="优"/>
 
                             <ImageView
+                                android:id="@+id/img_circle_status"
                                 android:padding="3dp"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
@@ -280,11 +298,12 @@
             </LinearLayout>
 
 
-            <RelativeLayout
-                android:id="@+id/rl_recommend"
+            <LinearLayout
+                android:id="@+id/ll_recommend"
+                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:visibility="gone"
-                android:layout_height="100dp"/>
+                android:layout_height="wrap_content"/>
 
 
 

@@ -19,6 +19,16 @@
             android:scaleType="fitCenter"
             android:src="@mipmap/img_slide_menu"/>
 
+        <View
+            android:id="@+id/view_ring_dot"
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:layout_toRightOf="@id/img_slide_menu"
+            android:layout_marginLeft="-15dp"
+            android:layout_marginTop="13dp"
+            android:visibility="gone"
+            android:background="@drawable/bg_red_dot"/>
+
         <TextView
             android:id="@+id/tv_title"
             android:layout_width="wrap_content"
@@ -35,7 +45,7 @@
     <android.support.v4.widget.NestedScrollView
         android:layout_below="@id/rl_title"
         android:layout_width="match_parent"
-        android:background="#f6f5fb"
+        android:background="@mipmap/charge_bg_status"
         android:layout_height="match_parent">
 
         <LinearLayout
@@ -45,16 +55,21 @@
 
             <!-- 顶部电池状态视图-->
             <LinearLayout
+                android:id="@+id/ll_top"
                 android:layout_width="match_parent"
                 android:layout_height="400dp"
                 android:orientation="vertical"
-                android:background="@mipmap/charge_bg_status"
                 android:gravity="center_horizontal">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="2"/>
 
                 <RelativeLayout
                     android:layout_width="185dp"
                     android:layout_height="185dp"
-                    android:layout_marginTop="28dp">
+                    android:layout_marginTop="10dp">
 
                     <!--<ImageView-->
                         <!--android:layout_width="match_parent"-->
@@ -93,19 +108,28 @@
 
                 </RelativeLayout>
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="2"/>
+
                 <TextView
                     android:id="@+id/tv_status"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="28dp"
+                    android:layout_marginTop="10dp"
                     android:textColor="@color/charge_remain"
                     android:textSize="15sp"
                     android:text="正在耗电，剩余可用"/>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"/>
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="0dp"
                     android:orientation="horizontal">
 
                     <TextView
@@ -143,11 +167,17 @@
                         android:text="分钟"
                         android:textColor="@color/charge_remain"
                         android:textSize="19sp" />
+
                 </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="2"/>
                 
                 <TextView
                     android:id="@+id/tv_charge_btn"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="10dp"
                     android:textColor="@color/charge_btn"
                     android:textSize="20sp"
                     android:layout_width="185dp"
@@ -155,6 +185,11 @@
                     android:text="@string/charge_optimize"
                     android:gravity="center"
                     android:background="@drawable/charge_btn"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="2"/>
 
 
             </LinearLayout>
@@ -170,6 +205,7 @@
                     android:layout_width="0dp"
                     android:layout_height="72dp"
                     android:layout_weight="1"
+                    android:visibility="gone"
                     android:background="@drawable/bg_btn_hot_click"/>
 
                 <RelativeLayout
@@ -177,26 +213,37 @@
                     android:layout_width="0dp"
                     android:layout_height="72dp"
                     android:layout_weight="1"
+                    android:visibility="gone"
                     android:background="@drawable/bg_btn_hot_click"/>
 
             </LinearLayout>
 
-            <TextView
-                android:layout_marginTop="7dp"
-                android:paddingLeft="18dp"
-                android:paddingTop="5dp"
-                android:textSize="15sp"
-                android:textColor="#959595"
-                android:text="今日热点"
-                android:background="@color/white"
+            <LinearLayout
+                android:id="@+id/ll_news"
+                android:visibility="gone"
+                android:orientation="vertical"
+                android:background="#f6f5fb"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="match_parent">
+                <TextView
+                    android:layout_marginTop="7dp"
+                    android:paddingLeft="18dp"
+                    android:paddingTop="5dp"
+                    android:textSize="15sp"
+                    android:textColor="#959595"
+                    android:text="今日热点"
+                    android:background="@color/white"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/rv"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rv"
+                    android:background="@color/white"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
 
+
+            </LinearLayout>
 
         </LinearLayout>
 

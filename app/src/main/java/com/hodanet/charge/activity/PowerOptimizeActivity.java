@@ -11,17 +11,25 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.hodanet.charge.R;
 import com.hodanet.charge.adapter.PowerOptimizeAppsAdapter;
+import com.hodanet.charge.config.ChannelConfig;
+import com.hodanet.charge.info.RecommendInfo;
 import com.hodanet.charge.info.power_optimize.AppInfo;
+import com.hodanet.charge.info.report.RecommendOptimizeReportInfo;
+import com.hodanet.charge.info.report.RecommendRecoverReportInfo;
+import com.hodanet.charge.model.RecommendModelView;
+import com.hodanet.charge.utils.ScreenUtil;
 import com.hodanet.charge.utils.SpUtil;
 import com.hodanet.charge.utils.TaskManager;
 import com.hodanet.charge.view.IgnoreDialog;
@@ -53,6 +61,22 @@ public class PowerOptimizeActivity extends BaseActivity {
     TextView tvOptimize;
     @BindView(R.id.grid)
     GridView grid;
+    @BindView(R.id.tv_title)
+    TextView tvTitle;
+    @BindView(R.id.rl_title)
+    RelativeLayout rlTitle;
+    @BindView(R.id.tv_progress)
+    TextView tvProgress;
+    @BindView(R.id.tv_save_time)
+    TextView tvSaveTime;
+    @BindView(R.id.img_application)
+    ImageView imgApplication;
+    @BindView(R.id.tv_finish_save_time)
+    TextView tvFinishSaveTime;
+    @BindView(R.id.ll_recommend)
+    LinearLayout llRecommend;
+    @BindView(R.id.ll_result)
+    LinearLayout llResult;
 
 
     private List<AppInfo> mAppInfos;
@@ -60,6 +84,7 @@ public class PowerOptimizeActivity extends BaseActivity {
     private PowerOptimizeAppsAdapter mOneKeyAdapter;
 
     private IgnoreDialog ignoreDialog;
+    private RecommendModelView recommendView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,18 +106,20 @@ public class PowerOptimizeActivity extends BaseActivity {
             }
             ignoreDialog = null;
         }
+        if(recommendView != null) recommendView = null;
     }
 
     private void initHandler() {
-        mHandler = new Handler(Looper.getMainLooper()){
+        mHandler = new Handler(Looper.getMainLooper()) {
             @Override
             public void handleMessage(Message msg) {
-                switch(msg.what){
+                switch (msg.what) {
                     case GET_APPS:
                         mAppInfos.clear();
                         mAppInfos.addAll((List<AppInfo>) msg.obj);
                         mOneKeyAdapter.notifyDataSetChanged();
-
+                        tvCount.setText(mAppInfos.size() + "");
+                        showLengthenTime(tvSaveTime);
                         break;
                 }
             }
@@ -110,6 +137,34 @@ public class PowerOptimizeActivity extends BaseActivity {
                 mHandler.sendMessage(msg);
             }
         });
+
+        if (ChannelConfig.SPLASH) {
+            getHotRecommendAd();
+        }
+    }
+
+
+    private void getHotRecommendAd() {
+        recommendView = new RecommendModelView(this, new RecommendOptimizeReportInfo());
+        recommendView.getHotRecommendAd(this, new RecommendModelView.AdLoadSuccessListener() {
+            @Override
+            public void loadSuccess(View view) {
+                if (view != null) {
+                    llRecommend.setVisibility(View.VISIBLE);
+                    llRecommend.removeAllViews();
+                    llRecommend.addView(view);
+                }
+            }
+
+            @Override
+            public void downloadClick(Object obj) {
+                if (obj instanceof RecommendInfo) {
+                    RecommendInfo info = (RecommendInfo) obj;
+                    info.click(PowerOptimizeActivity.this);
+                }
+            }
+        });
+
     }
 
     private void initView() {
@@ -134,6 +189,8 @@ public class PowerOptimizeActivity extends BaseActivity {
             }
         });
 
+        tvCount.setText(mAppInfos.size() + "");
+        tvSaveTime.setText("");
 
     }
 
@@ -146,7 +203,6 @@ public class PowerOptimizeActivity extends BaseActivity {
             case R.id.tv_optimize:
                 clearListItem(mAppInfos.size() - 1);
                 SpUtil.saveLongData(this, SP_KEY_LAST_CLEAR_TIME, System.currentTimeMillis());
-//                RxBus.getInstance().post(new ClearEvent(getLengthenTime()));
                 break;
         }
     }
@@ -170,13 +226,12 @@ public class PowerOptimizeActivity extends BaseActivity {
             @Override
             public void onAnimationEnd(final Animation animation) {
                 if (position == 0) {
-//                    Log.d("MemorySize", "clearMemory");
                     mHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             try {
                                 clearMemory(PowerOptimizeActivity.this);
-//                                showComplete();
+                                showComplete();
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -204,6 +259,16 @@ public class PowerOptimizeActivity extends BaseActivity {
     }
 
     /**
+     * 扫描完成显示结果
+     */
+    private void showComplete() {
+        llDsc.setVisibility(View.GONE);
+        llResult.setVisibility(View.VISIBLE);
+        showLengthenTime(tvFinishSaveTime);
+
+    }
+
+    /**
      * 清理内存
      */
     private void clearMemory(Context context) {
@@ -215,10 +280,10 @@ public class PowerOptimizeActivity extends BaseActivity {
     /**
      * 清理后台进程
      */
-    public static void clearMemory(Context context,List<AppInfo> appInfos){
+    public static void clearMemory(Context context, List<AppInfo> appInfos) {
         try {
             ActivityManager activityManger = (ActivityManager) context.getApplicationContext().getSystemService(Context.ACTIVITY_SERVICE);
-            for (AppInfo appInfo:appInfos) {
+            for (AppInfo appInfo : appInfos) {
                 String pkgName = appInfo.getPkgName();
                 activityManger.killBackgroundProcesses(pkgName);
             }
@@ -231,9 +296,9 @@ public class PowerOptimizeActivity extends BaseActivity {
     /**
      * 获取需要清理的应用的信息
      */
-    public static List<AppInfo> getClearAppInfo(Context context){
-        List<AppInfo> appInfoList=new ArrayList<>();
-        List<String> pkgNameList=new ArrayList<>();
+    public static List<AppInfo> getClearAppInfo(Context context) {
+        List<AppInfo> appInfoList = new ArrayList<>();
+        List<String> pkgNameList = new ArrayList<>();
         PackageManager pm = context.getApplicationContext().getPackageManager();
         ActivityManager activityManger = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
 
@@ -244,7 +309,7 @@ public class PowerOptimizeActivity extends BaseActivity {
                 continue;
             }
             Boolean isProtect = SpUtil.getBooleanData(context, pkgName, false);
-            if(isProtect){
+            if (isProtect) {
                 continue;
             }
             if (pkgNameList.contains(pkgName)) {
@@ -253,7 +318,7 @@ public class PowerOptimizeActivity extends BaseActivity {
             pkgNameList.add(pkgName);
             try {
                 ApplicationInfo info = pm.getApplicationInfo(pkgName, 0);
-                if((info.flags & ApplicationInfo.FLAG_SYSTEM) <= 0) {
+                if ((info.flags & ApplicationInfo.FLAG_SYSTEM) <= 0) {
                     String name = info.packageName; // 获得应用程序的包名
                     String appLabel = info.loadLabel(pm).toString(); // 获得应用程序的Label
                     Drawable icon = info.loadIcon(pm); // 获得应用程序图标
@@ -287,5 +352,14 @@ public class PowerOptimizeActivity extends BaseActivity {
         }
         tmp = tmp * 2;
         return tmp;
+    }
+
+    private void showLengthenTime(TextView tv) {
+        int lengthenTime = getLengthenTime();
+        int hour = lengthenTime / 60;
+        int minute = lengthenTime % 60;
+        String time = "";
+        if (hour > 0) time += hour + "小时";
+        if(tv != null) tv.setText(time + minute + "分钟");
     }
 }

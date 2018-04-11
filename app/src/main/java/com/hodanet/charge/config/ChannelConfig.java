@@ -20,7 +20,7 @@ public class ChannelConfig {
     public static boolean SPLASH;
     public static String VER;
     public static boolean JMWALL;
-    public static String NEWSSRC;
+    public static String NEWSSRC = "";
 
     public static void initChannelConfig(final Context context){
         TaskManager.getInstance().executorNewTask(new Runnable() {

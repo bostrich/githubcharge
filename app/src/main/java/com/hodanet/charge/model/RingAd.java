@@ -15,6 +15,7 @@ import com.hodanet.charge.R;
 import com.hodanet.charge.config.AppConfig;
 import com.hodanet.charge.config.ChannelConfig;
 import com.hodanet.charge.config.CustomInfo;
+import com.hodanet.charge.event.ShowSlideMenuRedDot;
 import com.hodanet.charge.greendao.GreenDaoManager;
 import com.hodanet.charge.greendao.HotRedClickTime;
 import com.hodanet.charge.greendao.gen.HotRedClickTimeDao;
@@ -26,6 +27,7 @@ import com.hodanet.charge.utils.HttpUtils;
 import com.hodanet.charge.utils.TaskManager;
 import com.hodanet.charge.utils.Tools;
 
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -97,36 +99,37 @@ public class RingAd {
                 if(list != null && list.size() > 0
                         && System.currentTimeMillis() - list.get(0).getCilckTime() < 1000 * 60 * 60 * 24 * 7){
                     viewRedDor.setVisibility(View.GONE);
+                    EventBus.getDefault().post(new ShowSlideMenuRedDot(false));
+                }else{
+                    //通知主页面显示红点
+                    EventBus.getDefault().post(new ShowSlideMenuRedDot(true));
                 }
             }catch(Exception e){
                 e.printStackTrace();
             }
 
-            viewParent.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    info.click(context);
-                    try{
-                        HotRedClickTimeDao dao = GreenDaoManager.getInstance(context).getSession().getHotRedClickTimeDao();
-                        List<HotRedClickTime> list = dao.queryBuilder().where(HotRedClickTimeDao.Properties.AdId.eq(info.getId())).build().list();
-                        if(list != null && list.size() > 0){
-                            HotRedClickTime hot = list.get(0);
-                            hot.setCilckTime(System.currentTimeMillis());
-                            dao.update(hot);
-                        }else{
-                            HotRedClickTime hot = new HotRedClickTime();
-                            hot.setAdId(info.getId());
-                            hot.setCilckTime(System.currentTimeMillis());
-                            dao.insert(hot);
-                        }
-                    }catch(Exception e){
-                        e.printStackTrace();
-                    }
-                }
-            });
-
         }else{
             viewParent.setVisibility(View.GONE);
+        }
+    }
+
+    public void click(){
+        info.click(context);
+        try{
+            HotRedClickTimeDao dao = GreenDaoManager.getInstance(context).getSession().getHotRedClickTimeDao();
+            List<HotRedClickTime> list = dao.queryBuilder().where(HotRedClickTimeDao.Properties.AdId.eq(info.getId())).build().list();
+            if(list != null && list.size() > 0){
+                HotRedClickTime hot = list.get(0);
+                hot.setCilckTime(System.currentTimeMillis());
+                dao.update(hot);
+            }else{
+                HotRedClickTime hot = new HotRedClickTime();
+                hot.setAdId(info.getId());
+                hot.setCilckTime(System.currentTimeMillis());
+                dao.insert(hot);
+            }
+        }catch(Exception e){
+            e.printStackTrace();
         }
     }
 

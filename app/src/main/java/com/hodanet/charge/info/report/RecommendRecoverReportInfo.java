@@ -7,17 +7,17 @@ import com.hodanet.charge.info.Constants;
  *
  */
 
-public class RecommendSpeedTestResultReportInfo extends BaseReportInfo {
+public class RecommendRecoverReportInfo extends BaseReportInfo {
 
-    public RecommendSpeedTestResultReportInfo(){
+    public RecommendRecoverReportInfo(){
         super();
     }
 
     @Override
     public void initParams() {
         setUmengEventId(Constants.UMENG_ID_RECOMMEND);
-        setLocation(Constants.UMENG_ID_RECOMMEND_LOCATION_SPEED_TEST_RESULT);
-        setPosition(Constants.UMENG_ID_RECOMMEND_POSITION_SPEED_TEST_RESULT);
+        setLocation(Constants.UMENG_ID_RECOMMEND_LOCATION_RECOVER);
+        setPosition(Constants.UMENG_ID_RECOMMEND_POSITION_RECOVER);
         setReportAdType(Constants.REPORT_AD_TYPE_RECOMMEND);
     }
 }

@@ -34,6 +34,8 @@
     <string name="download_girl_picture">下载</string>
 
     <string name="power_optimize">立即省电</string>
+    <string name="power_optimize_finish">优化完成</string>
+    <string name="power_optimize_finish_dsc">已延长用时</string>
 
 
 </resources>

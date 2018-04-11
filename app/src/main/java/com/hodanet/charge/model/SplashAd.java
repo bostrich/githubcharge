@@ -70,13 +70,13 @@ public class SplashAd {
                 , (int)(DeviceConfig.SCREEN_SCALE * 25));
         lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         lp.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-        lp.setMargins(0,(int)(DeviceConfig.SCREEN_SCALE * 15),(int)(DeviceConfig.SCREEN_SCALE * 15), 0);
+        lp.setMargins(0,(int)(DeviceConfig.SCREEN_SCALE * 25),(int)(DeviceConfig.SCREEN_SCALE * 25), 0);
         tv.setLayoutParams(lp);
         tv.setVisibility(View.GONE);
         tv.setGravity(Gravity.CENTER);
         tv.setTextColor(context.getResources().getColor(R.color.white));
         tv.setBackgroundResource(R.drawable.bg_logo_count);
-        tv.setText("跳过 " + 4);
+        tv.setText("跳过 " + 3);
         if(listener != null){
             tv.setOnClickListener(listener);
         }

@@ -20,8 +20,8 @@
 
         <View
             android:id="@+id/view_red_dot"
-            android:layout_width="10dp"
-            android:layout_height="10dp"
+            android:layout_width="8dp"
+            android:layout_height="8dp"
             android:layout_alignRight="@+id/img_special"
             android:layout_alignTop="@+id/img_special"
             android:layout_marginRight="-3dp"

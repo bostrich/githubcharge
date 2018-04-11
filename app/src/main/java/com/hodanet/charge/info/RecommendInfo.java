@@ -2,6 +2,13 @@ package com.hodanet.charge.info;
 
 import android.content.Context;
 
+import com.hodanet.charge.download.DownloadManager;
+import com.hodanet.charge.download.feedback.NotificationDownloadFeedback;
+import com.hodanet.charge.utils.DialogUtil;
+import com.hodanet.charge.utils.DownloadUtil;
+import com.hodanet.charge.utils.WebHelper;
+import com.hodanet.charge.utils.WebLaunchUtil;
+
 
 /**
  *
@@ -50,28 +57,28 @@ public class RecommendInfo extends BaseInfo {
 
     @Override
     public void click(final Context context) {
-//        RecommendInfo.this.report(context, Constants.Event.CLICK);
-//        if(getInfoType() == Constants.INFO_TYPE_WEB){
-//            WebLaunchUtil.launchWeb(context, RecommendInfo.this, new WebHelper.SimpleWebLoadCallBack(){
-//                @Override
-//                public void loadComplete(String url) {
-//                    RecommendInfo.this.report(context, Constants.Event.CONTENT_SHOW);
-//                }
-//            });
-//        }else if(getInfoType() == Constants.INFO_TYPE_APP){
-//            DialogUtil.showDownloadHint(context, getName(), new DialogUtil.ConfirmListener() {
-//                @Override
-//                public void confirm() {
-//                    DownloadUtil.downloadApk(context, RecommendInfo.this, DownloadManager.DOWNLOAD_STRATERY_SERVICE
-//                            , new NotificationDownloadFeedback(context));
-//                }
-//
-//                @Override
-//                public void cancle() {
-//
-//                }
-//            });
-//        }
+        RecommendInfo.this.report(context, Constants.Event.CLICK);
+        if(getInfoType() == Constants.INFO_TYPE_WEB){
+            WebLaunchUtil.launchWeb(context, RecommendInfo.this, new WebHelper.SimpleWebLoadCallBack(){
+                @Override
+                public void loadComplete(String url) {
+                    RecommendInfo.this.report(context, Constants.Event.CONTENT_SHOW);
+                }
+            });
+        }else if(getInfoType() == Constants.INFO_TYPE_APP){
+            DialogUtil.showDownloadHint(context, getName(), new DialogUtil.ConfirmListener() {
+                @Override
+                public void confirm() {
+                    DownloadUtil.downloadApk(context, RecommendInfo.this, DownloadManager.DOWNLOAD_STRATERY_SERVICE
+                            , new NotificationDownloadFeedback(context));
+                }
+
+                @Override
+                public void cancle() {
+
+                }
+            });
+        }
     }
 
 }

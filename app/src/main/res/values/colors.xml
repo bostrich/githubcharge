@@ -38,4 +38,9 @@
 
     <color name="power_optimize_time_remain">#fe846d</color>
     <color name="ignore_btn_pressed">#8852B2FF</color>
+
+    <color name="recover_battery_bg">#aecee7</color>
+    <color name="recover_battery_forground">#f12a1f</color>
+    <color name="recover_battery_80">#fe846d</color>
+    <color name="recover_battery_100">#00ff00</color>
 </resources>

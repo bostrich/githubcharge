@@ -48,8 +48,8 @@
 
             <ImageView
                 android:id="@+id/img_battery"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
+                android:layout_width="21dp"
+                android:layout_height="21dp"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="25dp"
                 android:scaleType="fitCenter"
@@ -58,12 +58,22 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="13sp"
+                android:layout_marginLeft="20dp"
                 android:layout_toRightOf="@id/img_battery"
                 android:gravity="center_vertical"
                 android:text="低电量提示"
                 android:textColor="@color/setting_tv"
-                android:textSize="15sp" />
+                android:textSize="14sp" />
+            
+            <CheckBox
+                android:id="@+id/cb_low"
+                android:button="@null"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="25dp"
+                android:background="@drawable/selector_switch"
+                android:layout_width="50dp"
+                android:layout_height="24dp" />
 
             <View
                 android:layout_width="match_parent"
@@ -83,8 +93,8 @@
 
             <ImageView
                 android:id="@+id/img_hot"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
+                android:layout_width="21dp"
+                android:layout_height="21dp"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="25dp"
                 android:scaleType="fitCenter"
@@ -93,12 +103,12 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="13sp"
+                android:layout_marginLeft="20dp"
                 android:layout_toRightOf="@id/img_hot"
                 android:gravity="center_vertical"
                 android:text="热点资讯"
                 android:textColor="@color/setting_tv"
-                android:textSize="15sp" />
+                android:textSize="14sp" />
 
             <View
                 android:layout_width="match_parent"
@@ -118,8 +128,8 @@
 
             <ImageView
                 android:id="@+id/img_about"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
+                android:layout_width="21dp"
+                android:layout_height="21dp"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="25dp"
                 android:scaleType="fitCenter"
@@ -128,12 +138,12 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="13sp"
+                android:layout_marginLeft="20dp"
                 android:layout_toRightOf="@id/img_about"
                 android:gravity="center_vertical"
                 android:text="关于我们"
                 android:textColor="@color/setting_tv"
-                android:textSize="15sp" />
+                android:textSize="14sp" />
 
             <View
                 android:layout_width="match_parent"

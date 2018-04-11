@@ -15,6 +15,7 @@ import com.hodanet.charge.R;
 import com.hodanet.charge.config.AppConfig;
 import com.hodanet.charge.config.ChannelConfig;
 import com.hodanet.charge.config.CustomInfo;
+import com.hodanet.charge.event.ShowSpecialEvent;
 import com.hodanet.charge.greendao.GreenDaoManager;
 import com.hodanet.charge.greendao.HotRedClickTime;
 import com.hodanet.charge.greendao.gen.HotRedClickTimeDao;
@@ -25,6 +26,7 @@ import com.hodanet.charge.utils.CustomUtil;
 import com.hodanet.charge.utils.HttpUtils;
 import com.hodanet.charge.utils.TaskManager;
 
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -72,6 +74,7 @@ public class DailyAd {
                             rings.add(info);
                         }
                         showView();
+                        EventBus.getDefault().post(new ShowSpecialEvent());
                         break;
                 }
             }

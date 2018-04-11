@@ -2,6 +2,7 @@ package com.hodanet.charge.activity;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -32,6 +33,8 @@ public class SettingActivity extends BaseActivity {
     ImageView imgAbout;
     @BindView(R.id.rl_about)
     RelativeLayout rlAbout;
+    @BindView(R.id.cb_low)
+    CheckBox cbLow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

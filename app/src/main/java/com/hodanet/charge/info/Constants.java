@@ -34,11 +34,13 @@ public class Constants {
     public static final String UMENG_ID_RECOMMEND_LOCATION_SLIDE_MENU = "slide_menu-";//侧滑菜单
     public static final String UMENG_ID_RECOMMEND_LOCATION_STRONG_CRACK = "strong_crack-";//强力破解
     public static final String UMENG_ID_RECOMMEND_LOCATION_COMMON_SECRET = "common_secret-";//常见密码
-    public static final String UMENG_ID_RECOMMEND_LOCATION_SPEED_TEST_RESULT = "speed_test_result-";//测速结果页面
+    public static final String UMENG_ID_RECOMMEND_LOCATION_RECOVER = "recover-";//电池修复页面
+    public static final String UMENG_ID_RECOMMEND_LOCATION_OPTIMIZE = "optimize-";//电池修复页面
     public static final int UMENG_ID_RECOMMEND_POSITION_SLIDE_MENU = 801;
     public static final int UMENG_ID_RECOMMEND_POSITION_STRONG_CRACK = 802;
     public static final int UMENG_ID_RECOMMEND_POSITION_COMMON_SECRET = 803;
-    public static final int UMENG_ID_RECOMMEND_POSITION_SPEED_TEST_RESULT = 804;
+    public static final int UMENG_ID_RECOMMEND_POSITION_RECOVER = 804;
+    public static final int UMENG_ID_RECOMMEND_POSITION_OPTIMIZE= 805;
 
     public static final String UMENG_ID_FLOAT_LOCATION_CHARGE = "charge-";//充电
     public static final String UMENG_ID_FLOAT_LOCATION_HOT= "hot-";//热点

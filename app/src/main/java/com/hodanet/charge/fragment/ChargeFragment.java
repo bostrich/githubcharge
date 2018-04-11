@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -26,6 +27,8 @@ import com.hodanet.charge.config.ChannelConfig;
 import com.hodanet.charge.config.ConsConfig;
 import com.hodanet.charge.event.BatteryChangeEvent;
 import com.hodanet.charge.event.BatteryConnectEvent;
+import com.hodanet.charge.event.ShowSlideMenuRedDot;
+import com.hodanet.charge.event.ShowSpecialEvent;
 import com.hodanet.charge.event.SlideMenuClickEvent;
 import com.hodanet.charge.info.news.BaseNewInfo;
 import com.hodanet.charge.info.news.EastNewsInfo;
@@ -36,6 +39,7 @@ import com.hodanet.charge.model.DailyAd;
 import com.hodanet.charge.model.FloatAd;
 import com.hodanet.charge.model.SpecialAd;
 import com.hodanet.charge.utils.HttpUtils;
+import com.hodanet.charge.utils.ScreenUtil;
 import com.hodanet.charge.utils.TaskManager;
 import com.hodanet.charge.view.BatteryChargeView;
 import com.hodanet.charge.view.BatteryRotateView;
@@ -94,6 +98,12 @@ public class ChargeFragment extends Fragment {
     BatteryChargeView batteryCharge;
     @BindView(R.id.tv_charge_btn)
     TextView tvChargeBtn;
+    @BindView(R.id.view_ring_dot)
+    View viewRingDot;
+    @BindView(R.id.ll_top)
+    LinearLayout llTop;
+    @BindView(R.id.ll_news)
+    LinearLayout llNews;
 
     private FloatAd floatView;
     private SpecialAd specialView;
@@ -176,6 +186,12 @@ public class ChargeFragment extends Fragment {
         rv.setHasFixedSize(true);
         rv.setNestedScrollingEnabled(false);
 
+        ViewGroup.LayoutParams layoutParams = llTop.getLayoutParams();
+        layoutParams.height = ScreenUtil.getScreenHeight(getContext()) - ScreenUtil.getStatusBarHeight(getContext())
+                -  ScreenUtil.dipTopx(getContext(), 115);
+        llTop.setLayoutParams(layoutParams);
+
+
     }
 
 
@@ -187,6 +203,7 @@ public class ChargeFragment extends Fragment {
                     case GET_NEWS_OK:
                         list.addAll((List<BaseNewInfo>) msg.obj);
                         newsAdapter.notifyDataSetChanged();
+                        if(!llNews.isShown()) llNews.setVisibility(View.VISIBLE);
                         break;
                 }
             }
@@ -282,6 +299,7 @@ public class ChargeFragment extends Fragment {
                 break;
             case BatteryManager.BATTERY_STATUS_FULL:
                 tvStatus.setText("充满电了");
+                batteryCharge.setBattery(event.getPercent(), false);
                 brv.rotate(false);
                 break;
             case BatteryManager.BATTERY_STATUS_UNKNOWN:
@@ -302,6 +320,23 @@ public class ChargeFragment extends Fragment {
             tvChargeBtn.setText("耗电优化");
             batteryCharge.setBattery(false);
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void setSlideMenuRedDot(ShowSlideMenuRedDot event) {
+        if (event.isShow()) {
+            viewRingDot.setVisibility(View.VISIBLE);
+        } else {
+            viewRingDot.setVisibility(View.GONE);
+        }
+    }
+
+    @Subscribe(threadMode =  ThreadMode.MAIN)
+    public void showSpecial(ShowSpecialEvent event){
+        ViewGroup.LayoutParams layoutParams = llTop.getLayoutParams();
+        layoutParams.height = ScreenUtil.getScreenHeight(getContext()) - ScreenUtil.getStatusBarHeight(getContext())
+                -  ScreenUtil.dipTopx(getContext(), 190);
+        llTop.setLayoutParams(layoutParams);
     }
 
 

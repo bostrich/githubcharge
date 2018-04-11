@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -25,6 +26,7 @@ import com.hodanet.charge.fragment.RecoverFragment;
 import com.hodanet.charge.info.report.RingSlideMenuInfo;
 import com.hodanet.charge.model.RingAd;
 import com.hodanet.charge.receiver.BatteryBroadcastReceiver;
+import com.hodanet.charge.utils.ToastUtil;
 import com.syezon.component.AdManager;
 
 import org.greenrobot.eventbus.EventBus;
@@ -80,6 +82,8 @@ public class MainActivity extends BaseActivity {
     private NewSurfingFragment surfingFragment;
     private FoundFragment foundFragment;
     private RingAd ring;
+
+    private long exitTime;
 
     private BatteryBroadcastReceiver receiver;
 
@@ -162,7 +166,7 @@ public class MainActivity extends BaseActivity {
     }
 
 
-    @OnClick({R.id.ll_tab_charge, R.id.ll_tab_recover, R.id.ll_tab_discovery, R.id.ll_tab_hot, R.id.fl_content_fragment, R.id.rl_setting, R.id.rl_feedback})
+    @OnClick({R.id.ll_tab_charge, R.id.ll_tab_recover, R.id.ll_tab_discovery, R.id.ll_tab_hot, R.id.fl_content_fragment, R.id.rl_setting, R.id.rl_feedback, R.id.ll_ring})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.ll_tab_charge:
@@ -179,11 +183,16 @@ public class MainActivity extends BaseActivity {
                 break;
             case R.id.fl_content_fragment:
                 break;
+            case R.id.ll_ring:
+                drawerLayout.closeDrawers();
+                if(ring != null) ring.click();
+                break;
             case R.id.rl_setting:
                 startActivity(new Intent(this, SettingActivity.class));
+                drawerLayout.closeDrawers();
                 break;
             case R.id.rl_feedback:
-
+                drawerLayout.closeDrawers();
                 break;
         }
     }
@@ -274,5 +283,19 @@ public class MainActivity extends BaseActivity {
     @Subscribe
     public void slideMenuClick(SlideMenuClickEvent event){
         drawerLayout.openDrawer(Gravity.LEFT);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
+            if ((System.currentTimeMillis() - exitTime) > 2000) {
+                ToastUtil.toast(getApplicationContext(), "再按一次退出程序.");
+                exitTime = System.currentTimeMillis();
+                return true;
+            } else {
+                return super.onKeyDown(keyCode, event);
+            }
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }

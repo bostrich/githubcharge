@@ -42,6 +42,7 @@ public class WebLaunchUtil {
         intent.putExtra("TITLE", title);
         intent.putExtra("URL", url);
         intent.putExtra("TYPE", WebQQActivity.TYPE_AD);
+        intent.putExtra("SPLASH", isBack);
         context.startActivity(intent);
     }
 

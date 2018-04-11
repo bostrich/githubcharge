@@ -31,6 +31,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.hodanet.charge.MainActivity;
 import com.hodanet.charge.R;
 import com.hodanet.charge.config.DeviceConfig;
 import com.hodanet.charge.utils.LogUtil;
@@ -68,6 +69,7 @@ public class NewsDetailActivity extends BaseActivity {
     private ImageView ad_banner_icon, ad_banner_cancel, ad_banner_content;
     private TextView ad_banner_title, ad_banner_introduce;
     private Handler mHandler;
+    private boolean backToMain;
 
     /**
      * 设置页面加载回调
@@ -83,6 +85,9 @@ public class NewsDetailActivity extends BaseActivity {
         Intent intent = getIntent();
         mTitle = intent.getStringExtra("TITLE");
         mUrl = getIntent().getStringExtra("URL");
+        if(intent.hasExtra("SPLASH")){
+            backToMain = intent.getBooleanExtra("SPLASH", false);
+        }
         initHandler();
         initView();
 
@@ -135,6 +140,9 @@ public class NewsDetailActivity extends BaseActivity {
                 if (webView != null && webView.canGoBack()) {
                     webView.goBack();
                 } else {
+                    if(backToMain){
+                        startActivity(new Intent(NewsDetailActivity.this, MainActivity.class));
+                    }
                     finish();
                 }
             }
@@ -292,6 +300,11 @@ public class NewsDetailActivity extends BaseActivity {
         try {
             if (webView != null && webView.canGoBack()) {
                 webView.goBack();
+                return true;
+            }
+            if(backToMain){//判断是否来自于开屏
+                startActivity(new Intent(this, MainActivity.class));
+                finish();
                 return true;
             }
         } catch (Exception e) {
