@@ -12,10 +12,13 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.hodanet.charge.R;
+import com.hodanet.charge.download.DownloadBean;
 import com.hodanet.charge.download.DownloadManager;
+import com.hodanet.charge.download.feedback.DownloadFeedbackImpl;
 import com.hodanet.charge.download.feedback.DownloadListener;
 import com.hodanet.charge.download.feedback.InfoDownloadFeedback;
 import com.hodanet.charge.download.feedback.NotificationDownloadFeedback;
+import com.hodanet.charge.event.DownloadEvent;
 import com.hodanet.charge.greendao.StandardInfo;
 import com.hodanet.charge.info.BaseInfo;
 import com.hodanet.charge.info.Constants;
@@ -32,6 +35,10 @@ import com.syezon.component.bean.FoundBean;
 import com.syezon.component.bean.UpdateViewInfo;
 import com.syezon.component.view.DownloadProgressButton;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -39,7 +46,7 @@ import butterknife.Unbinder;
 /**
  *
  */
-public class FoundAppFragment extends Fragment implements BaseAdapterView.AdListener, DownloadListener{
+public class FoundAppFragment extends Fragment implements BaseAdapterView.AdListener{
 
 
     @BindView(R.id.rl_content)
@@ -59,6 +66,8 @@ public class FoundAppFragment extends Fragment implements BaseAdapterView.AdList
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_found_app, container, false);
         unbinder = ButterKnife.bind(this, view);
+
+        EventBus.getDefault().register(this);
         initView();
         initHandler();
         return view;
@@ -84,13 +93,24 @@ public class FoundAppFragment extends Fragment implements BaseAdapterView.AdList
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Override
     public void click(FoundBean foundBean, View view) {
         if(view instanceof DownloadProgressButton){
-            DownloadUtil.downloadApk(getContext(), NewFoundAppInfo.convertInfo(foundBean)
-                    , DownloadManager.DOWNLOAD_STRATERY_SERVICE, new InfoDownloadFeedback(mHandler, this));
-
+            DownloadBean bean = new DownloadBean();
+            bean.setUrl(foundBean.getApkUrl());
+            bean.setAppName(foundBean.getName());
+            bean.setPkgName(foundBean.getPkgName());
+            bean.setAdId((int) (Math.random() * 1000 + 100));
+            DownloadManager.getInstance(getContext()).download(bean, DownloadManager.DOWNLOAD_STRATEGY_EVENTBUS
+                    , null);
         }else{
-            WebLaunchUtil.launchWeb(getContext(), foundBean.getName(), foundBean.getUrl(), false, false, new WebHelper.SimpleWebLoadCallBack(){
+            WebLaunchUtil.launchWeb(getContext(), foundBean.getName(), foundBean.getUrl()
+                    , foundBean.getPkgName(), foundBean.getName(), new WebHelper.SimpleWebLoadCallBack(){
                 @Override
                 public void loadComplete(String url) {
 
@@ -104,34 +124,13 @@ public class FoundAppFragment extends Fragment implements BaseAdapterView.AdList
 
     }
 
-    /**
-     * 下载监听
-     * @param pkgName
-     */
-    @Override
-    public void start(String pkgName) {
-
-    }
-
-    @Override
-    public void progress(long currentSize, long totalSize, String pkgName) {
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void setDownloadState(DownloadEvent event){
         UpdateViewInfo info = new UpdateViewInfo();
-        info.setPkgName(pkgName);
-        info.setState(DownloadProgressButton.STATE_DOWNLOADING);
-        info.setProgress((int) (currentSize * 1.0 / totalSize * 100.0));
+        info.setPkgName(event.getPkgName());
+        info.setState(event.getState());
+        info.setProgress((int) (1.0 * event.getCurrentSize() / event.getTotalSize()));
         apkAd.updateView(info);
     }
 
-    @Override
-    public void end(String pkgName, String apkPath) {
-        UpdateViewInfo info = new UpdateViewInfo();
-        info.setPkgName(pkgName);
-        info.setState(DownloadProgressButton.STATE_FINISH);
-        apkAd.updateView(info);
-    }
-
-    @Override
-    public void error(String error) {
-
-    }
 }

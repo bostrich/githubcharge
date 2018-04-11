@@ -20,7 +20,9 @@ import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.webkit.CookieSyncManager;
 import android.webkit.DownloadListener;
+import android.webkit.JavascriptInterface;
 import android.webkit.SslErrorHandler;
+import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -31,13 +33,22 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.util.Util;
 import com.hodanet.charge.MainActivity;
 import com.hodanet.charge.R;
 import com.hodanet.charge.config.DeviceConfig;
+import com.hodanet.charge.download.DownloadBean;
+import com.hodanet.charge.download.DownloadManager;
+import com.hodanet.charge.event.DownloadEvent;
 import com.hodanet.charge.utils.LogUtil;
 import com.hodanet.charge.utils.ScreenUtil;
 import com.hodanet.charge.utils.ToastUtil;
 import com.hodanet.charge.utils.WebHelper;
+import com.syezon.component.bean.UpdateViewInfo;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 
 public class NewsDetailActivity extends BaseActivity {
@@ -70,6 +81,8 @@ public class NewsDetailActivity extends BaseActivity {
     private TextView ad_banner_title, ad_banner_introduce;
     private Handler mHandler;
     private boolean backToMain;
+    private String pkgName = "";
+    private String appName = "";
 
     /**
      * 设置页面加载回调
@@ -82,11 +95,18 @@ public class NewsDetailActivity extends BaseActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news_detail);
+        EventBus.getDefault().register(this);
         Intent intent = getIntent();
         mTitle = intent.getStringExtra("TITLE");
         mUrl = getIntent().getStringExtra("URL");
         if(intent.hasExtra("SPLASH")){
             backToMain = intent.getBooleanExtra("SPLASH", false);
+        }
+        if(intent.hasExtra("PKGNAME")){
+            pkgName = intent.getStringExtra("PKGNAME");
+        }
+        if(intent.hasExtra("APPNAME")){
+            appName = intent.getStringExtra("APPNAME");
         }
         initHandler();
         initView();
@@ -166,8 +186,10 @@ public class NewsDetailActivity extends BaseActivity {
         // 设置Client
         mLayoutWeb.addView(webView, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
         webView.setWebViewClient(new MyWebViewClient());
-//        webView.setDownloadListener(new MyWebViewDownLoadListener());
+        webView.setDownloadListener(new MyWebViewDownLoadListener());
         webView.setWebChromeClient(new MyWebChromeClient());
+        webView.addJavascriptInterface(new MyJsInterface(), "android");
+
         WebSettings webSetting = webView.getSettings();
         webSetting.setCacheMode(WebSettings.LOAD_DEFAULT);
         webSetting.setJavaScriptEnabled(true);
@@ -180,6 +202,7 @@ public class NewsDetailActivity extends BaseActivity {
         webSetting.setBuiltInZoomControls(false);
         webSetting.setUseWideViewPort(true);
         webSetting.setSupportMultipleWindows(false);
+        webSetting.setJavaScriptEnabled(true);
         webSetting.setLoadWithOverviewMode(true);
         webSetting.setAppCacheEnabled(true);
         webSetting.setDatabaseEnabled(true);
@@ -322,6 +345,7 @@ public class NewsDetailActivity extends BaseActivity {
             e.printStackTrace();
         }
         super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 
 
@@ -384,43 +408,13 @@ public class NewsDetailActivity extends BaseActivity {
 
         @Override
         public void onDownloadStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength) {
-//            LogUtil.i(TAG, "userAgent: " + userAgent);
-//            LogUtil.i(TAG, "contentDisposition: " + contentDisposition);
-//            LogUtil.i(TAG, "mimetype: " + mimetype);
-//            LogUtil.i(TAG, "contentLength: " + contentLength);
-//            // 纠错
-//            if (url == null || url.equals("")) {
-//                Tools.toast(NewsDetailActivity.this, "下载地址为空");
-//                return;
-//            }
-//            // 解决相同下载被连续回调2次的错误
-//            if (mDownloadUrl != null && mDownloadUrl.equals(url)) {
-//                if (System.currentTimeMillis() - mDownloadTime < 2000) {
-//                    return;
-//                }
-//            }
-//            mDownloadUrl = url;
-//            mDownloadTime = System.currentTimeMillis();
-//            // 获取下载地址和文件名
-//            LogUtil.i(TAG, "url: " + url);
-//            String apkName = url.substring(url.lastIndexOf("/") + 1);
-//            if (apkName.contains(".apk")) {
-//                apkName = apkName.substring(0, apkName.lastIndexOf(".apk"));
-//            }
-//            LogUtil.i(TAG, "apkName: " + apkName);
-            // 启动下载服务
-            // 获取下载信息（如果不存在，则需要保存新的）
-//            try {
-//                AdInfo adInfo = new AdInfo();
-//                adInfo.apkUrl = url;
-//                adInfo.adType = Stats.ADV_TYPE_CONNECT;
-//                adInfo.appName = apkName;
-//                AdDownloadManage.startDownload(WifiEnhanceApp.getAppContext(), adInfo, Stats.ADV_TYPE_CONNECT, -1);
-//                ToastUtil.toast(activity, "正在下载！");
-//            } catch (Exception e) {
-//
-//            }
-
+            DownloadBean bean = new DownloadBean();
+            bean.setUrl(url);
+            bean.setAppName(appName);
+            bean.setPkgName(pkgName);
+            bean.setAdId((int) (Math.random() * 1000 + 100));
+            DownloadManager.getInstance(NewsDetailActivity.this).download(bean, DownloadManager.DOWNLOAD_STRATEGY_EVENTBUS
+                    , null);
         }
     }
 
@@ -446,6 +440,66 @@ public class NewsDetailActivity extends BaseActivity {
                 }
                 isSendLoadUrlOk = true;
             }
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void setDownloadState(DownloadEvent event){
+        switch(event.getState()){
+            case DownloadEvent.DOWNLOAD_PROGRESS:
+                onAppDownloading(event.getPkgName());
+                break;
+            case DownloadEvent.DOWNLOAD_FINISH:
+                onAppDownloadComplete(event.getPkgName());
+                break;
+        }
+    }
+
+    /**
+     * 将下载按钮置为下载中状态
+     */
+    private void onAppDownloading(String pkg) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            webView.evaluateJavascript("javascript:downloading('" + pkg+"')", new ValueCallback<String>() {
+                @Override
+                public void onReceiveValue(String value) {
+                    //此处为 js 返回的结果
+                    LogUtil.e("yyyyyyy", "value="+value);
+                }
+            });
+        } else {
+            webView.loadUrl("javascript:downloading('" + pkg+"')");
+        }
+    }
+
+    /**
+     * 将下载按钮置为下载完成状态
+     */
+    private void onAppDownloadComplete(String pkg) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            webView.evaluateJavascript("javascript:downloadComplete('" + pkg+"')", new ValueCallback<String>() {
+                @Override
+                public void onReceiveValue(String value) {
+                    //此处为 js 返回的结果
+                    LogUtil.e("yyyyyyy", "value="+value);
+                }
+            });
+        } else {
+            webView.loadUrl("javascript:downloadComplete('" + pkg+"')");
+        }
+    }
+
+    private class MyJsInterface {
+        @JavascriptInterface
+        public void onDownload(String pkg) {
+            LogUtil.e("yyyyyyy", "isMainThread=" + Util.isOnMainThread() + "\npkg=" + pkg);
+//            RxBus.getInstance().post(new DownloadStartEvent(pkg));
+//            runOnUiThread(new Runnable() {
+//                @Override
+//                public void run() {
+//
+//                }
+//            });
         }
     }
 }

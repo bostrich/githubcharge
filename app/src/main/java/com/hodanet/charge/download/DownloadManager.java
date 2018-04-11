@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.os.Looper;
 
 
+import com.hodanet.charge.download.downloadUnit.DownloadEventbus;
 import com.hodanet.charge.download.downloadUnit.DownloadImpl;
 import com.hodanet.charge.download.downloadUnit.DownloadInApplication;
 import com.hodanet.charge.download.feedback.DownloadFeedbackImpl;
@@ -23,6 +24,7 @@ public class DownloadManager {
 
     public static final int DOWNLOAD_STRATEGY_IN_APPLICATION = 1;
     public static final int DOWNLOAD_STRATERY_SERVICE = 2;
+    public static final int DOWNLOAD_STRATEGY_EVENTBUS = 3;
     public static final int EXIT_STRATEGY_DESTROY = 0;
     public static final int EXIT_STRATEGY_KEEP = 1;
 
@@ -75,8 +77,12 @@ public class DownloadManager {
                     map.put(bean.getUrl(), unit);
                     TaskManager.getInstance().executorNewTask(unit);
                 }
-
                 break;
+            case DOWNLOAD_STRATEGY_EVENTBUS:
+                DownloadEventbus unit = new DownloadEventbus(context, bean);
+                TaskManager.getInstance().executorNewTask(unit);
+                break;
+
             default:
                 break;
         }
