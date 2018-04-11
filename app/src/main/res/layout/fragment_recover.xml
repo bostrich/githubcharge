@@ -24,214 +24,267 @@
 
     </RelativeLayout>
 
-    <LinearLayout
-        android:orientation="vertical"
+
+    <ScrollView
         android:layout_below="@id/rl_title"
+        android:scrollbars="none"
         android:layout_width="match_parent"
-        android:background="@mipmap/recover_bg_top"
-        android:gravity="center_horizontal"
-        android:layout_height="400dp">
-
-        <RelativeLayout
-            android:layout_marginTop="28dp"
-            android:layout_width="185dp"
-            android:layout_height="185dp">
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@mipmap/charge_bg_circle"/>
-
-
-            <LinearLayout
-                android:layout_centerInParent="true"
-                android:orientation="vertical"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-                
-                <ImageView
-                    android:layout_marginTop="30dp"
-                    android:layout_width="109dp"
-                    android:layout_height="56dp"
-                    android:src="@mipmap/recover_battery"/>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:gravity="center"
-                    android:layout_marginTop="5dp"
-                    android:layout_height="wrap_content"
-                    android:textColor="@android:color/holo_red_dark"
-                    android:textSize="25sp"
-                    android:text="30"/>
-
-            </LinearLayout>
-
-        </RelativeLayout>
-
-        <TextView
-            android:id="@+id/tv_charge_btn"
-            android:layout_marginTop="20dp"
-            android:textColor="@color/charge_btn"
-            android:textSize="20sp"
-            android:layout_width="185dp"
-            android:layout_height="48dp"
-            android:text="@string/recover_optimize"
-            android:gravity="center"
-            android:background="@drawable/charge_btn_n"/>
-
+        android:layout_height="match_parent">
 
         <LinearLayout
-            android:orientation="horizontal"
-            android:layout_marginTop="20dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
+            android:orientation="vertical"
+            android:background="@mipmap/recover_bg_top"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
 
             <LinearLayout
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:gravity="center_horizontal"
+                android:id="@+id/ll_content"
                 android:orientation="vertical"
-                android:layout_height="wrap_content">
+                android:layout_width="match_parent"
+                android:gravity="center_horizontal"
+                android:layout_height="400dp">
 
-                <TextView
+                <View
                     android:layout_width="match_parent"
-                    android:gravity="center"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/charge_remain"
-                    android:text="@string/recover_energy"
-                    android:textSize="18sp"/>
-                
-                <RelativeLayout
-                    android:layout_width="57dp"
-                    android:layout_height="57dp">
+                    android:layout_height="0dp"
+                    android:layout_weight="1"/>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:textColor="@color/charge_remain"
-                        android:textSize="16sp"
-                        android:text="85%"/>
+                <RelativeLayout
+                    android:layout_marginTop="28dp"
+                    android:layout_width="185dp"
+                    android:layout_height="185dp">
 
                     <ImageView
-                        android:padding="3dp"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:src="@mipmap/recover_circle"/>
+                        android:src="@mipmap/charge_bg_circle"/>
+
+
+                    <LinearLayout
+                        android:layout_centerInParent="true"
+                        android:orientation="vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:layout_marginTop="30dp"
+                            android:layout_width="109dp"
+                            android:layout_height="56dp"
+                            android:src="@mipmap/recover_battery"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:gravity="center"
+                            android:layout_marginTop="5dp"
+                            android:layout_height="wrap_content"
+                            android:textColor="@android:color/holo_red_dark"
+                            android:textSize="25sp"
+                            android:text="30"/>
+
+                    </LinearLayout>
+
                 </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"/>
+
+                <TextView
+                    android:id="@+id/tv_charge_btn"
+                    android:layout_marginTop="10dp"
+                    android:textColor="@color/charge_btn"
+                    android:textSize="20sp"
+                    android:layout_width="185dp"
+                    android:layout_height="48dp"
+                    android:text="@string/recover_optimize"
+                    android:gravity="center"
+                    android:background="@drawable/charge_btn_n"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"/>
+
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:gravity="center"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/charge_remain"
+                            android:text="@string/recover_energy"
+                            android:textSize="18sp"/>
+
+                        <RelativeLayout
+                            android:layout_width="57dp"
+                            android:layout_height="57dp">
+
+                            <TextView
+                                android:id="@+id/tv_percent"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"
+                                android:textColor="@color/charge_remain"
+                                android:textSize="16sp"
+                                android:text="85%"/>
+
+                            <ImageView
+                                android:padding="3dp"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:src="@mipmap/recover_circle"/>
+                        </RelativeLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:gravity="center"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/charge_remain"
+                            android:text="@string/recover_tem"
+                            android:textSize="18sp"/>
+
+                        <RelativeLayout
+                            android:layout_width="57dp"
+                            android:layout_height="57dp">
+
+                            <TextView
+                                android:id="@+id/tv_temp"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"
+                                android:textColor="@color/charge_remain"
+                                android:textSize="16sp"
+                                android:text="32.6"/>
+
+                            <ImageView
+                                android:padding="3dp"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:src="@mipmap/recover_circle"/>
+                        </RelativeLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:gravity="center"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/charge_remain"
+                            android:text="@string/recover_voltage"
+                            android:textSize="18sp"/>
+
+                        <RelativeLayout
+                            android:layout_width="57dp"
+                            android:layout_height="57dp">
+
+                            <TextView
+                                android:id="@+id/tv_voltage"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"
+                                android:textColor="@color/charge_remain"
+                                android:textSize="16sp"
+                                android:text="4.2V"/>
+
+                            <ImageView
+                                android:padding="3dp"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:src="@mipmap/recover_circle"/>
+                        </RelativeLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:gravity="center"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/charge_remain"
+                            android:text="@string/recover_status"
+                            android:textSize="18sp"/>
+
+                        <RelativeLayout
+                            android:layout_width="57dp"
+                            android:layout_height="57dp">
+
+                            <TextView
+                                android:id="@+id/tv_status"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"
+                                android:textColor="@color/charge_remain"
+                                android:textSize="16sp"
+                                android:text="优"/>
+
+                            <ImageView
+                                android:padding="3dp"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:src="@mipmap/recover_circle"/>
+                        </RelativeLayout>
+
+                    </LinearLayout>
+
+
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="2"/>
+
+
+
 
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:gravity="center_horizontal"
-                android:orientation="vertical"
-                android:layout_height="wrap_content">
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:gravity="center"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/charge_remain"
-                    android:text="@string/recover_tem"
-                    android:textSize="18sp"/>
-
-                <RelativeLayout
-                    android:layout_width="57dp"
-                    android:layout_height="57dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:textColor="@color/charge_remain"
-                        android:textSize="16sp"
-                        android:text="32.6"/>
-
-                    <ImageView
-                        android:padding="3dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:src="@mipmap/recover_circle"/>
-                </RelativeLayout>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:gravity="center_horizontal"
-                android:orientation="vertical"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:gravity="center"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/charge_remain"
-                    android:text="@string/recover_voltage"
-                    android:textSize="18sp"/>
-
-                <RelativeLayout
-                    android:layout_width="57dp"
-                    android:layout_height="57dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:textColor="@color/charge_remain"
-                        android:textSize="16sp"
-                        android:text="4.2V"/>
-
-                    <ImageView
-                        android:padding="3dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:src="@mipmap/recover_circle"/>
-                </RelativeLayout>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:gravity="center_horizontal"
-                android:orientation="vertical"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:gravity="center"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/charge_remain"
-                    android:text="@string/recover_status"
-                    android:textSize="18sp"/>
-
-                <RelativeLayout
-                    android:layout_width="57dp"
-                    android:layout_height="57dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:textColor="@color/charge_remain"
-                        android:textSize="16sp"
-                        android:text="优"/>
-
-                    <ImageView
-                        android:padding="3dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:src="@mipmap/recover_circle"/>
-                </RelativeLayout>
-
-            </LinearLayout>
+            <RelativeLayout
+                android:id="@+id/rl_recommend"
+                android:layout_width="match_parent"
+                android:visibility="gone"
+                android:layout_height="100dp"/>
 
 
 
@@ -240,7 +293,13 @@
 
 
 
-    </LinearLayout>
+
+
+
+
+    </ScrollView>
+
+
 
 
 
