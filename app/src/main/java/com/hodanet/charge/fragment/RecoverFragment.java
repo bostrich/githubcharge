@@ -146,22 +146,22 @@ public class RecoverFragment extends Fragment {
         llContent.setLayoutParams(layoutParams);
 
         Animation animation_percent = AnimationUtils.loadAnimation(getContext(), R.anim.anim_rotate);
-        animation_percent.setDuration(1000);
+        animation_percent.setDuration(5000);
         animation_percent.setInterpolator(new LinearInterpolator());
         imgCirclePercent.startAnimation(animation_percent);
 
         Animation animation_temp = AnimationUtils.loadAnimation(getContext(), R.anim.anim_rotate);
-        animation_temp.setDuration(1200);
+        animation_temp.setDuration(5300);
         animation_temp.setInterpolator(new LinearInterpolator());
         imgCircleTemp.startAnimation(animation_temp);
 
         Animation animation_voltage = AnimationUtils.loadAnimation(getContext(), R.anim.anim_rotate);
-        animation_voltage.setDuration(1500);
+        animation_voltage.setDuration(5500);
         animation_voltage.setInterpolator(new LinearInterpolator());
         imgCircleVoltage.startAnimation(animation_voltage);
 
         Animation animation_status = AnimationUtils.loadAnimation(getContext(), R.anim.anim_rotate);
-        animation_status.setDuration(1800);
+        animation_status.setDuration(5150);
         animation_status.setInterpolator(new LinearInterpolator());
         imgCircleStatus.startAnimation(animation_status);
 
