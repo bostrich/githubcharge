@@ -1,5 +1,12 @@
 package com.hodanet.charge.info;
 
+import android.content.Context;
+import android.os.BatteryManager;
+
+import com.hodanet.charge.utils.SpUtil;
+
+import org.json.JSONObject;
+
 /**
  *
  */
@@ -16,6 +23,53 @@ public class BatteryStatus {
     private boolean isAccelerate;
     private int connectType;
     private long chargeTime;
+    private int randomTime;
+
+
+    public BatteryStatus() {
+        randomTime = (int) (Math.random() * 30);
+    }
+
+    public int getBatteryAccelerateTime(){
+        return (int) (0.2 * getChargeRemainTime());
+    }
+
+    public int getBatteryRemainTime(Context context){
+        //优化后2小时内进入都显示以优化
+        int saveTime = 0;
+        try {
+            String result = SpUtil.getStringData(context, SpUtil.OPTIMIZE_DATA, "");
+            JSONObject obj = new JSONObject(result);
+            long time = obj.optLong("time");
+
+            if(System.currentTimeMillis() - time < 1000 * 60 * 60 *2){
+                saveTime = (int) (obj.optInt("saveTime") * (System.currentTimeMillis() - time) / (1000.0 *60 * 60 * 2));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return (int) ((60 * 15 + 9 * randomTime) * powerPercent / 100.0) + saveTime ;
+    }
+
+    public int getChargeRemainTime(){
+        int time = 0;
+        switch(getConnectType()){
+            case BatteryManager.BATTERY_PLUGGED_AC:
+                time = (int) ((120 + randomTime) * (100 - powerPercent) / 100.0);
+                break;
+            case BatteryManager.BATTERY_PLUGGED_USB:
+                time = (int) ((240 + randomTime) * (100 - powerPercent) / 100.0);
+                break;
+            case BatteryManager.BATTERY_PLUGGED_WIRELESS:
+                time = (int) ((180 + randomTime) * (100 - powerPercent) / 100.0);
+                break;
+            default:
+                time = (int) ((180 + randomTime) * (100 - powerPercent) / 100.0);
+                break;
+        }
+
+        return time;
+    }
 
 
     public int getConnectType() {

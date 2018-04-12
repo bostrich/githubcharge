@@ -324,45 +324,39 @@ public class ChargeFragment extends Fragment {
         if(batteryStatus.isCharging()){
             if(batteryStatus.getPowerPercent() == 100){
                 batteryCharge.setBatteryCharging(false);
-                tvStatus.setText("电已充满");
+                tvStatus.setText("电已充满,预估可用时间");
+                int time = batteryStatus.getBatteryRemainTime(getContext());
+                tvHour.setText(time / 60 + "");
+                tvMinute.setText(time % 60 + "");
                 brv.rotate(false);
                 return;
             }
             if(batteryStatus.isAccelerate()){
                 tvChargeBtn.setText("快速充电中...");
+                tvStatus.setText("快速充电中，预估节约时间");
                 tvChargeBtn.setEnabled(false);
                 batteryCharge.setBatteryChargeAccelerate();
+                int time = batteryStatus.getBatteryAccelerateTime();
+                tvHour.setText(time / 60 + "");
+                tvMinute.setText(time % 60 + "");
             }else{
                 tvStatus.setText("正在充电,预估时间");
                 tvChargeBtn.setText("开启充电加速");
                 tvChargeBtn.setEnabled(true);
                 batteryCharge.setBatteryCharging(true);
                 //计算充电时间
-                int mimute = (int) (Math.random() * 60);
-                switch(batteryStatus.getConnectType()){
-                    case BatteryManager.BATTERY_PLUGGED_AC:
-                        tvHour.setText((90 + mimute) / 60  + "");
-                        tvMinute.setText((90 + mimute) % 60  + "");
-                        break;
-                    case BatteryManager.BATTERY_PLUGGED_USB:
-                        tvHour.setText((150 + mimute) / 60  + "");
-                        tvMinute.setText((150 + mimute) % 60  + "");
-                        break;
-                    case BatteryManager.BATTERY_PLUGGED_WIRELESS:
-                        tvHour.setText((120 + mimute) / 60  + "");
-                        tvMinute.setText((120 + mimute) % 60  + "");
-                        break;
-                    default:
-                        tvHour.setText((120 + mimute) / 60  + "");
-                        tvMinute.setText((120 + mimute) % 60  + "");
-                        break;
-                }
+                int time = batteryStatus.getChargeRemainTime();
+                tvHour.setText(time / 60 + "");
+                tvMinute.setText(time % 60 + "");
             }
             brv.rotate(false);
         }else{
             brv.rotate(true);
-            tvStatus.setText("正在耗电");
+            tvStatus.setText("正在耗电，预估可用时间");
             tvChargeBtn.setText("耗电优化");
+            int time = batteryStatus.getBatteryRemainTime(getContext());
+            tvHour.setText(time / 60 + "");
+            tvMinute.setText(time % 60 + "");
             batteryCharge.setBatteryCharging(false);
             tvChargeBtn.setEnabled(true);
         }

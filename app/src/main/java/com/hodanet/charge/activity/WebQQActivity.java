@@ -144,11 +144,6 @@ public class WebQQActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_web);
 
-        //透明状态栏
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        }
-
         Intent intent = getIntent();
         mType = intent.getIntExtra("TYPE", TYPE_NORMAL);
         mTitle = intent.getStringExtra("TITLE");

@@ -110,6 +110,8 @@ public class ParseUtil {
             info.date = bean.optString("date");
             info.pk = bean.optString("rowkey");
             info.name = bean.optString("topic");
+            info.type = Constants.NEWS_SOURCE_DF;
+            info.clickUrl = bean.optString("url");
 
             JSONArray imgs = bean.optJSONArray("miniimg02");
             List<String> imgPaths = new ArrayList<>();

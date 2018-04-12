@@ -67,6 +67,7 @@ public class Constants {
     public static final int NEWS_SOURCE_COMPANION = 6;
     public static final int NEWS_SOURCE_KAIJIA = 7;
     public static final int NEWS_SOURCE_TT = 8;
+    public static final int NEWS_SOURCE_DF = 9;
 
     //新闻接口访问来源
     public static final int NEWS_GET_SOURCE_COMPANION = 3;
