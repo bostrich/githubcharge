@@ -26,6 +26,7 @@ import com.hodanet.charge.fragment.RecoverFragment;
 import com.hodanet.charge.info.report.RingSlideMenuInfo;
 import com.hodanet.charge.model.RingAd;
 import com.hodanet.charge.receiver.BatteryBroadcastReceiver;
+import com.hodanet.charge.utils.SpUtil;
 import com.hodanet.charge.utils.ToastUtil;
 import com.syezon.component.AdManager;
 
@@ -110,6 +111,12 @@ public class MainActivity extends BaseActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        if(chargeFragment != null && chargeFragment.isVisible()) chargeFragment.changeTab();
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
@@ -163,6 +170,11 @@ public class MainActivity extends BaseActivity {
             }
         });
         setTab(R.id.ll_tab_charge);
+
+        long clickTime = SpUtil.getLongData(this, SpUtil.DISCOVERY_CLICK_TIME, 0);
+        if(System.currentTimeMillis() - clickTime < 1000 * 60 * 60 * 24){
+            vDotDiscovery.setVisibility(View.GONE);
+        }
     }
 
 
@@ -177,6 +189,8 @@ public class MainActivity extends BaseActivity {
                 break;
             case R.id.ll_tab_discovery:
                 tabClick(view.getId());
+                vDotDiscovery.setVisibility(View.GONE);
+                SpUtil.saveLongData(this, SpUtil.DISCOVERY_CLICK_TIME, System.currentTimeMillis());
                 break;
             case R.id.ll_tab_hot:
                 tabClick(view.getId());
