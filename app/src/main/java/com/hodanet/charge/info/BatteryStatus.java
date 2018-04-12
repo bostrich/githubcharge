@@ -3,9 +3,13 @@ package com.hodanet.charge.info;
 import android.content.Context;
 import android.os.BatteryManager;
 
+import com.hodanet.charge.utils.LogUtil;
 import com.hodanet.charge.utils.SpUtil;
+import com.hodanet.charge.utils.ToastUtil;
 
 import org.json.JSONObject;
+
+import static com.bumptech.glide.gifdecoder.GifHeaderParser.TAG;
 
 /**
  *
@@ -43,7 +47,7 @@ public class BatteryStatus {
             long time = obj.optLong("time");
 
             if(System.currentTimeMillis() - time < 1000 * 60 * 60 *2){
-                saveTime = (int) (obj.optInt("saveTime") * (System.currentTimeMillis() - time) / (1000.0 *60 * 60 * 2));
+                saveTime = (int) (obj.optInt("saveTime") * (1 - (System.currentTimeMillis() - time) / (1000.0 *60 * 60 * 2)));
             }
         } catch (Exception e) {
             e.printStackTrace();
