@@ -46,10 +46,10 @@ public class AboutActivity extends BaseActivity {
     }
 
 
-    @OnClick({R.id.img_back, R.id.img_icon})
+    @OnClick({R.id.rl_back, R.id.img_icon})
     public void onViewClicked(View view) {
         switch (view.getId()) {
-            case R.id.img_back:
+            case R.id.rl_back:
                 finish();
                 break;
             case R.id.img_icon:

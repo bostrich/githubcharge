@@ -40,6 +40,7 @@ import com.hodanet.charge.model.DailyAd;
 import com.hodanet.charge.model.FloatAd;
 import com.hodanet.charge.model.SpecialAd;
 import com.hodanet.charge.utils.HttpUtils;
+import com.hodanet.charge.utils.LogUtil;
 import com.hodanet.charge.utils.ScreenUtil;
 import com.hodanet.charge.utils.TaskManager;
 import com.hodanet.charge.view.BatteryChargeView;
@@ -106,6 +107,8 @@ public class ChargeFragment extends Fragment {
     LinearLayout llTop;
     @BindView(R.id.ll_news)
     LinearLayout llNews;
+    @BindView(R.id.rl_slide_menu)
+    RelativeLayout rlSlideMenu;
 
     private FloatAd floatView;
     private SpecialAd specialView;
@@ -269,10 +272,10 @@ public class ChargeFragment extends Fragment {
         if (dailyView != null) dailyView.showView();
     }
 
-    @OnClick({R.id.img_slide_menu, R.id.tv_title})
+    @OnClick({R.id.rl_slide_menu, R.id.tv_title})
     public void onViewClicked(View view) {
         switch (view.getId()) {
-            case R.id.img_slide_menu:
+            case R.id.rl_slide_menu:
                 EventBus.getDefault().post(new SlideMenuClickEvent());
                 break;
             case R.id.tv_title:
@@ -310,6 +313,7 @@ public class ChargeFragment extends Fragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void connectedChange(BatteryConnectEvent event) {
         batteryStatus.setCharging(event.isConnected());
+        batteryStatus.setConnectType(event.getConncectType());
         refreshBatteryView();
     }
 
@@ -329,10 +333,30 @@ public class ChargeFragment extends Fragment {
                 tvChargeBtn.setEnabled(false);
                 batteryCharge.setBatteryChargeAccelerate();
             }else{
-                tvStatus.setText("正在充电");
+                tvStatus.setText("正在充电,预估时间");
                 tvChargeBtn.setText("开启充电加速");
                 tvChargeBtn.setEnabled(true);
                 batteryCharge.setBatteryCharging(true);
+                //计算充电时间
+                int mimute = (int) (Math.random() * 60);
+                switch(batteryStatus.getConnectType()){
+                    case BatteryManager.BATTERY_PLUGGED_AC:
+                        tvHour.setText((90 + mimute) / 60  + "");
+                        tvMinute.setText((90 + mimute) % 60  + "");
+                        break;
+                    case BatteryManager.BATTERY_PLUGGED_USB:
+                        tvHour.setText((150 + mimute) / 60  + "");
+                        tvMinute.setText((150 + mimute) % 60  + "");
+                        break;
+                    case BatteryManager.BATTERY_PLUGGED_WIRELESS:
+                        tvHour.setText((120 + mimute) / 60  + "");
+                        tvMinute.setText((120 + mimute) % 60  + "");
+                        break;
+                    default:
+                        tvHour.setText((120 + mimute) / 60  + "");
+                        tvMinute.setText((120 + mimute) % 60  + "");
+                        break;
+                }
             }
             brv.rotate(false);
         }else{
@@ -368,7 +392,6 @@ public class ChargeFragment extends Fragment {
             //设置充电加速
             batteryStatus.setAccelerate(true);
             refreshBatteryView();
-            startActivity(new Intent(getContext(), PowerOptimizeActivity.class));
         }else{
             startActivity(new Intent(getContext(), PowerOptimizeActivity.class));
         }

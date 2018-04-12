@@ -104,7 +104,7 @@ public class BatteryBroadcastReceiver extends BroadcastReceiver{
                     default:
                         break;
                 }
-                EventBus.getDefault().post(new BatteryConnectEvent(true));
+                EventBus.getDefault().post(new BatteryConnectEvent(true, plugged));
                 break;
             case Intent.ACTION_POWER_DISCONNECTED:
                 LogUtil.d("BatteryState", "ACTION_POWER_DISCONNECTED");

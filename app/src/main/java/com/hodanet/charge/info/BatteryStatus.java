@@ -14,7 +14,26 @@ public class BatteryStatus {
     private int status;
     private boolean isCharging;
     private boolean isAccelerate;
+    private int connectType;
+    private long chargeTime;
 
+
+    public int getConnectType() {
+        return connectType;
+    }
+
+    public void setConnectType(int connectType) {
+        this.connectType = connectType;
+    }
+
+
+    public long getChargeTime() {
+        return chargeTime;
+    }
+
+    public void setChargeTime(long chargeTime) {
+        this.chargeTime = chargeTime;
+    }
 
     public int getPowerPercent() {
         return powerPercent;

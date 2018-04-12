@@ -44,10 +44,10 @@ public class SettingActivity extends BaseActivity {
         ButterKnife.bind(this);
     }
 
-    @OnClick({R.id.img_back, R.id.rl_hot, R.id.rl_about})
+    @OnClick({R.id.rl_back, R.id.rl_hot, R.id.rl_about})
     public void onViewClicked(View view) {
         switch (view.getId()) {
-            case R.id.img_back:
+            case R.id.rl_back:
                 finish();
                 break;
             case R.id.rl_hot:
