@@ -25,6 +25,8 @@ import java.util.TimerTask;
 public class BatteryChargeView extends View {
 
     private static final String TAG = BatteryChargeView.class.getName();
+    private static final int NORMAL_CHARGE_INTEVAL = 1000;
+    private static final int CHARGE_ACCELERATE_INTEVAL = 600;
 
     private int centerWidth;
     private int centerHeight;
@@ -34,6 +36,7 @@ public class BatteryChargeView extends View {
     private int percent;//电量百分比
     private int fakePercent;//充电时的假电量
     private boolean isCharging;//判断是否在充电
+    private boolean isAccelerate;//判断是否在加速充电
     private RectF rectF;
     private TimerTask task;
     private Timer timer;
@@ -151,62 +154,68 @@ public class BatteryChargeView extends View {
 
     }
 
-    public void setBattery(int percent, boolean isCharging){
+    public void setBatteryPercent(int percent){
         this.percent = percent;
-        if(!isCharging){
-            invalidate();
-            if(timer != null){
-                timer.cancel();
-                timer = null;
-                task.cancel();
-                task = null;
-            }
-            this.isCharging = isCharging;
-        }else{
-            LogUtil.e(TAG, "进行动画");
-            if(!this.isCharging){//防止重复进入
-                this.isCharging = isCharging;
-                fakePercent = percent;
-                timer = new Timer();
-                task = new TimerTask() {
-                    @Override
-                    public void run() {
-                        postInvalidate();
-                    }
-                };
-                timer.scheduleAtFixedRate(task, 0, 1000L);
-            }
-        }
+        invalidate();
     }
 
-    public void setBattery(boolean isCharging){
-        if(!isCharging){
-            LogUtil.e(TAG, "停止动画");
-            invalidate();
-            if(timer != null){
-                timer.cancel();
-                timer = null;
-                task.cancel();
-                task = null;
+    public void setBatteryChargeAccelerate(){
+        if(!isAccelerate){
+            isAccelerate = true;
+            if(isCharging){
+                if(timer != null){
+                    timer.cancel();
+                    timer = null;
+                }
+                if(task != null){
+                    task.cancel();
+                    task = null;
+                }
             }
-            this.isCharging = isCharging;
-        }else{
-            LogUtil.e(TAG, "进行动画");
-            if(!this.isCharging){//防止重复进入
-                this.isCharging = isCharging;
-                fakePercent = percent;
-                timer = new Timer();
-                task = new TimerTask() {
-                    @Override
-                    public void run() {
-                        postInvalidate();
-                    }
-                };
-                timer.scheduleAtFixedRate(task, 0, 1000L);
-            }
+
+            timer = new Timer();
+            task = new TimerTask() {
+                @Override
+                public void run() {
+                    postInvalidate();
+                }
+            };
+            timer.scheduleAtFixedRate(task, 0, CHARGE_ACCELERATE_INTEVAL);
         }
     }
 
 
+    public void setBatteryCharging(boolean charging){
+        if(charging){
+           if(!isCharging){
+               isCharging = charging;
+               if(timer != null){
+                   timer.cancel();
+                   timer = null;
+                   task.cancel();
+                   task = null;
+               }
+               task = new TimerTask() {
+                   @Override
+                   public void run() {
+                       postInvalidate();
+                   }
+               };
+               timer = new Timer();
+               timer.scheduleAtFixedRate(task, 0, NORMAL_CHARGE_INTEVAL);
+           }
+        }else{
+            isCharging = false;
+            isAccelerate = false;
+            if(timer != null){
+                timer.cancel();
+                timer = null;
+            }
+            if(task != null){
+                task.cancel();
+                task = null;
+            }
+        }
+    }
 
 }

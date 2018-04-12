@@ -7,6 +7,10 @@ import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.RotateAnimation;
+import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -32,6 +36,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  *
@@ -40,6 +46,7 @@ import java.util.List;
 public class FloatAd {
 
     private static final int GET_INFOS_OK = 1;
+    private static final int ANIMATION = 2;
     private Handler mHandler;
     private FloatInfo info;
     private ImageView imgFloat;
@@ -49,6 +56,9 @@ public class FloatAd {
     private List<FloatInfo> rings = new ArrayList<>();
     private int position;
 
+    private AnimationSet animationSet;
+    private Timer timer;
+    private TimerTask task;
 
     public FloatAd(Builder builder){
         this.context = builder.context;
@@ -73,6 +83,11 @@ public class FloatAd {
                         }
                         showView();
                         break;
+                    case ANIMATION:
+                        if (viewParent.isShown() && animationSet != null) {
+                            viewParent.startAnimation(animationSet);
+                        }
+                        break;
                 }
             }
         };
@@ -85,6 +100,33 @@ public class FloatAd {
         View view = LayoutInflater.from(context).inflate(R.layout.item_float, null);
         imgFloat = (ImageView) view.findViewById(R.id.img_float);
         viewParent.addView(view);
+        initAnimation();
+    }
+
+    private void initAnimation() {
+        //由小变大
+        Animation scaleAnim = new ScaleAnimation(0.8f, 1.1f, 0.8f, 1.1f);
+        //从左向右
+        Animation rotateAnim = new RotateAnimation(-10f, 10f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+
+        scaleAnim.setDuration(1000);
+        rotateAnim.setDuration(1000 / 10);
+        rotateAnim.setRepeatMode(Animation.REVERSE);
+        rotateAnim.setRepeatCount(30);
+
+        animationSet = new AnimationSet(false);
+        animationSet.addAnimation(scaleAnim);
+        animationSet.addAnimation(rotateAnim);
+
+        timer = new Timer();
+        task = new TimerTask() {
+            @Override
+            public void run() {
+                if(mHandler != null) mHandler.sendEmptyMessage(ANIMATION);
+            }
+        };
+        timer.scheduleAtFixedRate(task, 2000, 8000);
+
     }
 
     private void initData() {
@@ -185,8 +227,15 @@ public class FloatAd {
         if(mHandler != null) mHandler.removeCallbacksAndMessages(null);
         viewParent.removeAllViews();
         viewParent.setVisibility(View.GONE);
+        if(timer != null){
+            timer.cancel();
+            timer = null;
+        }
+        if(task != null){
+            task.cancel();
+            timer = null;
+        }
     }
-
 
     public static final class Builder {
         private Context context;

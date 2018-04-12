@@ -20,6 +20,7 @@ public class AppConfig {
     public static String IMEI;
     public static String PACKAGE_NAME;
     public static int VERSION_CODE;
+    public static String VERSION_NAME = "";
     public static int USER_TYPE;
 
     public static void getAppConfig(Context context){
@@ -44,6 +45,7 @@ public class AppConfig {
             try {
                 pi = pm.getPackageInfo(PACKAGE_NAME, 0);
                 VERSION_CODE = pi.versionCode;
+                VERSION_NAME = pi.versionName;
             } catch (Exception e) {
 
             }

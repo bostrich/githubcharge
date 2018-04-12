@@ -46,13 +46,14 @@ public class WebLaunchUtil {
         context.startActivity(intent);
     }
 
-    public static void launchWeb(Context context, String title, String url, String pkgName, String appName,WebHelper.WebLoadCallBack callBack) {
+    public static void launchWeb(Context context, String title, String url, String pkgName, String appName, String apkUrl,WebHelper.WebLoadCallBack callBack) {
         NewsDetailActivity.setWebLoadCallBack(callBack);
         Intent intent = new Intent(context, NewsDetailActivity.class);
         intent.putExtra("TITLE", title);
         intent.putExtra("URL", url);
         intent.putExtra("PKGNAME", pkgName);
         intent.putExtra("APPNAME", appName);
+        intent.putExtra("APKURL", apkUrl);
         context.startActivity(intent);
     }
 

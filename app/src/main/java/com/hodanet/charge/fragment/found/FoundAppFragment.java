@@ -101,16 +101,23 @@ public class FoundAppFragment extends Fragment implements BaseAdapterView.AdList
     @Override
     public void click(FoundBean foundBean, View view) {
         if(view instanceof DownloadProgressButton){
-            DownloadBean bean = new DownloadBean();
-            bean.setUrl(foundBean.getApkUrl());
-            bean.setAppName(foundBean.getName());
-            bean.setPkgName(foundBean.getPkgName());
-            bean.setAdId((int) (Math.random() * 1000 + 100));
-            DownloadManager.getInstance(getContext()).download(bean, DownloadManager.DOWNLOAD_STRATEGY_EVENTBUS
-                    , null);
+            if(DownloadUtil.checkInstall(getContext(), foundBean.getPkgName())){
+                DownloadUtil.openApp(getContext(), foundBean.getPkgName());
+            }else if(DownloadUtil.checkDownLoad(getContext(), foundBean.getName())){
+                DownloadUtil.installApk(getContext(), foundBean.getName());
+            }else{
+                DownloadBean bean = new DownloadBean();
+                bean.setUrl(foundBean.getApkUrl());
+                bean.setAppName(foundBean.getName());
+                bean.setPkgName(foundBean.getPkgName());
+                bean.setAdId((int) (Math.random() * 1000 + 100));
+                DownloadManager.getInstance(getContext()).download(bean, DownloadManager.DOWNLOAD_STRATEGY_EVENTBUS
+                        , null);
+            }
+
         }else{
             WebLaunchUtil.launchWeb(getContext(), foundBean.getName(), foundBean.getUrl()
-                    , foundBean.getPkgName(), foundBean.getName(), new WebHelper.SimpleWebLoadCallBack(){
+                    , foundBean.getPkgName(), foundBean.getName(),foundBean.getApkUrl(), new WebHelper.SimpleWebLoadCallBack(){
                 @Override
                 public void loadComplete(String url) {
 
@@ -129,7 +136,7 @@ public class FoundAppFragment extends Fragment implements BaseAdapterView.AdList
         UpdateViewInfo info = new UpdateViewInfo();
         info.setPkgName(event.getPkgName());
         info.setState(event.getState());
-        info.setProgress((int) (1.0 * event.getCurrentSize() / event.getTotalSize()));
+        info.setProgress((int) (100.0 * event.getCurrentSize() / event.getTotalSize()));
         apkAd.updateView(info);
     }
 

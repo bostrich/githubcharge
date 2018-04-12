@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:fitsSystemWindows="true"
     tools:context="com.hodanet.charge.activity.PowerOptimizeActivity">
 
     <!-- title-->
@@ -107,7 +108,7 @@
                         android:id="@+id/tv_save_time"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="2小时15分钟"
+                        android:text=""
                         android:textColor="@color/power_optimize_time_remain"
                         android:textSize="12sp" />
 
@@ -142,7 +143,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:gravity="center_vertical"
-                        android:text="7"
+                        android:text=""
                         android:textColor="@color/power_optimize_time_remain"
                         android:textSize="11sp" />
 
@@ -195,56 +196,55 @@
 
         <LinearLayout
             android:id="@+id/ll_result"
-            android:visibility="gone"
-            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:background="@color/white"
             android:gravity="center_horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:orientation="vertical"
+            android:visibility="gone">
 
             <LinearLayout
-                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:background="@color/bg_main_color"
                 android:gravity="center_horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:orientation="vertical">
 
                 <ImageView
-                    android:layout_marginTop="70dp"
                     android:layout_width="75dp"
                     android:layout_height="75dp"
-                    android:src="@mipmap/power_optimize_finish"/>
+                    android:layout_marginTop="70dp"
+                    android:src="@mipmap/power_optimize_finish" />
 
                 <TextView
-                    android:textSize="16sp"
-                    android:textColor="@color/white"
-                    android:text="@string/power_optimize_finish"
-                    android:layout_marginTop="15dp"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:text="@string/power_optimize_finish"
+                    android:textColor="@color/white"
+                    android:textSize="16sp" />
 
                 <LinearLayout
-                    android:layout_marginTop="30dp"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="30dp">
 
                     <TextView
-                        android:textSize="15sp"
-                        android:textColor="@color/white"
-                        android:text="@string/power_optimize_finish_dsc"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:text="@string/power_optimize_finish_dsc"
+                        android:textColor="@color/white"
+                        android:textSize="15sp" />
 
                     <TextView
                         android:id="@+id/tv_finish_save_time"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginBottom="75dp"
-                        android:textSize="15sp"
-                        android:textColor="@color/white"
-                        android:text="2小时15分钟"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="75dp"
+                        android:layout_marginLeft="20dp"
+                        android:text="2小时15分钟"
+                        android:textColor="@color/white"
+                        android:textSize="15sp" />
 
 
                 </LinearLayout>
@@ -254,17 +254,15 @@
 
             <LinearLayout
                 android:id="@+id/ll_recommend"
-                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
 
 
         </LinearLayout>
 
 
-
     </RelativeLayout>
-
 
 
 </LinearLayout>

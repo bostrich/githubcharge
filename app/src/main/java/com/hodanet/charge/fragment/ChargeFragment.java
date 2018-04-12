@@ -30,6 +30,7 @@ import com.hodanet.charge.event.BatteryConnectEvent;
 import com.hodanet.charge.event.ShowSlideMenuRedDot;
 import com.hodanet.charge.event.ShowSpecialEvent;
 import com.hodanet.charge.event.SlideMenuClickEvent;
+import com.hodanet.charge.info.BatteryStatus;
 import com.hodanet.charge.info.news.BaseNewInfo;
 import com.hodanet.charge.info.news.EastNewsInfo;
 import com.hodanet.charge.info.report.DailyChargeReport;
@@ -65,6 +66,7 @@ public class ChargeFragment extends Fragment {
 
 
     private static final int GET_NEWS_OK = 1;
+
     @BindView(R.id.img_slide_menu)
     ImageView imgSlideMenu;
     @BindView(R.id.tv_title)
@@ -112,6 +114,8 @@ public class ChargeFragment extends Fragment {
     private Handler mHandler;
     private List<BaseNewInfo> list = new ArrayList<>();
     private NewsAdapter newsAdapter;
+
+    private BatteryStatus batteryStatus = new BatteryStatus();
 
     public ChargeFragment() {
 
@@ -265,7 +269,7 @@ public class ChargeFragment extends Fragment {
         if (dailyView != null) dailyView.showView();
     }
 
-    @OnClick({R.id.img_slide_menu, R.id.tv_title, R.id.tv_charge_btn})
+    @OnClick({R.id.img_slide_menu, R.id.tv_title})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.img_slide_menu:
@@ -273,52 +277,70 @@ public class ChargeFragment extends Fragment {
                 break;
             case R.id.tv_title:
                 break;
-            case R.id.tv_charge_btn:
-                startActivity(new Intent(getContext(), PowerOptimizeActivity.class));
-                break;
+
         }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getBatteryChange(BatteryChangeEvent event) {
-
+        batteryStatus.setPowerPercent(event.getPercent());
         switch (event.getStatus()) {
             case BatteryManager.BATTERY_STATUS_CHARGING:
-                tvStatus.setText("正在充电");
-                tvChargeBtn.setText("开启充电加速");
-                batteryCharge.setBattery(event.getPercent(), true);
-                brv.rotate(false);
+                batteryStatus.setCharging(true);
                 break;
             case BatteryManager.BATTERY_STATUS_DISCHARGING:
-                brv.rotate(true);
-                tvStatus.setText("正在耗电");
-                tvChargeBtn.setText("耗电优化");
+                batteryStatus.setCharging(false);
                 break;
             case BatteryManager.BATTERY_STATUS_NOT_CHARGING:
 
                 break;
             case BatteryManager.BATTERY_STATUS_FULL:
-                tvStatus.setText("充满电了");
-                batteryCharge.setBattery(event.getPercent(), false);
-                brv.rotate(false);
+                batteryStatus.setCharging(true);
                 break;
             case BatteryManager.BATTERY_STATUS_UNKNOWN:
-                tvStatus.setText("未知");
+
                 break;
             default:
                 break;
         }
-        tvBatteryPercent.setText(event.getBatteryPercent());
+        refreshBatteryView();
 
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void connectedChange(BatteryConnectEvent event) {
-        if (!event.isConnected()) {//未连接
+        batteryStatus.setCharging(event.isConnected());
+        refreshBatteryView();
+    }
+
+    private void refreshBatteryView() {
+        batteryCharge.setBatteryPercent(batteryStatus.getPowerPercent());
+        tvBatteryPercent.setText(batteryStatus.getPowerPercent() + "%");
+
+        if(batteryStatus.isCharging()){
+            if(batteryStatus.getPowerPercent() == 100){
+                batteryCharge.setBatteryCharging(false);
+                tvStatus.setText("电已充满");
+                brv.rotate(false);
+                return;
+            }
+            if(batteryStatus.isAccelerate()){
+                tvChargeBtn.setText("快速充电中...");
+                tvChargeBtn.setEnabled(false);
+                batteryCharge.setBatteryChargeAccelerate();
+            }else{
+                tvStatus.setText("正在充电");
+                tvChargeBtn.setText("开启充电加速");
+                tvChargeBtn.setEnabled(true);
+                batteryCharge.setBatteryCharging(true);
+            }
+            brv.rotate(false);
+        }else{
             brv.rotate(true);
             tvStatus.setText("正在耗电");
             tvChargeBtn.setText("耗电优化");
-            batteryCharge.setBattery(false);
+            batteryCharge.setBatteryCharging(false);
+            tvChargeBtn.setEnabled(true);
         }
     }
 
@@ -342,5 +364,14 @@ public class ChargeFragment extends Fragment {
 
     @OnClick(R.id.tv_charge_btn)
     public void onViewClicked() {
+        if(batteryStatus.isCharging()){
+            //设置充电加速
+            batteryStatus.setAccelerate(true);
+            refreshBatteryView();
+            startActivity(new Intent(getContext(), PowerOptimizeActivity.class));
+        }else{
+            startActivity(new Intent(getContext(), PowerOptimizeActivity.class));
+        }
+
     }
 }

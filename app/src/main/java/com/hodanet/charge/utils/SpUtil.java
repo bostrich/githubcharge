@@ -11,6 +11,7 @@ import android.preference.PreferenceManager;
 public class SpUtil {
     public static final String IMEI = "IMEI_DEFAULT_VALUE";
     public static final String SPLASH_ORDER = "SPLASH_ORDER";
+    public static final String OPTIMIZE_DATA = "opzimize_data";
     private static String CONFIG = "config";
 
     private static SharedPreferences sharedPreferences;
@@ -71,6 +72,20 @@ public class SpUtil {
             sharedPreferences = context.getSharedPreferences(CONFIG, Context.MODE_PRIVATE);
         }
         return sharedPreferences.getLong(key, defValue);
+    }
+
+    public static void saveStringData(Context context, String key, String value) {
+        if (sharedPreferences == null) {
+            sharedPreferences = context.getSharedPreferences(CONFIG, Context.MODE_PRIVATE);
+        }
+        sharedPreferences.edit().putString(key, value).apply();
+    }
+
+    public static String getStringData(Context context, String key, String defValue) {
+        if (sharedPreferences == null) {
+            sharedPreferences = context.getSharedPreferences(CONFIG, Context.MODE_PRIVATE);
+        }
+        return sharedPreferences.getString(key, defValue);
     }
 
 

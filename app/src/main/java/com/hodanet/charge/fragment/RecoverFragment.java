@@ -14,8 +14,6 @@ import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.animation.AnticipateInterpolator;
-import android.view.animation.CycleInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -48,6 +46,7 @@ public class RecoverFragment extends Fragment {
 
 
     private static final String TAG = RecoverFragment.class.getName();
+    private static final int CHECK = 1;
     @BindView(R.id.tv_title)
     TextView tvTitle;
     @BindView(R.id.rl_title)
@@ -93,6 +92,7 @@ public class RecoverFragment extends Fragment {
     private Animation anim_outer;
 
     private Handler mHandler;
+    private boolean isChecked;//判断是否检测过
 
 
     public RecoverFragment() {
@@ -135,15 +135,38 @@ public class RecoverFragment extends Fragment {
         mHandler = new Handler(Looper.getMainLooper()){
             @Override
             public void handleMessage(Message msg) {
+                switch(msg.what){
+                    case CHECK:
+                        tvChargeBtn.setEnabled(false);
+                        tvChargeBtn.setText("电池检测中...");
 
+                        anim_inner = AnimationUtils.loadAnimation(getContext(), R.anim.anim_rotate);
+                        anim_inner.setDuration(2000);
+                        anim_inner.setInterpolator(new LinearInterpolator());
+                        imgRotateInner.startAnimation(anim_inner);
+
+                        anim_outer = AnimationUtils.loadAnimation(getContext(), R.anim.anim_rotate);
+                        anim_outer.setDuration(2000);
+                        anim_outer.setInterpolator(new LinearInterpolator());
+                        imgRotateOuter.startAnimation(anim_outer);
+
+                        battery.setChecking(true);
+                        tvScore.setVisibility(View.INVISIBLE);
+
+                        break;
+                }
             }
         };
+        mHandler.sendEmptyMessageDelayed(CHECK, 500);
     }
 
-    private void initView() {
+    private void initView(){
         ViewGroup.LayoutParams layoutParams = llContent.getLayoutParams();
         layoutParams.height = ScreenUtil.dipTopx(getContext(), 450);
         llContent.setLayoutParams(layoutParams);
+    }
+
+    private void rotateBatteryStatus() {
 
         Animation animation_percent = AnimationUtils.loadAnimation(getContext(), R.anim.anim_rotate);
         animation_percent.setDuration(5000);
@@ -224,7 +247,7 @@ public class RecoverFragment extends Fragment {
                 LogUtil.e(TAG, "数值：" + percent);
                 int stage  = (int) (score * (Math.abs(percent - 100) / 100.0));
                 battery.setPercent(stage);
-                tvScore.setText(stage + "");
+                setScore(stage);
                 if(percent == 200){
                     imgRotateInner.clearAnimation();
                     mHandler.postDelayed(new Runnable() {
@@ -243,13 +266,28 @@ public class RecoverFragment extends Fragment {
 
     }
 
+
+    public void setScore(int score){
+        if(score < 60){
+            tvScore.setTextColor(getResources().getColor(R.color.recover_battery_forground));
+        }else if(score < 80){
+            tvScore.setTextColor(getResources().getColor(R.color.recover_battery_80));
+        }else{
+            tvScore.setTextColor(getResources().getColor(R.color.recover_battery_100));
+        }
+        tvScore.setText(score + "");
+        tvScore.setVisibility(View.VISIBLE);
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getBatteryChange(BatteryChangeEvent event) {
+        reSetView();
         tvPercent.setText(event.getBatteryPercent());
         tvTemp.setText(event.getBatteryTem());
         tvVoltage.setText(event.getBatteryVoltage());
         battery.setPercent(event.getPercent());
         score = event.getPercent();
+        setScore(score);
         switch (event.getBatteryHealth()) {
             case BatteryManager.BATTERY_HEALTH_GOOD:
                 tvStatus.setText("优");
@@ -275,7 +313,14 @@ public class RecoverFragment extends Fragment {
                 tvStatus.setText("一般");
                 break;
         }
+    }
 
-
+    private void reSetView() {
+        imgRotateInner.clearAnimation();
+        imgRotateOuter.clearAnimation();
+        battery.setChecking(false);
+        tvChargeBtn.setEnabled(true);
+        tvChargeBtn.setText("立即修复");
+        rotateBatteryStatus();
     }
 }

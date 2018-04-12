@@ -40,6 +40,7 @@ import com.hodanet.charge.config.DeviceConfig;
 import com.hodanet.charge.download.DownloadBean;
 import com.hodanet.charge.download.DownloadManager;
 import com.hodanet.charge.event.DownloadEvent;
+import com.hodanet.charge.utils.DownloadUtil;
 import com.hodanet.charge.utils.LogUtil;
 import com.hodanet.charge.utils.ScreenUtil;
 import com.hodanet.charge.utils.ToastUtil;
@@ -83,6 +84,7 @@ public class NewsDetailActivity extends BaseActivity {
     private boolean backToMain;
     private String pkgName = "";
     private String appName = "";
+    private String apkUrl = "";
 
     /**
      * 设置页面加载回调
@@ -107,6 +109,9 @@ public class NewsDetailActivity extends BaseActivity {
         }
         if(intent.hasExtra("APPNAME")){
             appName = intent.getStringExtra("APPNAME");
+        }
+        if(intent.hasExtra("APKURL")){
+            apkUrl = intent.getStringExtra("APKURL");
         }
         initHandler();
         initView();
@@ -179,6 +184,10 @@ public class NewsDetailActivity extends BaseActivity {
         rlytLoad.setVisibility(View.VISIBLE);
         vLoad = findViewById(R.id.v_load);
         tvLoad = (TextView) findViewById(R.id.tv_load);
+
+        if(DownloadUtil.checkDownLoad(this, appName)){
+            onAppDownloadComplete(pkgName);
+        }
     }
 
     private void initWebSettings() {
@@ -408,13 +417,7 @@ public class NewsDetailActivity extends BaseActivity {
 
         @Override
         public void onDownloadStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength) {
-            DownloadBean bean = new DownloadBean();
-            bean.setUrl(url);
-            bean.setAppName(appName);
-            bean.setPkgName(pkgName);
-            bean.setAdId((int) (Math.random() * 1000 + 100));
-            DownloadManager.getInstance(NewsDetailActivity.this).download(bean, DownloadManager.DOWNLOAD_STRATEGY_EVENTBUS
-                    , null);
+
         }
     }
 
@@ -493,13 +496,21 @@ public class NewsDetailActivity extends BaseActivity {
         @JavascriptInterface
         public void onDownload(String pkg) {
             LogUtil.e("yyyyyyy", "isMainThread=" + Util.isOnMainThread() + "\npkg=" + pkg);
-//            RxBus.getInstance().post(new DownloadStartEvent(pkg));
-//            runOnUiThread(new Runnable() {
-//                @Override
-//                public void run() {
-//
-//                }
-//            });
+            //进行下载任务
+            if(DownloadUtil.checkInstall(NewsDetailActivity.this, pkgName)){
+                DownloadUtil.openApp(NewsDetailActivity.this, pkgName);
+            }else if(DownloadUtil.checkDownLoad(NewsDetailActivity.this, appName)){
+                DownloadUtil.installApk(NewsDetailActivity.this, appName);
+            }else{
+                DownloadBean bean = new DownloadBean();
+                bean.setUrl(apkUrl);
+                bean.setAppName(appName);
+                bean.setPkgName(pkgName);
+                bean.setAdId((int) (Math.random() * 1000 + 100));
+                DownloadManager.getInstance(NewsDetailActivity.this).download(bean, DownloadManager.DOWNLOAD_STRATEGY_EVENTBUS
+                        , null);
+            }
+
         }
     }
 }

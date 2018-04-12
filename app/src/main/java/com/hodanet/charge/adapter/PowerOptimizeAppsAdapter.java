@@ -7,6 +7,7 @@ import android.widget.ImageView;
 
 import com.hodanet.charge.R;
 import com.hodanet.charge.info.power_optimize.AppInfo;
+import com.hodanet.charge.utils.ScreenUtil;
 
 import java.util.List;
 
@@ -30,6 +31,12 @@ public class PowerOptimizeAppsAdapter extends MyBaseAdapter<AppInfo> {
         ViewHolder viewHolder = null;
         if (convertView == null) {
             convertView = View.inflate(mContext, R.layout.item_one_key, null);
+            ImageView img = (ImageView) convertView.findViewById(R.id.iv_icon);
+            ViewGroup.LayoutParams layoutParams = img.getLayoutParams();
+            int length = (ScreenUtil.getScreenWidth(mContext) - ScreenUtil.dipTopx(mContext, 50)) / 6;
+            layoutParams.width = length;
+            layoutParams.height = length;
+            img.setLayoutParams(layoutParams);
             viewHolder = new ViewHolder(convertView);
             convertView.setTag(viewHolder);
         } else {

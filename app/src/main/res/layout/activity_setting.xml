@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#f6f5fb"
+    android:fitsSystemWindows="true"
     tools:context="com.hodanet.charge.activity.SettingActivity">
 
     <!-- title-->
@@ -88,6 +89,7 @@
             android:id="@+id/rl_hot"
             android:layout_width="match_parent"
             android:layout_height="67dp"
+            android:visibility="gone"
             android:layout_below="@id/rl_battery"
             android:gravity="center_vertical">
 

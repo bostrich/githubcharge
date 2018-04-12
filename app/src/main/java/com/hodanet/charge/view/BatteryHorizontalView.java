@@ -25,6 +25,8 @@ public class BatteryHorizontalView extends View{
     private Paint paintForground;
     private Rect rect;
     private int percent;
+    private boolean isChecking;
+    private int tem = 0;
     public BatteryHorizontalView(Context context) {
         super(context);
         initParams();
@@ -72,23 +74,49 @@ public class BatteryHorizontalView extends View{
         rect = new Rect(centerWidth -  width / 2, centerHeight - height /2
                 , centerWidth +  width / 2, centerHeight + height /2);
         canvas.drawRect(rect, paintBg);
+        if(isChecking){
+            paintForground.setColor(getResources().getColor(R.color.bg_main_color_23));
+            int widthStart = (int) (getWidth() * percent / 100.0) + ScreenUtil.dipTopx(getContext(), 6);
+            int end = getWidth() / 2 + widthStart < centerWidth + width / 2 ? getWidth() / 2 + widthStart: centerWidth + width / 2;
+            rect = new Rect(widthStart, 0 , end, getHeight());
 
-        int widthPercent = (int) ((percent / 100.0) * width);
+            canvas.drawRect(rect, paintForground);
 
-        if(percent < 60){
-            paintForground.setColor(getResources().getColor(R.color.recover_battery_forground));
-        }else if(percent < 80){
-            paintForground.setColor(getResources().getColor(R.color.recover_battery_80));
+            percent = Math.abs(tem % 100);
+            tem += 10;
+
         }else{
-            paintForground.setColor(getResources().getColor(R.color.recover_battery_100));
+
+            int widthPercent = (int) ((percent / 100.0) * width);
+            if(percent < 60){
+                paintForground.setColor(getResources().getColor(R.color.recover_battery_forground));
+            }else if(percent < 80){
+                paintForground.setColor(getResources().getColor(R.color.recover_battery_80));
+            }else{
+                paintForground.setColor(getResources().getColor(R.color.recover_battery_100));
+            }
+
+            rect = new Rect(centerWidth -  width / 2, centerHeight - height /2
+                    , centerWidth -  width / 2 + widthPercent, centerHeight + height /2);
+            canvas.drawRect(rect, paintForground);
         }
-
-
-        rect = new Rect(centerWidth -  width / 2, centerHeight - height /2
-                , centerWidth -  width / 2 + widthPercent, centerHeight + height /2);
-
-        canvas.drawRect(rect, paintForground);
 
     }
 
+    public void setChecking(boolean isChecking){
+        if(isChecking){
+            tem = 0;
+            this.isChecking = true;
+            Timer timer = new Timer();
+            TimerTask task = new TimerTask() {
+                @Override
+                public void run() {
+                    postInvalidate();
+                }
+            };
+            timer.scheduleAtFixedRate(task, 0, 80);
+        }else{
+            this.isChecking = false;
+        }
+    }
 }

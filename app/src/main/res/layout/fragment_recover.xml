@@ -154,7 +154,7 @@
                                 android:layout_centerInParent="true"
                                 android:textColor="@color/charge_remain"
                                 android:textSize="16sp"
-                                android:text="85%"/>
+                                android:text="--"/>
 
                             <ImageView
                                 android:id="@+id/img_circle_percent"
@@ -193,14 +193,17 @@
                                 android:layout_centerInParent="true"
                                 android:textColor="@color/charge_remain"
                                 android:textSize="16sp"
-                                android:text="32.6"/>
+                                android:text="--"/>
 
                             <ImageView
                                 android:id="@+id/img_circle_temp"
                                 android:padding="3dp"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:src="@mipmap/recover_circle"/>
+                                android:src="@mipmap/recover_circle"
+                                android:layout_alignParentTop="true"
+                                android:layout_alignParentLeft="true"
+                                android:layout_alignParentStart="true" />
                         </RelativeLayout>
 
                     </LinearLayout>
@@ -232,7 +235,7 @@
                                 android:layout_centerInParent="true"
                                 android:textColor="@color/charge_remain"
                                 android:textSize="16sp"
-                                android:text="4.2V"/>
+                                android:text="--"/>
 
                             <ImageView
                                 android:id="@+id/img_circle_voltage"
@@ -271,7 +274,7 @@
                                 android:layout_centerInParent="true"
                                 android:textColor="@color/charge_remain"
                                 android:textSize="16sp"
-                                android:text="优"/>
+                                android:text="--"/>
 
                             <ImageView
                                 android:id="@+id/img_circle_status"

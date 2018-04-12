@@ -34,6 +34,9 @@ import com.hodanet.charge.utils.SpUtil;
 import com.hodanet.charge.utils.TaskManager;
 import com.hodanet.charge.view.IgnoreDialog;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -85,6 +88,7 @@ public class PowerOptimizeActivity extends BaseActivity {
 
     private IgnoreDialog ignoreDialog;
     private RecommendModelView recommendView;
+    private int saveTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,7 +123,11 @@ public class PowerOptimizeActivity extends BaseActivity {
                         mAppInfos.addAll((List<AppInfo>) msg.obj);
                         mOneKeyAdapter.notifyDataSetChanged();
                         tvCount.setText(mAppInfos.size() + "");
-                        showLengthenTime(tvSaveTime);
+                        saveTime = getLengthenTime();
+                        showLengthenTime(tvSaveTime, saveTime);
+
+                        tvOptimize.setEnabled(true);
+                        tvOptimize.setText("立即省电");
                         break;
                 }
             }
@@ -127,6 +135,24 @@ public class PowerOptimizeActivity extends BaseActivity {
     }
 
     private void initData() {
+        if (ChannelConfig.SPLASH) {
+            getHotRecommendAd();
+        }
+
+        //优化后2小时内进入都显示以优化
+        try {
+            String result = SpUtil.getStringData(this, SpUtil.OPTIMIZE_DATA, "");
+            JSONObject obj = new JSONObject(result);
+            long time = obj.optLong("time");
+            saveTime = obj.optInt("saveTime");
+            if(System.currentTimeMillis() - time < 1000 * 60 * 60 *2){
+                showComplete();
+                return;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         TaskManager.getInstance().executorNewTask(new Runnable() {
             @Override
             public void run() {
@@ -138,9 +164,6 @@ public class PowerOptimizeActivity extends BaseActivity {
             }
         });
 
-        if (ChannelConfig.SPLASH) {
-            getHotRecommendAd();
-        }
     }
 
 
@@ -192,6 +215,9 @@ public class PowerOptimizeActivity extends BaseActivity {
         tvCount.setText(mAppInfos.size() + "");
         tvSaveTime.setText("");
 
+        tvOptimize.setText("扫描中");
+        tvOptimize.setEnabled(false);
+
     }
 
     @OnClick({R.id.img_back, R.id.tv_optimize})
@@ -202,7 +228,15 @@ public class PowerOptimizeActivity extends BaseActivity {
                 break;
             case R.id.tv_optimize:
                 clearListItem(mAppInfos.size() - 1);
-                SpUtil.saveLongData(this, SP_KEY_LAST_CLEAR_TIME, System.currentTimeMillis());
+                try {
+                    JSONObject obj = new JSONObject();
+                    obj.put("time", System.currentTimeMillis());
+                    obj.put("saveTime", saveTime);
+                    SpUtil.saveStringData(this, SpUtil.OPTIMIZE_DATA, obj.toString());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
                 break;
         }
     }
@@ -264,7 +298,7 @@ public class PowerOptimizeActivity extends BaseActivity {
     private void showComplete() {
         llDsc.setVisibility(View.GONE);
         llResult.setVisibility(View.VISIBLE);
-        showLengthenTime(tvFinishSaveTime);
+        showLengthenTime(tvFinishSaveTime, saveTime);
 
     }
 
@@ -354,10 +388,9 @@ public class PowerOptimizeActivity extends BaseActivity {
         return tmp;
     }
 
-    private void showLengthenTime(TextView tv) {
-        int lengthenTime = getLengthenTime();
-        int hour = lengthenTime / 60;
-        int minute = lengthenTime % 60;
+    private void showLengthenTime(TextView tv, int savedTime) {
+        int hour = savedTime / 60;
+        int minute = savedTime % 60;
         String time = "";
         if (hour > 0) time += hour + "小时";
         if(tv != null) tv.setText(time + minute + "分钟");
