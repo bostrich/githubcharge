@@ -38,4 +38,11 @@
     <string name="power_optimize_finish_dsc">已延长用时</string>
 
 
+    <string name="charge_btn_consumer">耗电优化</string>
+    <string name="charge_btn_open_accelerate">开启充电加速</string>
+    <string name="charge_btn_accelerate1">充电加速中.</string>
+    <string name="charge_btn_accelerate2">充电加速中..</string>
+    <string name="charge_btn_accelerate3">充电加速中...</string>
+
+
 </resources>

@@ -67,13 +67,21 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"/>
 
-    <Button
-        android:background="@drawable/selector_btn_ignore"
-        android:layout_width="150dp"
-        android:layout_height="42dp"
-        android:text="添加到忽略名单"
-        android:textColor="@android:color/white"
-        android:id="@+id/btn_ignore"
-        android:layout_marginTop="55dp"
-        android:layout_gravity="center_horizontal" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:background="@drawable/selector_btn_ignore"
+            android:layout_centerInParent="true"
+            android:layout_width="150dp"
+            android:layout_height="42dp"
+            android:text="添加到忽略名单"
+            android:textColor="@android:color/white"
+            android:id="@+id/btn_ignore"
+            android:layout_gravity="center_horizontal" />
+
+    </RelativeLayout>
+
+
 </LinearLayout>

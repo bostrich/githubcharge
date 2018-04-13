@@ -192,6 +192,7 @@ public class PowerOptimizeActivity extends BaseActivity {
 
     private void initView() {
         Animation rotate = AnimationUtils.loadAnimation(this, R.anim.rotate);
+        rotate.setDuration(3000);
         imgRotate.startAnimation(rotate);
 
         mAppInfos = new ArrayList<>();
@@ -205,7 +206,10 @@ public class PowerOptimizeActivity extends BaseActivity {
                 ignoreDialog = new IgnoreDialog(PowerOptimizeActivity.this, appInfo, new IgnoreDialog.ComfirmListener() {
                     @Override
                     public void click() {
-                        getClearAppInfo(PowerOptimizeActivity.this);
+                        List<AppInfo> clearAppInfo = getClearAppInfo(PowerOptimizeActivity.this);
+                        mAppInfos.clear();
+                        mAppInfos.addAll(clearAppInfo);
+                        mOneKeyAdapter.notifyDataSetChanged();
                     }
                 });
                 ignoreDialog.show();

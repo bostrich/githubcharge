@@ -20,6 +20,7 @@
     <color name="charge_percentage">#25a6fd</color>
     <color name="charge_remain">#efeff4</color>
     <color name="charge_btn">#17a6fa</color>
+    <color name="charge_btn_50">#8817a6fa</color>
     <color name="charge_daily_p">#E7E7E7</color>
 
     <color name="charge_battery_red">#fe846d</color>
@@ -42,6 +43,8 @@
 
     <color name="recover_battery_bg">#aecee7</color>
     <color name="recover_battery_forground">#f12a1f</color>
-    <color name="recover_battery_80">#fe846d</color>
-    <color name="recover_battery_100">#00ff00</color>
+    <color name="recover_battery_80">#fa8c35</color>
+    <color name="recover_battery_100">#00bc12</color>
+
+    <color name="charge_battery_bg">#27aed8</color>
 </resources>

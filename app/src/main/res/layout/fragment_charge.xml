@@ -78,44 +78,51 @@
                     android:layout_weight="2"/>
 
                 <RelativeLayout
-                    android:layout_width="185dp"
+                    android:layout_width="match_parent"
                     android:layout_height="185dp"
                     android:layout_marginTop="10dp">
+                    
+                    <com.hodanet.charge.view.BatteryChargeView2
+                        android:id="@+id/battery"
+                        android:layout_width="225dp"
+                        android:layout_height="115dp"
+                        android:layout_centerInParent="true"
+                        android:background="@mipmap/charge_battery"/>
 
                     <!--<ImageView-->
                         <!--android:layout_width="match_parent"-->
                         <!--android:layout_height="match_parent"-->
                         <!--android:src="@mipmap/charge_bg_circle" />-->
-                    <com.hodanet.charge.view.BatteryRotateView
-                        android:id="@+id/rotate"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@mipmap/charge_bg_circle"/>
+                    <!--<com.hodanet.charge.view.BatteryRotateView-->
+                        <!--android:id="@+id/rotate"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:background="@mipmap/charge_bg_circle"/>-->
 
-                    <LinearLayout
-                        android:orientation="vertical"
-                        android:layout_centerInParent="true"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
+                    <!--<LinearLayout-->
+                        <!--android:orientation="vertical"-->
+                        <!--android:layout_centerInParent="true"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content">-->
 
-                        <com.hodanet.charge.view.BatteryChargeView
-                            android:id="@+id/battery_charge"
-                            android:layout_width="51dp"
-                            android:layout_height="99dp"
-                            android:layout_centerInParent="true"
-                            android:background="@mipmap/charge_bg_battery" />
+                        <!--<com.hodanet.charge.view.BatteryChargeView-->
+                            <!--android:id="@+id/battery_charge"-->
+                            <!--android:layout_width="51dp"-->
+                            <!--android:layout_height="99dp"-->
+                            <!--android:layout_centerInParent="true"-->
+                            <!--android:background="@mipmap/charge_bg_battery" />-->
 
-                        <TextView
-                            android:id="@+id/tv_battery_percent"
-                            android:layout_marginTop="5dp"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:textColor="@color/charge_percentage"
-                            android:textSize="15sp"
-                            android:text="20%"/>
+                        <!--<TextView-->
+                            <!--android:id="@+id/tv_battery_percent"-->
+                            <!--android:layout_marginTop="5dp"-->
+                            <!--android:layout_width="match_parent"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:gravity="center"-->
+                            <!--android:textColor="@color/charge_percentage"-->
+                            <!--android:textSize="15sp"-->
+                            <!--android:text="20%"/>-->
 
-                    </LinearLayout>
+                    <!--</LinearLayout>-->
 
                 </RelativeLayout>
 
@@ -186,16 +193,13 @@
                     android:layout_height="0dp"
                     android:layout_weight="2"/>
                 
-                <TextView
+                <com.hodanet.charge.view.BatteryDscView
                     android:id="@+id/tv_charge_btn"
                     android:layout_marginTop="10dp"
-                    android:textColor="@color/charge_btn"
-                    android:textSize="20sp"
                     android:layout_width="185dp"
                     android:layout_height="48dp"
                     android:text="@string/charge_optimize"
-                    android:gravity="center"
-                    android:background="@drawable/charge_btn"/>
+                    />
 
                 <View
                     android:layout_width="match_parent"

@@ -39,12 +39,16 @@ import com.hodanet.charge.info.report.SpecialChargeReport;
 import com.hodanet.charge.model.DailyAd;
 import com.hodanet.charge.model.FloatAd;
 import com.hodanet.charge.model.SpecialAd;
+import com.hodanet.charge.utils.BluetoothUtil;
+import com.hodanet.charge.utils.BrightnessUtil;
 import com.hodanet.charge.utils.HttpUtils;
 import com.hodanet.charge.utils.LogUtil;
 import com.hodanet.charge.utils.ScreenUtil;
 import com.hodanet.charge.utils.TaskManager;
-import com.hodanet.charge.view.BatteryChargeView;
-import com.hodanet.charge.view.BatteryRotateView;
+import com.hodanet.charge.utils.WifiUtil;
+import com.hodanet.charge.view.BatteryChargeView2;
+import com.hodanet.charge.view.BatteryDscView;
+
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -93,14 +97,8 @@ public class ChargeFragment extends Fragment {
     Unbinder unbinder;
     @BindView(R.id.rl_float)
     RelativeLayout rlFloat;
-    @BindView(R.id.tv_battery_percent)
-    TextView tvBatteryPercent;
-    @BindView(R.id.rotate)
-    BatteryRotateView brv;
-    @BindView(R.id.battery_charge)
-    BatteryChargeView batteryCharge;
     @BindView(R.id.tv_charge_btn)
-    TextView tvChargeBtn;
+    BatteryDscView tvChargeBtn;
     @BindView(R.id.view_ring_dot)
     View viewRingDot;
     @BindView(R.id.ll_top)
@@ -109,6 +107,8 @@ public class ChargeFragment extends Fragment {
     LinearLayout llNews;
     @BindView(R.id.rl_slide_menu)
     RelativeLayout rlSlideMenu;
+    @BindView(R.id.battery)
+    BatteryChargeView2 battery;
 
     private FloatAd floatView;
     private SpecialAd specialView;
@@ -119,6 +119,7 @@ public class ChargeFragment extends Fragment {
     private NewsAdapter newsAdapter;
 
     private BatteryStatus batteryStatus = new BatteryStatus();
+    private int brightness;//屏幕亮度
 
     public ChargeFragment() {
 
@@ -197,7 +198,6 @@ public class ChargeFragment extends Fragment {
         layoutParams.height = ScreenUtil.getScreenHeight(getContext()) - ScreenUtil.getStatusBarHeight(getContext())
                 -  ScreenUtil.dipTopx(getContext(), 115);
         llTop.setLayoutParams(layoutParams);
-
 
     }
 
@@ -318,46 +318,38 @@ public class ChargeFragment extends Fragment {
     }
 
     private void refreshBatteryView() {
-        batteryCharge.setBatteryPercent(batteryStatus.getPowerPercent());
-        tvBatteryPercent.setText(batteryStatus.getPowerPercent() + "%");
-
+        battery.setAccelerate(batteryStatus.isAccelerate());
+        battery.setPower(batteryStatus.getPowerPercent());
+        battery.setCharging(batteryStatus.isCharging());
+        tvChargeBtn.setCharging(batteryStatus.isCharging());
+        tvChargeBtn.setAccelerate(batteryStatus.isAccelerate());
         if(batteryStatus.isCharging()){
             if(batteryStatus.getPowerPercent() == 100){
-                batteryCharge.setBatteryCharging(false);
                 tvStatus.setText("电已充满,预估可用时间");
                 int time = batteryStatus.getBatteryRemainTime(getContext());
                 tvHour.setText(time / 60 + "");
                 tvMinute.setText(time % 60 + "");
-                brv.rotate(false);
                 return;
             }
             if(batteryStatus.isAccelerate()){
-                tvChargeBtn.setText("快速充电中...");
                 tvStatus.setText("快速充电中，预估节约时间");
-                tvChargeBtn.setEnabled(false);
-                batteryCharge.setBatteryChargeAccelerate();
+                tvChargeBtn.setEnabled(true);
                 int time = batteryStatus.getBatteryAccelerateTime();
                 tvHour.setText(time / 60 + "");
                 tvMinute.setText(time % 60 + "");
             }else{
                 tvStatus.setText("正在充电,预估时间");
-                tvChargeBtn.setText("开启充电加速");
                 tvChargeBtn.setEnabled(true);
-                batteryCharge.setBatteryCharging(true);
                 //计算充电时间
                 int time = batteryStatus.getChargeRemainTime();
                 tvHour.setText(time / 60 + "");
                 tvMinute.setText(time % 60 + "");
             }
-            brv.rotate(false);
         }else{
-            brv.rotate(true);
             tvStatus.setText("正在耗电，预估可用时间");
-            tvChargeBtn.setText("耗电优化");
             int time = batteryStatus.getBatteryRemainTime(getContext());
             tvHour.setText(time / 60 + "");
             tvMinute.setText(time % 60 + "");
-            batteryCharge.setBatteryCharging(false);
             tvChargeBtn.setEnabled(true);
         }
     }
@@ -383,9 +375,26 @@ public class ChargeFragment extends Fragment {
     @OnClick(R.id.tv_charge_btn)
     public void onViewClicked() {
         if(batteryStatus.isCharging()){
-            //设置充电加速
-            batteryStatus.setAccelerate(true);
-            refreshBatteryView();
+            if(batteryStatus.isAccelerate()){
+                //TODO 停止充电加速
+                batteryStatus.setAccelerate(false);
+                refreshBatteryView();
+                WifiUtil.openWifi(getContext());
+                BluetoothUtil.openBluetooth(getContext());
+                BrightnessUtil.saveBrightness(getActivity(), brightness);
+
+            }else{
+                //设置充电加速
+                batteryStatus.setAccelerate(true);
+                refreshBatteryView();
+                //调节屏幕亮度、关闭wifi、关闭蓝牙
+                WifiUtil.closeWifi(getContext());
+                BluetoothUtil.closeBluetooth(getContext());
+                brightness = BrightnessUtil.getSystemBrightness(getContext());
+                BrightnessUtil.saveBrightness(getActivity(), 0);
+
+            }
+
         }else{
             startActivity(new Intent(getContext(), PowerOptimizeActivity.class));
         }
