@@ -13,6 +13,7 @@ public class SpUtil {
     public static final String SPLASH_ORDER = "SPLASH_ORDER";
     public static final String OPTIMIZE_DATA = "opzimize_data";
     public static final String RECOVER_TIME = "recover_time";
+    public static final String RECOVER_INFO = "recover_info";
     public static final String DISCOVERY_CLICK_TIME = "discovery_click_time";
     private static String CONFIG = "config";
 

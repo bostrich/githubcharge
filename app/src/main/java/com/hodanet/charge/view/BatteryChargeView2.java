@@ -185,7 +185,7 @@ public class BatteryChargeView2 extends View {
                         postInvalidate();
                     }
                 };
-                timer.scheduleAtFixedRate(task, 0 , 300);
+                timer.scheduleAtFixedRate(task, 0 , 250);
             }
         }else{
             accelerate = false;

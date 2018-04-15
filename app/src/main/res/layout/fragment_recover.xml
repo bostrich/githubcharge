@@ -51,23 +51,9 @@
                     android:layout_weight="1"/>
 
                 <RelativeLayout
-                    android:layout_marginTop="28dp"
-                    android:layout_width="185dp"
-                    android:layout_height="185dp">
-
-                    <ImageView
-                        android:id="@+id/img_rotate_inner"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:src="@mipmap/charge_bg_circle"/>
-
-                    <ImageView
-                        android:id="@+id/img_rotate_outer"
-                        android:padding="6dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:src="@mipmap/recover_circle_rotate"/>
-
+                    android:layout_marginTop="18dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp">
 
                     <LinearLayout
                         android:layout_centerInParent="true"
@@ -75,21 +61,37 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content">
 
-                        <com.hodanet.charge.view.BatteryHorizontalView
-                            android:id="@+id/battery"
-                            android:layout_marginTop="30dp"
-                            android:layout_width="109dp"
-                            android:layout_height="56dp"
-                            android:background="@mipmap/recover_battery"/>
+
+                        <RelativeLayout
+                            android:layout_marginTop="10dp"
+                            android:layout_width="245dp"
+                            android:layout_height="135dp">
+                            <com.hodanet.charge.view.BatteryHorizontalView
+                                android:id="@+id/battery"
+                                android:layout_centerInParent="true"
+                                android:layout_width="225dp"
+                                android:layout_height="115dp"
+                                android:background="@mipmap/charge_battery"/>
+
+                            <com.hodanet.charge.view.RecoverRotateView
+                                android:id="@+id/battery_rotate"
+                                android:layout_marginRight="10dp"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent" />
+
+                        </RelativeLayout>
+
+
 
                         <TextView
                             android:id="@+id/tv_score"
+                            android:visibility="invisible"
                             android:layout_width="match_parent"
                             android:gravity="center"
-                            android:layout_marginTop="5dp"
+                            android:layout_marginTop="10dp"
                             android:layout_height="wrap_content"
                             android:textColor="@android:color/holo_red_dark"
-                            android:textSize="25sp"
+                            android:textSize="35sp"
                             android:text="30"/>
 
                     </LinearLayout>

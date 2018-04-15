@@ -1,7 +1,10 @@
 package com.hodanet.charge.view;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -27,6 +30,8 @@ public class BatteryHorizontalView extends View{
     private int percent;
     private boolean isChecking;
     private int tem = 0;
+
+
     public BatteryHorizontalView(Context context) {
         super(context);
         initParams();
@@ -60,25 +65,26 @@ public class BatteryHorizontalView extends View{
         paintForground = new Paint();
         paintForground.setAntiAlias(false);
         paintForground.setColor(getResources().getColor(R.color.recover_battery_forground));
+        rect = new Rect();
 
     }
 
 
     @Override
     protected void onDraw(Canvas canvas) {
-        int centerWidth = (getWidth() - ScreenUtil.dipTopx(getContext(), 6)) / 2;
+        int centerWidth = (getWidth() - ScreenUtil.dipTopx(getContext(), 10)) / 2;
         int centerHeight = getHeight() / 2;
-        int width = ScreenUtil.dipTopx(getContext(), 90);
-        int height = ScreenUtil.dipTopx(getContext(), 40);
+        int width = ScreenUtil.dipTopx(getContext(), 185);
+        int height = ScreenUtil.dipTopx(getContext(), 90);
 
-        rect = new Rect(centerWidth -  width / 2, centerHeight - height /2
+        rect.set(centerWidth -  width / 2, centerHeight - height /2
                 , centerWidth +  width / 2, centerHeight + height /2);
         canvas.drawRect(rect, paintBg);
         if(isChecking){
             paintForground.setColor(getResources().getColor(R.color.bg_main_color_23));
             int widthStart = (int) (getWidth() * percent / 100.0) + ScreenUtil.dipTopx(getContext(), 6);
             int end = getWidth() / 2 + widthStart < centerWidth + width / 2 ? getWidth() / 2 + widthStart: centerWidth + width / 2;
-            rect = new Rect(widthStart, 0 , end, getHeight());
+            rect.set(widthStart, 0 , end, getHeight());
 
             canvas.drawRect(rect, paintForground);
 
@@ -96,19 +102,32 @@ public class BatteryHorizontalView extends View{
                 paintForground.setColor(getResources().getColor(R.color.recover_battery_100));
             }
 
-            rect = new Rect(centerWidth -  width / 2, centerHeight - height /2
+
+            rect.set(centerWidth -  width / 2, centerHeight - height /2
                     , centerWidth -  width / 2 + widthPercent, centerHeight + height /2);
             canvas.drawRect(rect, paintForground);
         }
 
+
     }
+
+    private Timer timer;
+    private TimerTask task;
 
     public void setChecking(boolean isChecking){
         if(isChecking){
             tem = 0;
             this.isChecking = true;
-            Timer timer = new Timer();
-            TimerTask task = new TimerTask() {
+            if(timer != null){
+                timer.cancel();
+                timer = null;
+            }
+            if(task != null){
+                task.cancel();
+                task = null;
+            }
+            timer = new Timer();
+            task = new TimerTask() {
                 @Override
                 public void run() {
                     postInvalidate();
@@ -117,6 +136,14 @@ public class BatteryHorizontalView extends View{
             timer.scheduleAtFixedRate(task, 0, 80);
         }else{
             this.isChecking = false;
+            if(timer != null){
+                timer.cancel();
+                timer = null;
+            }
+            if(task != null){
+                task.cancel();
+                task = null;
+            }
         }
     }
 }

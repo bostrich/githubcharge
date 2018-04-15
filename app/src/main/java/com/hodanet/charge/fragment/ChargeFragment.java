@@ -120,6 +120,7 @@ public class ChargeFragment extends Fragment {
 
     private BatteryStatus batteryStatus = new BatteryStatus();
     private int brightness;//屏幕亮度
+    private int brightnessMode;//屏幕亮度模式
 
     public ChargeFragment() {
 
@@ -381,7 +382,7 @@ public class ChargeFragment extends Fragment {
                 refreshBatteryView();
                 WifiUtil.openWifi(getContext());
                 BluetoothUtil.openBluetooth(getContext());
-                BrightnessUtil.saveBrightness(getActivity(), brightness);
+                BrightnessUtil.saveBrightness(getActivity(), brightness, brightnessMode);
 
             }else{
                 //设置充电加速
@@ -391,7 +392,8 @@ public class ChargeFragment extends Fragment {
                 WifiUtil.closeWifi(getContext());
                 BluetoothUtil.closeBluetooth(getContext());
                 brightness = BrightnessUtil.getSystemBrightness(getContext());
-                BrightnessUtil.saveBrightness(getActivity(), 0);
+                brightnessMode = BrightnessUtil.getSystemBrightnessMode(getContext());
+                BrightnessUtil.saveBrightness(getActivity(), 0, 0);
 
             }
 

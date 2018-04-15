@@ -168,7 +168,7 @@ public class BatteryDscView extends View{
                         postInvalidate();
                     }
                 };
-                timer.scheduleAtFixedRate(task, 0 , 30);
+                timer.scheduleAtFixedRate(task, 0 , 25);
             }
         }else{
             accelerate = false;
