@@ -330,6 +330,7 @@ public class ChargeFragment extends Fragment {
                 int time = batteryStatus.getBatteryRemainTime(getContext());
                 tvHour.setText(time / 60 + "");
                 tvMinute.setText(time % 60 + "");
+                tvChargeBtn.setCharging(false);
                 return;
             }
             if(batteryStatus.isAccelerate()){
