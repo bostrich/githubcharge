@@ -30,6 +30,7 @@ public class BatteryRotateView extends View {
     private TimerTask task;
     private Bitmap bitmap;
     private Matrix matrix;
+    private Paint paint;
 
     public BatteryRotateView(Context context) {
         super(context);
@@ -53,8 +54,6 @@ public class BatteryRotateView extends View {
             float x = (float) (width / 2 *  Math.cos(angles / 180.0 * Math.PI) );
             float y = (float) (width/ 2 *  Math.sin(angles / 180.0 * Math.PI) );
             canvas.translate(getWidth() / 2 + x - dotRadius , getWidth() / 2 + y - dotRadius);
-            Paint paint = new Paint();
-            paint.setAntiAlias(false);
             if(matrix != null && bitmap != null){
                 canvas.drawBitmap(bitmap, matrix, paint);
             }
@@ -72,6 +71,8 @@ public class BatteryRotateView extends View {
         float scaleY = (float) ( 2.0 * dotRadius / height);
         matrix = new Matrix();
         matrix.postScale(scaleX, scaleY);
+        paint = new Paint();
+        paint.setAntiAlias(false);
 
     }
 

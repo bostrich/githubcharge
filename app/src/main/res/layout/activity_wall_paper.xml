@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context="com.hodanet.charge.activity.WallPaperActivity">
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/vp_wallPaper"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <ImageView
+        android:id="@+id/img_back"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="35dp"
+        android:layout_marginLeft="15dp"
+        android:src="@mipmap/ic_back_circle"
+        android:visibility="gone"/>
+
+    <ImageView
+        android:id="@+id/img_download"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:src="@mipmap/wallpaper_download"
+        android:visibility="gone"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="30dp"/>
+
+</RelativeLayout>

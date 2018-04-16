@@ -4,7 +4,7 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="bg_main_color">#009ffd</color>
-    <color name="bg_main_color_23">#46009ffd</color>
+    <color name="bg_main_color_23">#26afd6</color>
 
 
     <color name="transparent">#00000000</color>
@@ -42,9 +42,9 @@
     <color name="ignore_btn_pressed">#8852B2FF</color>
 
     <color name="recover_battery_bg">#aecee7</color>
-    <color name="recover_battery_forground">#f12a1f</color>
-    <color name="recover_battery_80">#fa8c35</color>
-    <color name="recover_battery_100">#00bc12</color>
+    <color name="recover_battery_forground">#ffcb53</color>
+    <color name="recover_battery_80">#53deff</color>
+    <color name="recover_battery_100">#54e549</color>
 
     <color name="charge_battery_bg">#27aed8</color>
 </resources>

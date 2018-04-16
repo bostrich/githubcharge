@@ -7,7 +7,10 @@ import com.hodanet.charge.utils.HttpUtils;
 import com.hodanet.charge.utils.TaskManager;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.IOException;
 
 /**
  * 渠道参数配置信息
@@ -43,7 +46,7 @@ public class ChannelConfig {
                         }
                         if(channel.equals(AppConfig.CHANNEL)){
                             SPLASH = channelInfo.optInt("splash") == 1;
-
+//                            SPLASH = false;
                             isSet = true;
                             break;
                         }

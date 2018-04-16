@@ -17,6 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:fillViewport="false"
+            android:background="@color/bg_main_wifi_top"
             app:tabTextAppearance="@style/MyTabLayoutTextAppearance"
             />
 
@@ -30,6 +31,8 @@
     </RelativeLayout>
 
     <include layout="@layout/include_loading" />
+
+    <include layout="@layout/include_http_error" />
 
 
 </RelativeLayout>

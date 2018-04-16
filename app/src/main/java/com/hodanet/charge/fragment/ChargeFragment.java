@@ -42,7 +42,6 @@ import com.hodanet.charge.model.SpecialAd;
 import com.hodanet.charge.utils.BluetoothUtil;
 import com.hodanet.charge.utils.BrightnessUtil;
 import com.hodanet.charge.utils.HttpUtils;
-import com.hodanet.charge.utils.LogUtil;
 import com.hodanet.charge.utils.ScreenUtil;
 import com.hodanet.charge.utils.TaskManager;
 import com.hodanet.charge.utils.WifiUtil;
@@ -376,7 +375,7 @@ public class ChargeFragment extends Fragment {
 
     @OnClick(R.id.tv_charge_btn)
     public void onViewClicked() {
-        if(batteryStatus.isCharging()){
+        if(batteryStatus.isCharging() && batteryStatus.getPowerPercent() < 100){
             if(batteryStatus.isAccelerate()){
                 //TODO 停止充电加速
                 batteryStatus.setAccelerate(false);
@@ -395,7 +394,6 @@ public class ChargeFragment extends Fragment {
                 brightness = BrightnessUtil.getSystemBrightness(getContext());
                 brightnessMode = BrightnessUtil.getSystemBrightnessMode(getContext());
                 BrightnessUtil.saveBrightness(getActivity(), 0, 0);
-
             }
 
         }else{

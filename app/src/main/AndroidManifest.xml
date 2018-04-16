@@ -13,15 +13,13 @@
     <uses-permission android:name="android.permission.GET_TASKS" />
     <uses-permission android:name="android.permission.GET_PACKAGE_SIZE" />
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
-    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-    <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
-    <uses-permission android:name="android.permission.READ_SYNC_SETTINGS"/>
-
-
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
 
     <application
         android:name=".MyApplication"
@@ -62,10 +60,17 @@
             android:name=".activity.PowerOptimizeActivity"
             android:screenOrientation="portrait"
             android:theme="@style/normal" />
-
-        <activity android:name=".activity.AboutActivity"
+        <activity
+            android:name=".activity.AboutActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/normal"/>
+            android:theme="@style/normal" />
+
+        <activity android:name=".activity.PicActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/normal" />
+        <activity android:name=".activity.WallPaperActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/normal" />
 
         <meta-data
             android:name="UMENG_APPKEY"

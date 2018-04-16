@@ -72,6 +72,18 @@ public class FoundMainFragment extends Fragment implements BaseAdapterView.AdLis
     private void initView() {
         new TopBannerAd(rlBanner, new ScrollBannerAdatperView(getContext(), this));
         SmallAdapterView view2 = new SmallAdapterView(getContext(), this);
+        view2.setLocalData(new BaseAdapterView.AddLocalData() {
+            @Override
+            public void addLocalData(List<FoundBean> list) {
+                FoundBean info2 = new FoundBean();
+                info2.setType("activity");
+                info2.setPic("" + R.mipmap.girl);
+                info2.setUrl("com.hodanet.charge.activity.PicActivity");
+                info2.setId("picture");
+                info2.setPosition(FoundBean.POSITION_SMALL);
+                list.add(0, info2);
+            }
+        });
         new SmallAd(rlSmall, view2);
 
         MidAdapterView view3 = new MidAdapterView(getContext(), this);
@@ -116,6 +128,14 @@ public class FoundMainFragment extends Fragment implements BaseAdapterView.AdLis
                     }
                 });
 
+                break;
+            case "activity":
+                try {
+                    Class<?> clazz = Class.forName(foundBean.getUrl());
+                    startActivity(new Intent(getContext(), clazz));
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
                 break;
 
             default:

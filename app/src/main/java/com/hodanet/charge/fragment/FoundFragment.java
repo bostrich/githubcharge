@@ -16,7 +16,9 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.hodanet.charge.R;
 import com.hodanet.charge.adapter.found.FoundPagerAdapter;
@@ -30,6 +32,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 
 /**
@@ -39,6 +42,7 @@ public class FoundFragment extends Fragment {
 
 
     private static final int GET_INFO = 1;
+    private static final int GET_INFO_FAILED = 2;
 
     @BindView(R.id.tab)
     TabLayout tab;
@@ -51,6 +55,10 @@ public class FoundFragment extends Fragment {
     Unbinder unbinder;
     @BindView(R.id.rl_content)
     RelativeLayout rlContent;
+    @BindView(R.id.tvReload)
+    TextView tvReload;
+    @BindView(R.id.ll_error)
+    LinearLayout llError;
 
     private Handler mHandler;
     private List<FoundBean> list = new ArrayList<>();
@@ -87,26 +95,32 @@ public class FoundFragment extends Fragment {
 
             @Override
             public void getInfoFailed() {
-
+                mHandler.sendEmptyMessage(GET_INFO_FAILED);
             }
         }, "");
 
     }
 
     private void initHandler() {
-        mHandler = new Handler(Looper.getMainLooper()){
+        mHandler = new Handler(Looper.getMainLooper()) {
             @Override
             public void handleMessage(Message msg) {
-                switch(msg.what){
+                switch (msg.what) {
                     case GET_INFO:
                         list.clear();
-                        list.addAll((List<FoundBean>)msg.obj);
-                        if(list.size() > 0){
-                            rlLoading.setVisibility(View.GONE);
-                            imgRotation.clearAnimation();
-                            rlContent.setVisibility(View.VISIBLE);
-                            setViews();
-                        }
+                        list.addAll((List<FoundBean>) msg.obj);
+//                        if(list.size() > 0){
+                        rlLoading.setVisibility(View.GONE);
+                        llError.setVisibility(View.GONE);
+                        imgRotation.clearAnimation();
+                        rlContent.setVisibility(View.VISIBLE);
+                        setViews();
+//                        }
+                        break;
+                    case GET_INFO_FAILED:
+                        llError.setVisibility(View.VISIBLE);
+                        rlLoading.setVisibility(View.GONE);
+                        rlContent.setVisibility(View.GONE);
                         break;
                 }
             }
@@ -121,26 +135,27 @@ public class FoundFragment extends Fragment {
         String tabApp = "";
         titles.clear();
         for (int i = 0; i < list.size(); i++) {
-            if(list.get(i).getPosition().equals(FoundBean.POSITION_APPS)){
+            if (list.get(i).getPosition().equals(FoundBean.POSITION_APPS)) {
                 hasApp = true;
                 tabApp = list.get(i).getTag();
                 break;
             }
         }
-        if(hasApp && ChannelConfig.JMWALL){//显示优质应用
+        if (hasApp && ChannelConfig.JMWALL) {//显示优质应用
             titles.add("发现");
             titles.add(tabApp);
-        }else{
+        } else {
             titles.add("发现");
         }
         tab.setupWithViewPager(vp);
-        adapter = new FoundPagerAdapter(getActivity().getSupportFragmentManager(),titles);
+        adapter = new FoundPagerAdapter(getActivity().getSupportFragmentManager(), titles);
         vp.setAdapter(adapter);
 
     }
 
     private void initView() {
         rlContent.setVisibility(View.GONE);
+        llError.setVisibility(View.GONE);
         rlLoading.setVisibility(View.VISIBLE);
         tab.setSelectedTabIndicatorHeight(0);
         Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.anim_rotate);
@@ -152,5 +167,11 @@ public class FoundFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+    }
+
+    @OnClick(R.id.tvReload)
+    public void onViewClicked() {
+        initView();
+        initData();
     }
 }

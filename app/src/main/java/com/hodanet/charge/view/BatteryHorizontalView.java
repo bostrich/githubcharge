@@ -27,9 +27,11 @@ public class BatteryHorizontalView extends View{
     private Paint paintBg;
     private Paint paintForground;
     private Rect rect;
+    private RectF rectF;
     private int percent;
     private boolean isChecking;
     private int tem = 0;
+    private int radius;
 
 
     public BatteryHorizontalView(Context context) {
@@ -62,10 +64,13 @@ public class BatteryHorizontalView extends View{
         paintBg.setAntiAlias(false);
         paintBg.setColor(getResources().getColor(R.color.recover_battery_bg));
 
+        radius = ScreenUtil.dipTopx(getContext(), 4);
+
         paintForground = new Paint();
         paintForground.setAntiAlias(false);
         paintForground.setColor(getResources().getColor(R.color.recover_battery_forground));
         rect = new Rect();
+        rectF = new RectF();
 
     }
 
@@ -74,22 +79,27 @@ public class BatteryHorizontalView extends View{
     protected void onDraw(Canvas canvas) {
         int centerWidth = (getWidth() - ScreenUtil.dipTopx(getContext(), 10)) / 2;
         int centerHeight = getHeight() / 2;
-        int width = ScreenUtil.dipTopx(getContext(), 185);
-        int height = ScreenUtil.dipTopx(getContext(), 90);
+        int width = ScreenUtil.dipTopx(getContext(), 207);
+        int height = ScreenUtil.dipTopx(getContext(), 107);
 
-        rect.set(centerWidth -  width / 2, centerHeight - height /2
-                , centerWidth +  width / 2, centerHeight + height /2);
-        canvas.drawRect(rect, paintBg);
+//        rect.set(centerWidth -  width / 2, centerHeight - height /2
+//                , centerWidth +  width / 2, centerHeight + height /2);
+//        canvas.drawRect(rect, paintBg);
         if(isChecking){
             paintForground.setColor(getResources().getColor(R.color.bg_main_color_23));
             int widthStart = (int) (getWidth() * percent / 100.0) + ScreenUtil.dipTopx(getContext(), 6);
-            int end = getWidth() / 2 + widthStart < centerWidth + width / 2 ? getWidth() / 2 + widthStart: centerWidth + width / 2;
-            rect.set(widthStart, 0 , end, getHeight());
+            int startX = (int) (width * percent / 66.0 - width / 2);
+
+            int endX = (startX + width / 2) > width ? width + radius: startX + width /2 + radius;
+
+            startX = startX > 0 ? startX + radius : radius;
+//            int end = getWidth() / 2 + widthStart < centerWidth + width / 2 ? getWidth() / 2 + widthStart: centerWidth + width / 2;
+            rect.set(startX, centerHeight - height / 2 , endX, centerHeight + height / 2);
 
             canvas.drawRect(rect, paintForground);
 
             percent = Math.abs(tem % 100);
-            tem += 10;
+            tem += 3;
 
         }else{
 
@@ -103,9 +113,9 @@ public class BatteryHorizontalView extends View{
             }
 
 
-            rect.set(centerWidth -  width / 2, centerHeight - height /2
+            rectF.set(centerWidth -  width / 2, centerHeight - height /2
                     , centerWidth -  width / 2 + widthPercent, centerHeight + height /2);
-            canvas.drawRect(rect, paintForground);
+            canvas.drawRoundRect(rectF, radius, radius, paintForground);
         }
 
 
@@ -133,7 +143,7 @@ public class BatteryHorizontalView extends View{
                     postInvalidate();
                 }
             };
-            timer.scheduleAtFixedRate(task, 0, 80);
+            timer.scheduleAtFixedRate(task, 0, 50);
         }else{
             this.isChecking = false;
             if(timer != null){

@@ -10,6 +10,7 @@ import com.hodanet.charge.greendao.StandardInfo;
 import com.hodanet.charge.info.Constants;
 import com.hodanet.charge.info.hot.NewsInfo;
 import com.hodanet.charge.info.hot.TabItemInfo;
+import com.hodanet.charge.info.pic.WallpaperClassifyBean;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -280,6 +281,30 @@ public class ParseUtil {
             }
         }
         return bannerAdList;
+    }
+
+
+    public static List<WallpaperClassifyBean> getWallpaperClassify(String result) throws JSONException {
+        List<WallpaperClassifyBean> list = new ArrayList<>();
+        JSONObject obj_all = new JSONObject(result);
+        JSONArray objs = obj_all.optJSONArray("picType");
+        for (int i = 0; i < objs.length(); i++) {
+            JSONObject obj = objs.optJSONObject(i);
+            WallpaperClassifyBean bean = new WallpaperClassifyBean();
+            bean.setId(obj.optString("id"));
+            bean.setName(obj.optString("name"));
+            bean.setNewVer(obj.optInt("newVer"));
+            bean.setCover(obj.optString("cover"));
+            bean.setDsc(obj.optString("dsc"));
+            if(ChannelConfig.SPLASH){
+                list.add(bean);
+            }else{
+                if(!bean.getId().equals("sexy") && !bean.getId().equals("woman") && !bean.getId().equals("summer")){
+                    list.add(bean);
+                }
+            }
+        }
+        return list;
     }
 
 
