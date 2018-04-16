@@ -23,6 +23,7 @@ import android.widget.TextView;
 import com.hodanet.charge.R;
 import com.hodanet.charge.config.ChannelConfig;
 import com.hodanet.charge.event.BatteryChangeEvent;
+import com.hodanet.charge.info.BatteryStatus;
 import com.hodanet.charge.info.RecommendInfo;
 import com.hodanet.charge.info.report.RecommendRecoverReportInfo;
 import com.hodanet.charge.model.RecommendModelView;
@@ -32,9 +33,6 @@ import com.hodanet.charge.utils.SpUtil;
 import com.hodanet.charge.view.BatteryHorizontalView;
 import com.hodanet.charge.view.RecoverRotateView;
 
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONObject;
 
 import butterknife.BindView;
@@ -52,6 +50,7 @@ public class RecoverFragment extends Fragment {
     private static final String RECOVERY_TIME = "recovery_time";
     private static final String RECOVERY_SCORE = "recovery_score";
     private static final int CHECK = 1;
+    private static final int CHECKD_OVER = 2;
     @BindView(R.id.tv_title)
     TextView tvTitle;
     @BindView(R.id.rl_title)
@@ -114,7 +113,6 @@ public class RecoverFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_recover, container, false);
         unbinder = ButterKnife.bind(this, view);
 
-        EventBus.getDefault().register(this);
 
         initView();
         initHandler();
@@ -122,11 +120,15 @@ public class RecoverFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        setBatteryStatus(ChargeFragment.batteryStatus);
+    }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        EventBus.getDefault().unregister(this);
         if (recommendView != null) recommendView = null;
         mHandler.removeCallbacksAndMessages(null);
     }
@@ -147,7 +149,11 @@ public class RecoverFragment extends Fragment {
                         tvChargeBtn.setText("电池检测中...");
                         battery.setChecking(true);
                         tvScore.setVisibility(View.INVISIBLE);
-
+                        long delayTime = (long) ((Math.random() * 3 + 5) * 1000);
+                        mHandler.sendEmptyMessageDelayed(CHECKD_OVER, delayTime);
+                        break;
+                    case CHECKD_OVER:
+                        setBatteryRecover();
                         break;
                 }
             }
@@ -164,6 +170,7 @@ public class RecoverFragment extends Fragment {
         imgCircleVoltage.setVisibility(View.GONE);
 
         batteryRotate.start();
+
     }
 
     private void rotateBatteryStatus() {
@@ -303,20 +310,22 @@ public class RecoverFragment extends Fragment {
         battery.setPercent(score);
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void getBatteryChange(BatteryChangeEvent event) {
+    public void setBatteryRecover(){
         if(!recovered){
             recovered = true;
             battery.setChecking(false);
             setScore(getBatteryScore(), "立即修复");
             tvChargeBtn.setEnabled(true);
         }
+    }
+
+    public void setBatteryStatus(BatteryStatus status) {
         rotateBatteryStatus();
-        tvPercent.setText(event.getBatteryPercent());
-        tvTemp.setText(event.getBatteryTem());
-        tvVoltage.setText(event.getBatteryVoltage());
-        score = event.getPercent();
-        switch (event.getBatteryHealth()) {
+        tvPercent.setText(status.getPowerPercent() + "%");
+        tvTemp.setText(status.getTemp());
+        tvVoltage.setText(status.getVoltage());
+        score = status.getPowerPercent();
+        switch (status.getHealth()) {
             case BatteryManager.BATTERY_HEALTH_GOOD:
                 tvStatus.setText("优");
                 break;
@@ -377,5 +386,12 @@ public class RecoverFragment extends Fragment {
         int result = 0;
         int add = (int) (Math.random() * 5);
         return 90 + add;
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        if(!hidden){
+            setBatteryStatus(ChargeFragment.batteryStatus);
+        }
     }
 }

@@ -15,6 +15,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -45,6 +47,7 @@ import com.hodanet.charge.utils.HttpUtils;
 import com.hodanet.charge.utils.ScreenUtil;
 import com.hodanet.charge.utils.TaskManager;
 import com.hodanet.charge.utils.WifiUtil;
+import com.hodanet.charge.utils.animation.RotateXAnimation;
 import com.hodanet.charge.view.BatteryChargeView2;
 import com.hodanet.charge.view.BatteryDscView;
 
@@ -117,7 +120,7 @@ public class ChargeFragment extends Fragment {
     private List<BaseNewInfo> list = new ArrayList<>();
     private NewsAdapter newsAdapter;
 
-    private BatteryStatus batteryStatus = new BatteryStatus();
+    public static BatteryStatus batteryStatus = new BatteryStatus();
     private int brightness;//屏幕亮度
     private int brightnessMode;//屏幕亮度模式
 
@@ -287,6 +290,9 @@ public class ChargeFragment extends Fragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getBatteryChange(BatteryChangeEvent event) {
         batteryStatus.setPowerPercent(event.getPercent());
+        batteryStatus.setVoltage(event.getBatteryVoltage());
+        batteryStatus.setHealth(event.getBatteryHealth());
+        batteryStatus.setTemp(event.getBatteryTem());
         switch (event.getStatus()) {
             case BatteryManager.BATTERY_STATUS_CHARGING:
                 batteryStatus.setCharging(true);
@@ -380,20 +386,46 @@ public class ChargeFragment extends Fragment {
                 //TODO 停止充电加速
                 batteryStatus.setAccelerate(false);
                 refreshBatteryView();
-                WifiUtil.openWifi(getContext());
-                BluetoothUtil.openBluetooth(getContext());
-                BrightnessUtil.saveBrightness(getActivity(), brightness, brightnessMode);
+//                WifiUtil.openWifi(getContext());
+//                BluetoothUtil.openBluetooth(getContext());
+//                BrightnessUtil.saveBrightness(getActivity(), brightness, brightnessMode);
 
             }else{
                 //设置充电加速
                 batteryStatus.setAccelerate(true);
                 refreshBatteryView();
                 //调节屏幕亮度、关闭wifi、关闭蓝牙
-                WifiUtil.closeWifi(getContext());
-                BluetoothUtil.closeBluetooth(getContext());
-                brightness = BrightnessUtil.getSystemBrightness(getContext());
-                brightnessMode = BrightnessUtil.getSystemBrightnessMode(getContext());
-                BrightnessUtil.saveBrightness(getActivity(), 0, 0);
+                boolean closeWifi = WifiUtil.closeWifi(getContext());
+                if(closeWifi){
+                    RotateXAnimation animation = new RotateXAnimation();
+//                    animation.setRepeatCount(1);
+//                    animation.setDuration(3000);
+                    battery.startAnimation(animation);
+                    animation.setAnimationListener(new Animation.AnimationListener() {
+                        @Override
+                        public void onAnimationStart(Animation animation) {
+                            TextView tvWifi = new TextView(getContext());
+                            int location[] = new int[2];
+                            battery.getLocationInWindow(location);
+
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animation animation) {
+
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animation animation) {
+
+                        }
+                    });
+                }
+
+//                BluetoothUtil.closeBluetooth(getContext());
+//                brightness = BrightnessUtil.getSystemBrightness(getContext());
+//                brightnessMode = BrightnessUtil.getSystemBrightnessMode(getContext());
+//                BrightnessUtil.saveBrightness(getActivity(), 0, 0);
             }
 
         }else{

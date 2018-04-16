@@ -28,6 +28,9 @@ public class BatteryStatus {
     private int connectType;
     private long chargeTime;
     private int randomTime;
+    private String voltage;
+    private String temp;
+    private int health;
 
 
     public BatteryStatus() {
@@ -124,5 +127,29 @@ public class BatteryStatus {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public String getVoltage() {
+        return voltage;
+    }
+
+    public void setVoltage(String voltage) {
+        this.voltage = voltage;
+    }
+
+    public String getTemp() {
+        return temp;
+    }
+
+    public void setTemp(String temp) {
+        this.temp = temp;
+    }
+
+    public int getHealth() {
+        return health;
+    }
+
+    public void setHealth(int health) {
+        this.health = health;
     }
 }

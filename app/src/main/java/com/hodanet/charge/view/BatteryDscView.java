@@ -85,7 +85,7 @@ public class BatteryDscView extends View{
         rectF.set(0, 0, getWidth(), getHeight());
         canvas.drawRoundRect(rectF, getHeight() / 2, getHeight() / 2, paintBg);
 
-        if(charging){
+        if(accelerate){
             rectF.set(0, 0, (float) (getWidth() / 100.0 * progress), getHeight());
             canvas.drawRoundRect(rectF, getHeight() /2 , getHeight() / 2, paintForground);
         }
@@ -119,33 +119,33 @@ public class BatteryDscView extends View{
         if(isCharging){//充电中
             if(!charging){
                 charging = true;
-                if(timer != null){
-                    timer.cancel();
-                    timer = null;
-                }
-                if(task != null){
-                    task.cancel();
-                    task = null;
-                }
-                timer = new Timer();
-                task = new TimerTask() {
-                    @Override
-                    public void run() {
-                        postInvalidate();
-                    }
-                };
-                timer.scheduleAtFixedRate(task, 0 , 50);
+//                if(timer != null){
+//                    timer.cancel();
+//                    timer = null;
+//                }
+//                if(task != null){
+//                    task.cancel();
+//                    task = null;
+//                }
+//                timer = new Timer();
+//                task = new TimerTask() {
+//                    @Override
+//                    public void run() {
+//                        postInvalidate();
+//                    }
+//                };
+//                timer.scheduleAtFixedRate(task, 0 , 50);
             }
         }else{
             charging = false;
-            if(timer != null){
-                timer.cancel();
-                timer = null;
-            }
-            if(task != null){
-                task.cancel();
-                task = null;
-            }
+//            if(timer != null){
+//                timer.cancel();
+//                timer = null;
+//            }
+//            if(task != null){
+//                task.cancel();
+//                task = null;
+//            }
         }
     }
 
