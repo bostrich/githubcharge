@@ -96,22 +96,17 @@ public class BatteryDscView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
 
-        paintBg.setXfermode(null);
         rectF.set(0, 0, getWidth(), getHeight());
         paintBg.setColor(getResources().getColor(R.color.white));
-        bitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.RGB_565);
-        can.drawRoundRect(rectF, getHeight() / 2, getHeight() / 2, paintBg);
-        rect.set(0, 0, (int) (getWidth() / 100.0 * openingProgress), getHeight());
-        canvas.drawBitmap(bitmap, rect, rect, paintBg);
-//        canvas.drawRoundRect(rectF, getHeight() / 2, getHeight() / 2, paintBg);
+        canvas.drawRoundRect(rectF, getHeight() / 2, getHeight() / 2, paintBg);
 
         //加速开启进度
         if(state == STATUS_OPEN_ACCELERATE){
             paintBg.setColor(getResources().getColor(R.color.charge_btn_50));
             rect.set(0, 0, (int) (getWidth() / 100.0 * openingProgress), getHeight());
-            paintBg.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-            canvas.drawBitmap(bitmap, rect, rect, paintBg);
+            paintBg.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_ATOP));
             canvas.drawRect(rect, paintBg);
+            paintBg.setXfermode(null);
         }
 
         //设置文字
