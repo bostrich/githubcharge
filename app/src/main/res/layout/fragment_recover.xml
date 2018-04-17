@@ -103,16 +103,23 @@
                     android:layout_height="0dp"
                     android:layout_weight="1"/>
 
-                <TextView
+                <!--<TextView-->
+                    <!--android:id="@+id/tv_charge_btn"-->
+                    <!--android:layout_marginTop="10dp"-->
+                    <!--android:textColor="@color/charge_btn"-->
+                    <!--android:textSize="20sp"-->
+                    <!--android:layout_width="185dp"-->
+                    <!--android:layout_height="48dp"-->
+                    <!--android:text="@string/recover_optimize"-->
+                    <!--android:gravity="center"-->
+                    <!--android:background="@drawable/charge_btn"/>-->
+
+                <com.hodanet.charge.view.RecoveryDscView
                     android:id="@+id/tv_charge_btn"
                     android:layout_marginTop="10dp"
-                    android:textColor="@color/charge_btn"
-                    android:textSize="20sp"
                     android:layout_width="185dp"
                     android:layout_height="48dp"
-                    android:text="@string/recover_optimize"
-                    android:gravity="center"
-                    android:background="@drawable/charge_btn"/>
+                   />
 
                 <View
                     android:layout_width="match_parent"

@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -111,6 +112,8 @@ public class ChargeFragment extends Fragment {
     RelativeLayout rlSlideMenu;
     @BindView(R.id.battery)
     BatteryChargeView2 battery;
+    @BindView(R.id.tv_acce_dsc)
+    TextView tvAcceDsc;
 
     private FloatAd floatView;
     private SpecialAd specialView;
@@ -295,16 +298,17 @@ public class ChargeFragment extends Fragment {
         batteryStatus.setTemp(event.getBatteryTem());
         switch (event.getStatus()) {
             case BatteryManager.BATTERY_STATUS_CHARGING:
-                batteryStatus.setCharging(true);
+                if(batteryStatus.getStatus() < BatteryStatus.BATTERY_CHARGE_NOMAL)
+                batteryStatus.setStatus(BatteryStatus.BATTERY_CHARGE_NOMAL);
                 break;
             case BatteryManager.BATTERY_STATUS_DISCHARGING:
-                batteryStatus.setCharging(false);
+                batteryStatus.setStatus(BatteryStatus.BATTERY_NOCHARGE);
                 break;
             case BatteryManager.BATTERY_STATUS_NOT_CHARGING:
 
                 break;
             case BatteryManager.BATTERY_STATUS_FULL:
-                batteryStatus.setCharging(true);
+                batteryStatus.setStatus(BatteryStatus.BATTERY_CHARGE_NOMAL);
                 break;
             case BatteryManager.BATTERY_STATUS_UNKNOWN:
 
@@ -318,27 +322,32 @@ public class ChargeFragment extends Fragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void connectedChange(BatteryConnectEvent event) {
-        batteryStatus.setCharging(event.isConnected());
+        if(event.isConnected()){
+            batteryStatus.setStatus(BatteryStatus.BATTERY_CHARGE_NOMAL);
+        }else{
+            batteryStatus.setStatus(BatteryStatus.BATTERY_NOCHARGE);
+        }
         batteryStatus.setConnectType(event.getConncectType());
         refreshBatteryView();
     }
 
     private void refreshBatteryView() {
-        battery.setAccelerate(batteryStatus.isAccelerate());
         battery.setPower(batteryStatus.getPowerPercent());
-        battery.setCharging(batteryStatus.isCharging());
-        tvChargeBtn.setCharging(batteryStatus.isCharging());
-        tvChargeBtn.setAccelerate(batteryStatus.isAccelerate());
-        if(batteryStatus.isCharging()){
+        battery.setState(batteryStatus.getStatus());
+        tvChargeBtn.setStatus(batteryStatus.getStatus());
+        if(batteryStatus.getStatus() == BatteryStatus.BATTERY_CHARGE_NOMAL){
             if(batteryStatus.getPowerPercent() == 100){
                 tvStatus.setText("电已充满,预估可用时间");
                 int time = batteryStatus.getBatteryRemainTime(getContext());
                 tvHour.setText(time / 60 + "");
                 tvMinute.setText(time % 60 + "");
-                tvChargeBtn.setCharging(false);
                 return;
             }
-            if(batteryStatus.isAccelerate()){
+            if(batteryStatus.getStatus() == BatteryStatus.BATTERY_OPEN_ACCELERATE){
+                tvChargeBtn.setStatus(BatteryStatus.BATTERY_OPEN_ACCELERATE);
+                return;
+            }
+            if(batteryStatus.getStatus() == BatteryStatus.BATTERY_CHARGE_ACCELERATE){
                 tvStatus.setText("快速充电中，预估节约时间");
                 tvChargeBtn.setEnabled(true);
                 int time = batteryStatus.getBatteryAccelerateTime();
@@ -381,38 +390,43 @@ public class ChargeFragment extends Fragment {
 
     @OnClick(R.id.tv_charge_btn)
     public void onViewClicked() {
-        if(batteryStatus.isCharging() && batteryStatus.getPowerPercent() < 100){
-            if(batteryStatus.isAccelerate()){
+        if(batteryStatus.getStatus() > BatteryStatus.BATTERY_NOCHARGE && batteryStatus.getPowerPercent() < 100){
+            if(batteryStatus.getStatus() == BatteryStatus.BATTERY_CHARGE_ACCELERATE){
                 //TODO 停止充电加速
-                batteryStatus.setAccelerate(false);
+                batteryStatus.setStatus(BatteryStatus.BATTERY_CHARGE_NOMAL);
                 refreshBatteryView();
-//                WifiUtil.openWifi(getContext());
-//                BluetoothUtil.openBluetooth(getContext());
-//                BrightnessUtil.saveBrightness(getActivity(), brightness, brightnessMode);
+                WifiUtil.openWifi(getContext());
+                BluetoothUtil.openBluetooth(getContext());
+                BrightnessUtil.saveBrightness(getActivity(), brightness, brightnessMode);
 
             }else{
                 //设置充电加速
-                batteryStatus.setAccelerate(true);
+                batteryStatus.setStatus(BatteryStatus.BATTERY_OPEN_ACCELERATE);
                 refreshBatteryView();
                 //调节屏幕亮度、关闭wifi、关闭蓝牙
+                //充电加速动画
                 boolean closeWifi = WifiUtil.closeWifi(getContext());
                 if(closeWifi){
-                    RotateXAnimation animation = new RotateXAnimation();
-//                    animation.setRepeatCount(1);
-//                    animation.setDuration(3000);
-                    battery.startAnimation(animation);
+                    tvAcceDsc.setVisibility(View.VISIBLE);
+                    tvAcceDsc.setText("关闭wifi");
+                    int[] locationSrc = new int[2];
+                    tvAcceDsc.getLocationOnScreen(locationSrc);
+                    int[] locationDsc = new int[2];
+                    tvStatus.getLocationOnScreen(locationDsc);
+                    Animation animation = new TranslateAnimation(0, 0
+                            , 0, locationDsc[1] - locationSrc[1]);
+                    animation.setDuration(1500);
                     animation.setAnimationListener(new Animation.AnimationListener() {
                         @Override
                         public void onAnimationStart(Animation animation) {
-                            TextView tvWifi = new TextView(getContext());
-                            int location[] = new int[2];
-                            battery.getLocationInWindow(location);
 
                         }
 
                         @Override
                         public void onAnimationEnd(Animation animation) {
-
+                            tvStatus.setText("关闭wifi");
+                            tvAcceDsc.setVisibility(View.GONE);
+                            startCloseBluetoothAnimation();
                         }
 
                         @Override
@@ -420,12 +434,11 @@ public class ChargeFragment extends Fragment {
 
                         }
                     });
+                    tvAcceDsc.startAnimation(animation);
+                }else{
+                    startCloseBluetoothAnimation();
                 }
 
-//                BluetoothUtil.closeBluetooth(getContext());
-//                brightness = BrightnessUtil.getSystemBrightness(getContext());
-//                brightnessMode = BrightnessUtil.getSystemBrightnessMode(getContext());
-//                BrightnessUtil.saveBrightness(getActivity(), 0, 0);
             }
 
         }else{
@@ -433,4 +446,87 @@ public class ChargeFragment extends Fragment {
         }
 
     }
+
+    /**
+     * 充电加速关闭蓝牙
+     */
+    private void startCloseBluetoothAnimation() {
+        boolean close = BluetoothUtil.closeBluetooth(getContext());
+        if(close){
+            tvAcceDsc.setVisibility(View.VISIBLE);
+            tvAcceDsc.setText("关闭蓝牙");
+            int[] locationSrc = new int[2];
+            tvAcceDsc.getLocationInWindow(locationSrc);
+            int[] locationDsc = new int[2];
+            tvStatus.getLocationInWindow(locationDsc);
+            Animation animation = new TranslateAnimation(0, 0
+                    , 0, locationDsc[1] - locationSrc[1]);
+            animation.setDuration(1500);
+            animation.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    tvStatus.setText("关闭蓝牙");
+                    tvAcceDsc.setVisibility(View.GONE);
+                    startChangeBrightness();
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
+            tvAcceDsc.startAnimation(animation);
+        }else{
+            startChangeBrightness();
+        }
+    }
+
+    private void startChangeBrightness() {
+        brightness = BrightnessUtil.getSystemBrightness(getContext());
+        brightnessMode = BrightnessUtil.getSystemBrightnessMode(getContext());
+        boolean close  =  BrightnessUtil.saveBrightness(getActivity(), 0, 0);
+        if(close){
+            tvAcceDsc.setVisibility(View.VISIBLE);
+            tvAcceDsc.setText("降低屏幕亮度");
+            int[] locationSrc = new int[2];
+            tvAcceDsc.getLocationInWindow(locationSrc);
+            int[] locationDsc = new int[2];
+            tvStatus.getLocationInWindow(locationDsc);
+            Animation animation = new TranslateAnimation(0, 0
+                    , 0, locationDsc[1] - locationSrc[1]);
+            animation.setDuration(1500);
+            animation.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    tvStatus.setText("降低屏幕亮度");
+                    tvAcceDsc.setVisibility(View.GONE);
+                    endAccelerateProgress();
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
+            tvAcceDsc.startAnimation(animation);
+        }else{
+            endAccelerateProgress();
+        }
+    }
+
+    private void endAccelerateProgress() {
+        batteryStatus.setStatus(BatteryStatus.BATTERY_CHARGE_ACCELERATE);
+        refreshBatteryView();
+    }
+
 }

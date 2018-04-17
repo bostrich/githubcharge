@@ -20,8 +20,12 @@ import java.util.TimerTask;
 
 public class BatteryChargeView2 extends View {
 
-    private boolean charging;
-    private boolean accelerate;
+    public static final int BATTERY_NOCHARGE = 0;
+    public static final int BATTERY_CHARGE_NOMAL = 1;
+    public static final int BATTERY_OPEN_ACCELERATE = 2;
+    public static final int BATTERY_CHARGE_ACCELERATE = 3;
+
+    private int state;
     private float power;
     private float fakePower;
 
@@ -83,7 +87,7 @@ public class BatteryChargeView2 extends View {
     @Override
     protected void onDraw(Canvas canvas) {
 
-        if(accelerate) {
+        if(state == BATTERY_CHARGE_ACCELERATE) {
             width = borderWidth;
         }else{
             width = normalWidth;
@@ -100,7 +104,7 @@ public class BatteryChargeView2 extends View {
             rect.set(start + i * space, (getHeight() - height) / 2
                     , start + i * space + width, (getHeight() + height) / 2);
 
-            if(charging){
+            if(state >= BATTERY_CHARGE_NOMAL){
                 if(fakePower - (i + 1) * 20 >= 0){
                     canvas.drawRect(rect, paintForground);
                 } else {
@@ -115,14 +119,29 @@ public class BatteryChargeView2 extends View {
             }
         }
 
-        if(charging){
-            fakePower += 20;
-            if(fakePower > 120) fakePower = power;
+        switch(state){
+            case BATTERY_OPEN_ACCELERATE:
+                fakePower += 100;
+                if(fakePower > 110) fakePower = 0;
+                break;
+            case BATTERY_CHARGE_NOMAL:
+                fakePower += 20;
+                if(fakePower > 120) fakePower = power;
+                break;
+            case BATTERY_CHARGE_ACCELERATE:
+                fakePower += 20;
+                if(fakePower > 120) fakePower = power;
+                break;
         }
 
         //写进度文字
+        String content = "";
+//        if(openAccelerate){
+//            content = "正在开启充电加速";
+//        }else{
+            content = (int) power + " " + "%";
+//        }
         int textWidth = (getWidth() - ScreenUtil.dipTopx(getContext(), 10)) / 2;
-        String content = (int) power + " " + "%";
         paintText.getTextBounds(content, 0, content.length(), rectText);
         canvas.drawText(content, textWidth, (getHeight() + rectText.height()) / 2, paintText);
     }
@@ -132,10 +151,19 @@ public class BatteryChargeView2 extends View {
         invalidate();
     }
 
-    public void setCharging(boolean isCharging){
-        if(isCharging){//充电中
-            if(!charging){
-                charging = true;
+
+    public void setState(int state){
+        if(state == BATTERY_NOCHARGE){
+            if(timer != null){
+                timer.cancel();
+                timer = null;
+            }
+            if(task != null){
+                task.cancel();
+                task = null;
+            }
+        }else if (state == BATTERY_CHARGE_NOMAL){
+            if(this.state !=  BATTERY_CHARGE_NOMAL){
                 if(timer != null){
                     timer.cancel();
                     timer = null;
@@ -153,23 +181,11 @@ public class BatteryChargeView2 extends View {
                 };
                 timer.scheduleAtFixedRate(task, 0 , 500);
             }
-        }else{
-            charging = false;
-            if(timer != null){
-                timer.cancel();
-                timer = null;
-            }
-            if(task != null){
-                task.cancel();
-                task = null;
-            }
-        }
-    }
+        }else if(state == BATTERY_OPEN_ACCELERATE){
 
-    public void setAccelerate(boolean accele){
-        if(accele){
-            if(!accelerate){
-                accelerate = true;
+
+        }else if(state == BATTERY_CHARGE_ACCELERATE){
+            if(this.state != BATTERY_CHARGE_ACCELERATE){
                 if(timer != null){
                     timer.cancel();
                     timer = null;
@@ -187,25 +203,8 @@ public class BatteryChargeView2 extends View {
                 };
                 timer.scheduleAtFixedRate(task, 0 , 250);
             }
-        }else{
-            accelerate = false;
-            if(timer != null){
-                timer.cancel();
-                timer = null;
-            }
-            if(task != null){
-                task.cancel();
-                task = null;
-            }
-            timer = new Timer();
-            task = new TimerTask() {
-                @Override
-                public void run() {
-                    postInvalidate();
-                }
-            };
-            timer.scheduleAtFixedRate(task, 0 , 500);
         }
+        this.state = state;
     }
 
 }

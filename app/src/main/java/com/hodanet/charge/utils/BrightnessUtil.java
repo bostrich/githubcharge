@@ -34,7 +34,7 @@ public class BrightnessUtil {
         return mode;
     }
 
-    public static void saveBrightness(Activity activity, int brightness, int mode) {
+    public static boolean saveBrightness(Activity activity, int brightness, int mode) {
         //需要关闭屏幕自动调节亮度的功能
         try{
             Settings.System.putInt(activity.getContentResolver(),
@@ -42,9 +42,11 @@ public class BrightnessUtil {
             Uri uri = Settings.System.getUriFor(Settings.System.SCREEN_BRIGHTNESS);
             Settings.System.putInt(activity.getContentResolver(), Settings.System.SCREEN_BRIGHTNESS, brightness);
             activity.getContentResolver().notifyChange(uri, null);
+            return true;
         }catch(Exception e){
             e.printStackTrace();
         }
+        return false;
     }
 
 

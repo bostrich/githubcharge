@@ -69,6 +69,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="400dp"
                 android:orientation="vertical"
+                android:clipChildren="false"
                 android:background="@mipmap/charge_bg_status"
                 android:gravity="center_horizontal">
 
@@ -79,6 +80,8 @@
 
                 <RelativeLayout
                     android:layout_width="match_parent"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
                     android:layout_height="185dp"
                     android:layout_marginTop="10dp">
                     
@@ -89,40 +92,15 @@
                         android:layout_centerInParent="true"
                         android:background="@mipmap/charge_battery"/>
 
-                    <!--<ImageView-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="match_parent"-->
-                        <!--android:src="@mipmap/charge_bg_circle" />-->
-                    <!--<com.hodanet.charge.view.BatteryRotateView-->
-                        <!--android:id="@+id/rotate"-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="match_parent"-->
-                        <!--android:background="@mipmap/charge_bg_circle"/>-->
-
-                    <!--<LinearLayout-->
-                        <!--android:orientation="vertical"-->
-                        <!--android:layout_centerInParent="true"-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content">-->
-
-                        <!--<com.hodanet.charge.view.BatteryChargeView-->
-                            <!--android:id="@+id/battery_charge"-->
-                            <!--android:layout_width="51dp"-->
-                            <!--android:layout_height="99dp"-->
-                            <!--android:layout_centerInParent="true"-->
-                            <!--android:background="@mipmap/charge_bg_battery" />-->
-
-                        <!--<TextView-->
-                            <!--android:id="@+id/tv_battery_percent"-->
-                            <!--android:layout_marginTop="5dp"-->
-                            <!--android:layout_width="match_parent"-->
-                            <!--android:layout_height="wrap_content"-->
-                            <!--android:gravity="center"-->
-                            <!--android:textColor="@color/charge_percentage"-->
-                            <!--android:textSize="15sp"-->
-                            <!--android:text="20%"/>-->
-
-                    <!--</LinearLayout>-->
+                    <TextView
+                        android:id="@+id/tv_acce_dsc"
+                        android:visibility="invisible"
+                        android:textSize="15sp"
+                        android:textColor="@color/white"
+                        android:text="关闭wifi"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"/>
 
                 </RelativeLayout>
 

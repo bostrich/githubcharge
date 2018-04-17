@@ -1,8 +1,12 @@
 package com.hodanet.charge.view;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Typeface;
@@ -20,19 +24,27 @@ import java.util.TimerTask;
  *
  */
 
-public class BatteryDscView extends View{
+public class BatteryDscView extends View {
 
     private Paint paintBg;
     private Paint paintForground;
     private Paint paintText;
     private RectF rectF;
     private float progress;
-    private Rect rectText;
+    private Rect rect;
     private String content = "";
 
+    public static final int STATUS_NOTCHARGE = 0;
+    public static final int STATUS_CHARGING = 1;
+    public static final int STATUS_OPEN_ACCELERATE = 2;
+    public static final int STATUS_ACCELERATE = 3;
+    private int state;
+
     //状态值
+    private Bitmap bitmap;
     private boolean charging;
-    private boolean accelerate;
+    private float openingProgress;
+    private Canvas can;
 
     private TimerTask task;
     private Timer timer;
@@ -53,7 +65,7 @@ public class BatteryDscView extends View{
         initParams();
     }
 
-    private void initParams(){
+    private void initParams() {
         paintBg = new Paint();
         paintBg.setAntiAlias(false);
         paintBg.setColor(getResources().getColor(R.color.white));
@@ -67,11 +79,13 @@ public class BatteryDscView extends View{
         paintText.setColor(getResources().getColor(R.color.charge_btn));
         paintText.setTextSize(ScreenUtil.dipTopx(getContext(), 20));
         paintText.setTextAlign(Paint.Align.CENTER);
-        paintText.setTypeface(Typeface.DEFAULT);
+        paintText.setTypeface(Typeface.SANS_SERIF);
 
         rectF = new RectF();
-        rectText = new Rect();
+        rect = new Rect();
 
+        bitmap = Bitmap.createBitmap(100, 100, Bitmap.Config.RGB_565);
+        can = new Canvas(bitmap);
     }
 
     @Override
@@ -82,112 +96,48 @@ public class BatteryDscView extends View{
     @Override
     protected void onDraw(Canvas canvas) {
 
+        paintBg.setXfermode(null);
         rectF.set(0, 0, getWidth(), getHeight());
-        canvas.drawRoundRect(rectF, getHeight() / 2, getHeight() / 2, paintBg);
+        paintBg.setColor(getResources().getColor(R.color.white));
+        bitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.RGB_565);
+        can.drawRoundRect(rectF, getHeight() / 2, getHeight() / 2, paintBg);
+        rect.set(0, 0, (int) (getWidth() / 100.0 * openingProgress), getHeight());
+        canvas.drawBitmap(bitmap, rect, rect, paintBg);
+//        canvas.drawRoundRect(rectF, getHeight() / 2, getHeight() / 2, paintBg);
 
-        if(accelerate){
-            rectF.set(0, 0, (float) (getWidth() / 100.0 * progress), getHeight());
-            canvas.drawRoundRect(rectF, getHeight() /2 , getHeight() / 2, paintForground);
+        //加速开启进度
+        if(state == STATUS_OPEN_ACCELERATE){
+            paintBg.setColor(getResources().getColor(R.color.charge_btn_50));
+            rect.set(0, 0, (int) (getWidth() / 100.0 * openingProgress), getHeight());
+            paintBg.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+            canvas.drawBitmap(bitmap, rect, rect, paintBg);
+            canvas.drawRect(rect, paintBg);
         }
 
-
-        if(!charging){
-            content = getResources().getString(R.string.charge_btn_consumer);
-        }else{
-            if(!accelerate){
+        //设置文字
+        switch (state) {
+            case STATUS_NOTCHARGE:
+                content = getResources().getString(R.string.charge_btn_consumer);
+                break;
+            case STATUS_CHARGING:
                 content = getResources().getString(R.string.charge_btn_open_accelerate);
-            }else{
-                if((int)progress / 33 == 0){
-                    content = getResources().getString(R.string.charge_btn_accelerate1);
-                }else if ((int)progress / 33 == 1){
-                    content = getResources().getString(R.string.charge_btn_accelerate2);
-                }else if((int)progress / 33 == 2){
-                    content = getResources().getString(R.string.charge_btn_accelerate3);
-                }
-            }
+                break;
+            case STATUS_OPEN_ACCELERATE:
+                content = getResources().getString(R.string.charge_btn_opening);
+                break;
+            case STATUS_ACCELERATE:
+                content = getResources().getString(R.string.charge_btn_accelerate_stop);
+                break;
         }
-        progress += 2;
-        if(progress > 100) progress = 0;
-        int textWidth = getWidth() / 2;
-        paintText.getTextBounds(content, 0, content.length(), rectText);
-        canvas.drawText(content, textWidth, (getHeight() + rectText.height()) / 2, paintText);
-
+        Paint.FontMetricsInt fontMetrics = paintText.getFontMetricsInt();
+        int baseline = (getHeight() - fontMetrics.bottom - fontMetrics.top) / 2;
+        canvas.drawText(content, getWidth() / 2, baseline, paintText);
     }
 
-
-    public void setCharging(boolean isCharging) {
-        if(isCharging){//充电中
-            if(!charging){
-                charging = true;
-//                if(timer != null){
-//                    timer.cancel();
-//                    timer = null;
-//                }
-//                if(task != null){
-//                    task.cancel();
-//                    task = null;
-//                }
-//                timer = new Timer();
-//                task = new TimerTask() {
-//                    @Override
-//                    public void run() {
-//                        postInvalidate();
-//                    }
-//                };
-//                timer.scheduleAtFixedRate(task, 0 , 50);
-            }
-        }else{
-            charging = false;
-//            if(timer != null){
-//                timer.cancel();
-//                timer = null;
-//            }
-//            if(task != null){
-//                task.cancel();
-//                task = null;
-//            }
-        }
+    public void setStatus(int status) {
+        this.state = status;
+        openingProgress = 50;
+        invalidate();
     }
 
-    public void setAccelerate(boolean accele) {
-        if(accele){
-            if(!accelerate){
-                accelerate = true;
-                if(timer != null){
-                    timer.cancel();
-                    timer = null;
-                }
-                if(task != null){
-                    task.cancel();
-                    task = null;
-                }
-                timer = new Timer();
-                task = new TimerTask() {
-                    @Override
-                    public void run() {
-                        postInvalidate();
-                    }
-                };
-                timer.scheduleAtFixedRate(task, 0 , 25);
-            }
-        }else{
-            accelerate = false;
-            if(timer != null){
-                timer.cancel();
-                timer = null;
-            }
-            if(task != null){
-                task.cancel();
-                task = null;
-            }
-            timer = new Timer();
-            task = new TimerTask() {
-                @Override
-                public void run() {
-                    postInvalidate();
-                }
-            };
-            timer.scheduleAtFixedRate(task, 0 , 50);
-        }
-    }
 }

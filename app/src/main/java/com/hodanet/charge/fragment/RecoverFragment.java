@@ -32,6 +32,7 @@ import com.hodanet.charge.utils.ScreenUtil;
 import com.hodanet.charge.utils.SpUtil;
 import com.hodanet.charge.view.BatteryHorizontalView;
 import com.hodanet.charge.view.RecoverRotateView;
+import com.hodanet.charge.view.RecoveryDscView;
 
 import org.json.JSONObject;
 
@@ -56,7 +57,7 @@ public class RecoverFragment extends Fragment {
     @BindView(R.id.rl_title)
     RelativeLayout rlTitle;
     @BindView(R.id.tv_charge_btn)
-    TextView tvChargeBtn;
+    RecoveryDscView tvChargeBtn;
     @BindView(R.id.ll_content)
     LinearLayout llContent;
     @BindView(R.id.ll_recommend)
@@ -146,7 +147,7 @@ public class RecoverFragment extends Fragment {
                 switch(msg.what){
                     case CHECK:
                         tvChargeBtn.setEnabled(false);
-                        tvChargeBtn.setText("电池检测中...");
+                        tvChargeBtn.setProgress(0, "电池检测中...");
                         battery.setChecking(true);
                         tvScore.setVisibility(View.INVISIBLE);
                         long delayTime = (long) ((Math.random() * 3 + 5) * 1000);
@@ -168,8 +169,7 @@ public class RecoverFragment extends Fragment {
         imgCircleStatus.setVisibility(View.GONE);
         imgCircleTemp.setVisibility(View.GONE);
         imgCircleVoltage.setVisibility(View.GONE);
-
-        batteryRotate.start();
+        batteryRotate.setVisibility(View.GONE);
 
     }
 
@@ -216,8 +216,10 @@ public class RecoverFragment extends Fragment {
             }else{
                 recovered = true;
                 recoveryScore = obj.optInt(RECOVERY_SCORE);
-                setScore(recoveryScore, "已修复");
+                setScore(recoveryScore, "已修复", 0);
                 tvChargeBtn.setEnabled(false);
+                batteryRotate.setVisibility(View.VISIBLE);
+                batteryRotate.start();
             }
         }catch(Exception e){
             e.printStackTrace();
@@ -271,12 +273,15 @@ public class RecoverFragment extends Fragment {
             public void onAnimationUpdate(ValueAnimator animation) {
                 float percent = (float) animation.getAnimatedValue();
                 LogUtil.e(TAG, "数值：" + percent);
-                int stage  = start + (int) ((result - start) * percent);
-                setScore(stage, "修复中...");
+                int stage  = (int) (result * percent);
+                setScore(stage, "修复中...", percent);
                 if(percent == 1){
-
-                    tvChargeBtn.setText("已修复");
+                    tvChargeBtn.setProgress(0, "已修复");
                     tvChargeBtn.setEnabled(false);
+                    if(!batteryRotate.isShown()){
+                        batteryRotate.setVisibility(View.VISIBLE);
+                        batteryRotate.start();
+                    }
                 }
 
             }
@@ -295,18 +300,21 @@ public class RecoverFragment extends Fragment {
     }
 
 
-    public void setScore(int score, String status){
+    public void setScore(int score, String status, float progress){
         if(score < 60){
             tvScore.setTextColor(getResources().getColor(R.color.recover_battery_forground));
+            tvStatus.setText("差");
         }else if(score < 80){
             tvScore.setTextColor(getResources().getColor(R.color.recover_battery_80));
+            tvStatus.setText("良");
         }else{
             tvScore.setTextColor(getResources().getColor(R.color.recover_battery_100));
+            tvStatus.setText("优");
         }
         tvScore.setText(score + "");
         tvScore.setVisibility(View.VISIBLE);
         LogUtil.e(TAG, "score:" + score);
-        tvChargeBtn.setText(status);
+        tvChargeBtn.setProgress(progress, status);
         battery.setPercent(score);
     }
 
@@ -314,8 +322,21 @@ public class RecoverFragment extends Fragment {
         if(!recovered){
             recovered = true;
             battery.setChecking(false);
-            setScore(getBatteryScore(), "立即修复");
-            tvChargeBtn.setEnabled(true);
+            final int score = getBatteryScore();
+            ValueAnimator animator = ValueAnimator.ofFloat(0, 1);
+            animator.setDuration(3000);
+            animator.setInterpolator(new LinearInterpolator());
+            animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    float value = (float) animation.getAnimatedValue();
+                    setScore((int) (score * value), "立即修复", 0);
+                    if(value == 1){
+                        tvChargeBtn.setEnabled(true);
+                    }
+                }
+            });
+            animator.start();
         }
     }
 
@@ -325,31 +346,6 @@ public class RecoverFragment extends Fragment {
         tvTemp.setText(status.getTemp());
         tvVoltage.setText(status.getVoltage());
         score = status.getPowerPercent();
-        switch (status.getHealth()) {
-            case BatteryManager.BATTERY_HEALTH_GOOD:
-                tvStatus.setText("优");
-                break;
-            case BatteryManager.BATTERY_HEALTH_OVERHEAT:
-                tvStatus.setText("一般");
-                break;
-            case BatteryManager.BATTERY_HEALTH_DEAD:
-                tvStatus.setText("一般");
-                break;
-            case BatteryManager.BATTERY_HEALTH_OVER_VOLTAGE:
-                tvStatus.setText("差");
-                break;
-            case BatteryManager.BATTERY_HEALTH_UNSPECIFIED_FAILURE:
-                tvStatus.setText("差");
-
-                break;
-            case BatteryManager.BATTERY_HEALTH_COLD:
-                tvStatus.setText("差");
-
-                break;
-            default:
-                tvStatus.setText("一般");
-                break;
-        }
     }
 
 
