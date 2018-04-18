@@ -7,7 +7,10 @@ import com.hodanet.charge.config.ChannelConfig;
 import com.hodanet.charge.config.ConsConfig;
 import com.hodanet.charge.fragment.surfing.SurfingHotNewsFragment;
 import com.hodanet.charge.greendao.StandardInfo;
+import com.hodanet.charge.info.channel.ChannelChangeInfo;
+import com.hodanet.charge.info.channel.ChannelInfo;
 import com.hodanet.charge.info.Constants;
+import com.hodanet.charge.info.channel.ShieldCityInfo;
 import com.hodanet.charge.info.hot.NewsInfo;
 import com.hodanet.charge.info.hot.TabItemInfo;
 import com.hodanet.charge.info.pic.WallpaperClassifyBean;
@@ -28,6 +31,7 @@ import java.util.List;
 
 public class ParseUtil {
 
+    private static final String TAG = ParseUtil.class.getName();
     public static String rowkey = "";
 
     /**
@@ -56,9 +60,9 @@ public class ParseUtil {
                         if (groupPosition.length == 2) {
                             info.setPosition(Integer.parseInt(groupPosition[1]));
                             if (groupPosition[0].equals("3")) {
-                                if(!ChannelConfig.SPLASH){
-                                    if(info.getInnerName().equals("news")) tabItemInfos.add(info);
-                                }else{
+                                if (!ChannelConfig.SPLASH) {
+                                    if (info.getInnerName().equals("news")) tabItemInfos.add(info);
+                                } else {
                                     tabItemInfos.add(info);
                                 }
 
@@ -80,11 +84,11 @@ public class ParseUtil {
      */
     public static List<NewsInfo> getNewsRecommendList(boolean isFirst, boolean isShowAd, String newsSource) throws JSONException, IOException {
         List<NewsInfo> newsInfos = new ArrayList<>();
-        if(newsSource.equals(ConsConfig.NEWS_SOURCE_DF)){
+        if (newsSource.equals(ConsConfig.NEWS_SOURCE_DF)) {
             newsInfos.addAll(getNewsFromDF(isFirst));
-        }else if(newsSource.equals(ConsConfig.NEWS_SOURCE_TT)){
+        } else if (newsSource.equals(ConsConfig.NEWS_SOURCE_TT)) {
             newsInfos.addAll(getNewsFromTT());
-        }else{
+        } else {
             newsInfos.addAll(getNewsFromSelf(isFirst, isShowAd));
         }
         return newsInfos;
@@ -93,9 +97,9 @@ public class ParseUtil {
     private static List<NewsInfo> getNewsFromDF(boolean isFirst) throws IOException, JSONException {
         List<NewsInfo> newsInfos = new ArrayList<>();
         String response = "";
-        if(isFirst || rowkey.equals("")){
+        if (isFirst || rowkey.equals("")) {
             response = HttpUtils.getResponse(ConsConfig.URL_EAST_NEWS);
-        }else{
+        } else {
             response = HttpUtils.getResponse("https://newswifiapi.dftoutiao.com/jsonnew/next?type=toutiao&startkey="
                     + rowkey + "&qid=wifixhwy&ispc=0&num=20");
         }
@@ -121,12 +125,12 @@ public class ParseUtil {
             for (int j = 0; j < imgs.length(); j++) {
                 JSONObject temp = imgs.optJSONObject(j);
                 String img1 = temp.optString("src");
-                if(j == 0) info.picUrl = img1;
+                if (j == 0) info.picUrl = img1;
                 sb.append(img1);
                 if (j != imgs.length() - 1) {
                     sb.append("|");
                 }
-                size ++;
+                size++;
             }
             info.imgs = sb.toString();
             if (size >= 3) {
@@ -135,7 +139,7 @@ public class ParseUtil {
                 info.infoType = (ConsConfig.NEWS_TYPE_PIC_TEXT);
             }
             newsInfos.add(info);
-            if(i == jsonArray.length() - 1) rowkey = bean.optString("rowkey");
+            if (i == jsonArray.length() - 1) rowkey = bean.optString("rowkey");
         }
         return newsInfos;
     }
@@ -153,9 +157,9 @@ public class ParseUtil {
             newsInfo.name = obj.optString("title");
             newsInfo.source = obj.optString("author");
             String picUrl = obj.optString("pic1");
-            if(picUrl.equals("")){
+            if (picUrl.equals("")) {
                 newsInfo.infoType = Constants.ITEM_SHOW_TYPE_SIMPLE_TEXT;
-            }else{
+            } else {
                 newsInfo.infoType = Constants.ITEM_SHOW_TYPE_SINGLE_IMG;
                 newsInfo.picUrl = picUrl;
             }
@@ -172,6 +176,7 @@ public class ParseUtil {
 
     /**
      * 从自有服务器获取新闻
+     *
      * @param isFirst
      * @param isShowAd
      * @return
@@ -245,7 +250,8 @@ public class ParseUtil {
             JSONObject bannerData = json.optJSONObject("data");
             if (bannerData != null) {
                 JSONArray bannerAd;
-                String deviceCompany = AppConfig.getMetaDate(context, "UMENG_CHANNEL");
+                String deviceCompany = !ChannelConfig.WRAP_CHANNEL.equals("") ?
+                        ChannelConfig.WRAP_CHANNEL : AppConfig.getMetaDate(context.getApplicationContext(), "UMENG_CHANNEL");
                 if (deviceCompany == null || deviceCompany.equals("")) {
                     bannerAd = bannerData.optJSONArray("bannerAdvs");
                 } else {
@@ -267,10 +273,10 @@ public class ParseUtil {
                             info.setName(obj.optString("advName"));
                             info.setPicUrl(obj.optString("banner"));
                             info.setDesUrl(obj.optString("advUrl"));
-                            if(subType == 41){
+                            if (subType == 41) {
                                 info.setType(StandardInfo.TYPE_WEB);
                                 info.setPosition(StandardInfo.BANNER);
-                            }else{
+                            } else {
                                 info.setType(StandardInfo.TYPE_APK);
                                 info.setPosition(StandardInfo.BANNER);
                             }
@@ -296,15 +302,110 @@ public class ParseUtil {
             bean.setNewVer(obj.optInt("newVer"));
             bean.setCover(obj.optString("cover"));
             bean.setDsc(obj.optString("dsc"));
-            if(ChannelConfig.SPLASH){
+            if (ChannelConfig.SPLASH) {
                 list.add(bean);
-            }else{
-                if(!bean.getId().equals("sexy") && !bean.getId().equals("woman") && !bean.getId().equals("summer")){
+            } else {
+                if (!bean.getId().equals("sexy") && !bean.getId().equals("woman") && !bean.getId().equals("summer")) {
                     list.add(bean);
                 }
             }
         }
         return list;
+    }
+
+    public static List<ChannelInfo> getChnanelInfo(String result) {
+        List<ChannelInfo> channelInfos = new ArrayList<>();
+        try {
+            JSONObject obj = new JSONObject(result);
+            JSONArray arys = obj.optJSONArray("data");
+            for (int i = 0; i < arys.length(); i++) {
+                JSONObject temp = arys.optJSONObject(i);
+                ChannelInfo info = new ChannelInfo();
+                info.setChannel(temp.optString("channel"));
+                info.setSplash(temp.optInt("splash"));
+                channelInfos.add(info);
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return channelInfos;
+    }
+
+
+    /**
+     * 获取屏蔽城市信息(在解析中处理异常，让后续继续执行)
+     * 接口返回参数：spCityAds: [{cityId: "179",cityName: "杭州",adName: "tencent"}]
+     *
+     * @param result 接口访问结果
+     * @return
+     */
+    public static List<ShieldCityInfo> getShieldCityInfos(String result) {
+        List<ShieldCityInfo> list = new ArrayList<>();
+        JSONObject object = null;
+        try {
+            object = new JSONObject(result);
+            JSONArray citys = object.optJSONArray("spCityAd");
+            if (citys != null) {
+                for (int i = 0; i < citys.length(); i++) {
+                    JSONObject obj_info = citys.optJSONObject(i);
+                    ShieldCityInfo shieldInfo = new ShieldCityInfo();
+                    shieldInfo.setCityName(obj_info.optString("spName"));
+                    shieldInfo.setChannel(obj_info.optString("adName"));
+                    list.add(shieldInfo);
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+
+    /**
+     *  获取需要变更的渠道信息
+     *  spChannelAds: [{spName: "tencent",adName: "tencent"}]
+     * @param result
+     * @return
+     */
+    public static List<ChannelChangeInfo> getNeedChangeChannelInfos(String result) {
+        List<ChannelChangeInfo> list = new ArrayList<>();
+        try {
+            JSONObject obj = new JSONObject(result);
+            JSONArray objs = obj.optJSONArray("spChannelAd");
+            if (objs != null) {
+                for (int i = 0; i < objs.length(); i++) {
+                    JSONObject changeInfo = objs.optJSONObject(i);
+                    ChannelChangeInfo info = new ChannelChangeInfo();
+                    info.setNeedChangeChannelName(changeInfo.optString("spName"));
+                    info.setChangedChannelName(changeInfo.optString("adName"));
+                    list.add(info);
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    /**
+     * 从淘宝接口获取城市信息
+     * {code: 0,data: {country: "中国",city: "杭州市",ity_id: "330100",ip: "60.191.52.100"}}
+     * @return 返回城市信息
+     */
+    public static String getCityFromTaobaoInterface(Context context){
+        String city = null;
+        try {
+            String result = HttpUtils.requestCityFromTaobao();
+            LogUtil.e(TAG, "淘宝接口返回数据：" + result);
+            JSONObject obj = new JSONObject(result);
+            JSONObject cityInfo = obj.optJSONObject("data");
+            city = cityInfo.optString("city");
+        } catch (Exception e) {
+            e.printStackTrace();
+            city = SpUtil.getStringData(context, SpUtil.TAOBAO_CITY, "");
+        }
+        return city;
     }
 
 

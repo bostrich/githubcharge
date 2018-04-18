@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.hodanet.charge.R;
 import com.hodanet.charge.config.AppConfig;
+import com.hodanet.charge.config.ChannelConfig;
 import com.hodanet.charge.utils.ToastUtil;
 
 import butterknife.BindView;
@@ -56,7 +57,7 @@ public class AboutActivity extends BaseActivity {
                 clickTime ++;
                 if(clickTime >= 4){
                     ToastUtil.toastLong(this, AppConfig.CHANNEL + "  " + AppConfig.VERSION_NAME
-                            + "   " + AppConfig.VERSION_CODE);
+                            + "   " + AppConfig.VERSION_CODE + "  " + ChannelConfig.WRAP_CHANNEL);
                 }
                 break;
         }

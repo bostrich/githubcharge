@@ -140,7 +140,7 @@ public class ChargeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+
         View view = inflater.inflate(R.layout.fragment_charge, container, false);
         unbinder = ButterKnife.bind(this, view);
         EventBus.getDefault().register(this);
@@ -184,8 +184,6 @@ public class ChargeFragment extends Fragment {
         }
         initNews();
 
-        //获取电池信息
-        BatteryManager manager = (BatteryManager) getContext().getSystemService(Context.BATTERY_SERVICE);
 
     }
 
@@ -404,7 +402,7 @@ public class ChargeFragment extends Fragment {
                 //调节屏幕亮度、关闭wifi、关闭蓝牙
                 //充电加速动画
                 Stats.event(getContext(), "charge_accelerate_click");
-                tvStatus.setText("充电加速准备中...");
+                tvStatus.setText("充电加速适配方案中...");
                 boolean closeWifi = WifiUtil.closeWifi(getContext());
                 if(closeWifi){
                     tvAcceDsc.setVisibility(View.VISIBLE);

@@ -7,10 +7,10 @@ android {
 
     signingConfigs {
         release {
-            keyAlias 'hongda'
-            keyPassword '123456'
-            storeFile file('/keystore/AndroidKey')
-            storePassword '123456'
+            keyAlias 'charge'
+            keyPassword 'hodanet'
+            storeFile file('/keystore/hodaChargeAppKey')
+            storePassword 'hodanet'
         }
     }
     compileSdkVersion 25
@@ -19,8 +19,8 @@ android {
         applicationId "com.hodanet.charge"
         minSdkVersion 14
         targetSdkVersion 21
-        versionCode 13
-        versionName "2.2.1"
+        versionCode 31
+        versionName "2.3.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }
@@ -43,7 +43,7 @@ android {
     }
 
     productFlavors {
-        ABC {}
+        qihu {}
     }
 }
 

@@ -107,7 +107,8 @@ public class SpecialAd {
                             JSONObject ringData = json.optJSONObject("data");
                             if (ringData != null) {
                                 JSONArray ringAds;
-                                String deviceCompany = AppConfig.getMetaDate(context.getApplicationContext(), "UMENG_CHANNEL");
+                                String deviceCompany = !ChannelConfig.WRAP_CHANNEL.equals("") ?
+                                        ChannelConfig.WRAP_CHANNEL : AppConfig.getMetaDate(context.getApplicationContext(), "UMENG_CHANNEL");
                                 if (deviceCompany == null || deviceCompany.equals("")) {
                                     ringAds = ringData.optJSONArray("specialRecommends");
                                 } else {

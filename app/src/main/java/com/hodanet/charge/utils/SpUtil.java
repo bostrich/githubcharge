@@ -15,7 +15,9 @@ public class SpUtil {
     public static final String RECOVER_TIME = "recover_time";
     public static final String RECOVER_INFO = "recover_info";
     public static final String DISCOVERY_CLICK_TIME = "discovery_click_time";
+    public static final String TAOBAO_CITY = "taobao_city";
     private static String CONFIG = "config";
+
 
     private static SharedPreferences sharedPreferences;
 

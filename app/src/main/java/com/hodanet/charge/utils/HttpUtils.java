@@ -493,6 +493,49 @@ public class HttpUtils {
     }
 
     /**
+     * 从淘宝接口获取城市信息
+     * @return
+     */
+    public static String requestCityFromTaobao() throws IOException {
+        String res = getIpFromTaobao("http://ip.taobao.com/service/getIpInfo2.php?ip=myip", "");
+        return res;
+    }
+
+    public static String getIpFromTaobao(String url, String param) throws IOException {
+        LogUtil.i(TAG, "访问接口：" + url + "\n" + param);
+        // 创建HTTP连接
+        HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
+        conn.setRequestProperty("Content-Type", "text/html");
+        conn.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 7.0; Windows 7)");
+        conn.setConnectTimeout(5000);
+        conn.setReadTimeout(5000);
+        String result = "";
+        int responseCode = conn.getResponseCode();
+        if (responseCode == HttpURLConnection.HTTP_OK) {
+            InputStream is = conn.getInputStream(); // 获取输入流，此时才真正建立链接
+            InputStreamReader isr = new InputStreamReader(is);
+            BufferedReader bufferReader = new BufferedReader(isr);
+            String line = "";
+            while ((line = bufferReader.readLine()) != null) {
+                result += line + "\n";
+            }
+            if (bufferReader != null) {
+                bufferReader.close();
+            }
+            if (bufferReader != null) {
+                isr.close();
+            }
+            if (bufferReader != null) {
+                is.close();
+            }
+            return result;
+        } else {
+            LogUtil.i(TAG, "ResponseCode:" + responseCode);
+        }
+        return "";
+    }
+
+    /**
      * wifi upload
      *
      * @param mac

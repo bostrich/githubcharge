@@ -4,6 +4,7 @@ import android.content.Context;
 
 
 import com.hodanet.charge.config.AppConfig;
+import com.hodanet.charge.config.ChannelConfig;
 import com.hodanet.charge.config.CustomInfo;
 import com.hodanet.charge.greendao.GreenDaoManager;
 import com.hodanet.charge.greendao.StandardInfo;
@@ -97,7 +98,8 @@ public class RecommandModel {
             JSONObject json = new JSONObject(result).optJSONObject("data");
             if (json != null) {
                 JSONArray appArray;
-                String deviceCompany = AppConfig.getMetaDate(context, "UMENG_CHANNEL");
+                String deviceCompany = !ChannelConfig.WRAP_CHANNEL.equals("") ?
+                        ChannelConfig.WRAP_CHANNEL : AppConfig.getMetaDate(context.getApplicationContext(), "UMENG_CHANNEL");
                 if (deviceCompany == null || deviceCompany.equals("")) {
                     appArray = json.optJSONArray("hotRecommends");
                 } else {
