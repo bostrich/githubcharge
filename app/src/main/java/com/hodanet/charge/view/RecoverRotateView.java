@@ -32,6 +32,9 @@ public class RecoverRotateView extends View {
     private Paint paint;
     private float scaleX;
     private float scaleY;
+    private Timer timer;
+    private TimerTask task;
+    private long delayTime;
 
     public RecoverRotateView(Context context) {
         super(context);
@@ -84,13 +87,22 @@ public class RecoverRotateView extends View {
                     , getHeight() - dotRadius * 2 - (dotPosition - (getWidth() * 2 + getHeight() - dotRadius * 2 * 3)));
         }
         canvas.drawBitmap(bitmap, matrix, paint);
-        dotPosition += 5;
+        dotPosition += (length / (delayTime / 50));
         dotPosition = dotPosition % length;
     }
 
-    public void start(){
-        Timer timer = new Timer();
-        TimerTask task = new TimerTask() {
+    public void start(long delayTime){
+        this.delayTime  = delayTime;
+        if(timer != null){
+            timer.cancel();
+            timer = null;
+        }
+        if(task != null){
+            task.cancel();
+            task = null;
+        }
+        timer = new Timer();
+        task = new TimerTask() {
             @Override
             public void run() {
                 postInvalidate();

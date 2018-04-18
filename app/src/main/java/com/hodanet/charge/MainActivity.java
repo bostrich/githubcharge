@@ -27,6 +27,7 @@ import com.hodanet.charge.info.report.RingSlideMenuInfo;
 import com.hodanet.charge.model.RingAd;
 import com.hodanet.charge.receiver.BatteryBroadcastReceiver;
 import com.hodanet.charge.utils.SpUtil;
+import com.hodanet.charge.utils.Stats;
 import com.hodanet.charge.utils.ToastUtil;
 import com.syezon.component.AdManager;
 
@@ -98,6 +99,7 @@ public class MainActivity extends BaseActivity {
         chargeFragment = new ChargeFragment();
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.add(R.id.fl_content_fragment, chargeFragment).show(chargeFragment).commit();
+        Stats.event(this, "tab_charge_click");
 
         initView();
         initBroadcast();
@@ -183,17 +185,21 @@ public class MainActivity extends BaseActivity {
         switch (view.getId()) {
             case R.id.ll_tab_charge:
                 tabClick(view.getId());
+                Stats.event(this, "tab_charge_click");
                 break;
             case R.id.ll_tab_recover:
                 tabClick(view.getId());
+                Stats.event(this, "tab_recover_click");
                 break;
             case R.id.ll_tab_discovery:
                 tabClick(view.getId());
                 vDotDiscovery.setVisibility(View.GONE);
                 SpUtil.saveLongData(this, SpUtil.DISCOVERY_CLICK_TIME, System.currentTimeMillis());
+                Stats.event(this, "tab_discovery_click");
                 break;
             case R.id.ll_tab_hot:
                 tabClick(view.getId());
+                Stats.event(this, "tab_hot_click");
                 break;
             case R.id.fl_content_fragment:
                 break;

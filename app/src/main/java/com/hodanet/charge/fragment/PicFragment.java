@@ -209,7 +209,6 @@ public class PicFragment extends Fragment {
                         Intent intent = new Intent(getContext(), WallPaperActivity.class);
                         intent.putExtra(INTENT_KEY_THEME_WALLPAPERS, themeWallpaperString);
                         startActivity(intent);
-                        Stats.event(getContext(), "wk_pic_category_click");
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -230,7 +229,6 @@ public class PicFragment extends Fragment {
             @Override
             public void onPageSelected(int position) {
                 setSelectedView(position);
-                Stats.event(getContext(), "wk_pic_category_show");
             }
 
             @Override
@@ -337,7 +335,6 @@ public class PicFragment extends Fragment {
             if(llError != null && llError.isShown()){
                 initData();
             }
-            Stats.event(getContext(), "wk_main_tab_girl_show");
         }
 
     }

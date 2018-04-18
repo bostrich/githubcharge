@@ -31,6 +31,7 @@ import com.hodanet.charge.info.report.RecommendRecoverReportInfo;
 import com.hodanet.charge.model.RecommendModelView;
 import com.hodanet.charge.utils.ScreenUtil;
 import com.hodanet.charge.utils.SpUtil;
+import com.hodanet.charge.utils.Stats;
 import com.hodanet.charge.utils.TaskManager;
 import com.hodanet.charge.view.IgnoreDialog;
 
@@ -99,6 +100,7 @@ public class PowerOptimizeActivity extends BaseActivity {
         initView();
         initHandler();
         initData();
+        Stats.event(this, "optimize_power_show");
     }
 
     @Override
@@ -231,6 +233,7 @@ public class PowerOptimizeActivity extends BaseActivity {
                 finish();
                 break;
             case R.id.tv_optimize:
+                Stats.event(this, "saving_power_click");
                 clearListItem(mAppInfos.size() - 1);
                 try {
                     JSONObject obj = new JSONObject();

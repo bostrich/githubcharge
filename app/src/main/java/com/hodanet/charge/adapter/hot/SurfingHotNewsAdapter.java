@@ -248,12 +248,11 @@ public class SurfingHotNewsAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 }else{
                     po = 3;
                 }
-                Stats.event(context, "wk_found_promote_position" + po + "_click");
+
                 Stats.reportAdv((int) newsInfo.id, Stats.REPORT_TYPE_CLICK, Stats.ADV_TYPE_CONNECT, Stats.SURFING_NEWS_TUIGUANG);
                 WebLaunchUtil.launchWeb(context,newsInfo.name,newsInfo.clickUrl,false, new WebHelper.SimpleWebLoadCallBack(){
                     @Override
                     public void loadComplete(String url) {
-                        Stats.event(mContext, "wk_found_promote_position" + po + "_show");
                         Stats.reportAdv((int) newsInfo.id, Stats.REPORT_TYPE_SHOW, Stats.ADV_TYPE_CONNECT, Stats.SURFING_NEWS_TUIGUANG);
                     }
                 });
@@ -271,11 +270,11 @@ public class SurfingHotNewsAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                     default:
                         break;
                 }
-//                Stats.event(context, "wk_found_news_click");
+                Stats.eventWithMap(context, Constants.UMENTG_ID_NEWS
+                        , Constants.Event.CLICK.getActionName(), "hot");
                 WebHelper.launcheNewsWeb(context,newsInfo.name,newsInfo.clickUrl,false, new WebHelper.SimpleWebLoadCallBack(){
                     @Override
                     public void loadComplete(String url) {
-                        Stats.event(mContext, "wk_found_news_show");
                     }
                 });
             }

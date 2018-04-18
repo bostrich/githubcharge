@@ -46,9 +46,9 @@ import com.hodanet.charge.utils.BluetoothUtil;
 import com.hodanet.charge.utils.BrightnessUtil;
 import com.hodanet.charge.utils.HttpUtils;
 import com.hodanet.charge.utils.ScreenUtil;
+import com.hodanet.charge.utils.Stats;
 import com.hodanet.charge.utils.TaskManager;
 import com.hodanet.charge.utils.WifiUtil;
-import com.hodanet.charge.utils.animation.RotateXAnimation;
 import com.hodanet.charge.view.BatteryChargeView2;
 import com.hodanet.charge.view.BatteryDscView;
 
@@ -154,7 +154,6 @@ public class ChargeFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (floatView != null) floatView.showView();
     }
 
     @Override
@@ -335,7 +334,7 @@ public class ChargeFragment extends Fragment {
         battery.setPower(batteryStatus.getPowerPercent());
         battery.setState(batteryStatus.getStatus());
         tvChargeBtn.setStatus(batteryStatus.getStatus());
-        if(batteryStatus.getStatus() == BatteryStatus.BATTERY_CHARGE_NOMAL){
+        if(batteryStatus.getStatus() >= BatteryStatus.BATTERY_CHARGE_NOMAL){
             if(batteryStatus.getPowerPercent() == 100){
                 tvStatus.setText("电已充满,预估可用时间");
                 int time = batteryStatus.getBatteryRemainTime(getContext());
@@ -392,19 +391,20 @@ public class ChargeFragment extends Fragment {
     public void onViewClicked() {
         if(batteryStatus.getStatus() > BatteryStatus.BATTERY_NOCHARGE && batteryStatus.getPowerPercent() < 100){
             if(batteryStatus.getStatus() == BatteryStatus.BATTERY_CHARGE_ACCELERATE){
-                //TODO 停止充电加速
+                Stats.event(getContext(), "charge_accelerate_stop_click");
                 batteryStatus.setStatus(BatteryStatus.BATTERY_CHARGE_NOMAL);
                 refreshBatteryView();
                 WifiUtil.openWifi(getContext());
                 BluetoothUtil.openBluetooth(getContext());
                 BrightnessUtil.saveBrightness(getActivity(), brightness, brightnessMode);
-
             }else{
                 //设置充电加速
                 batteryStatus.setStatus(BatteryStatus.BATTERY_OPEN_ACCELERATE);
                 refreshBatteryView();
                 //调节屏幕亮度、关闭wifi、关闭蓝牙
                 //充电加速动画
+                Stats.event(getContext(), "charge_accelerate_click");
+                tvStatus.setText("充电加速准备中...");
                 boolean closeWifi = WifiUtil.closeWifi(getContext());
                 if(closeWifi){
                     tvAcceDsc.setVisibility(View.VISIBLE);
@@ -413,6 +413,7 @@ public class ChargeFragment extends Fragment {
                     tvAcceDsc.getLocationOnScreen(locationSrc);
                     int[] locationDsc = new int[2];
                     tvStatus.getLocationOnScreen(locationDsc);
+                    tvChargeBtn.setStatusAnimation(BatteryStatus.BATTERY_OPEN_ACCELERATE, 1200, 33);
                     Animation animation = new TranslateAnimation(0, 0
                             , 0, locationDsc[1] - locationSrc[1]);
                     animation.setDuration(1500);
@@ -453,6 +454,7 @@ public class ChargeFragment extends Fragment {
     private void startCloseBluetoothAnimation() {
         boolean close = BluetoothUtil.closeBluetooth(getContext());
         if(close){
+            tvChargeBtn.setStatusAnimation(BatteryStatus.BATTERY_OPEN_ACCELERATE, 1200, 66);
             tvAcceDsc.setVisibility(View.VISIBLE);
             tvAcceDsc.setText("关闭蓝牙");
             int[] locationSrc = new int[2];
@@ -491,6 +493,7 @@ public class ChargeFragment extends Fragment {
         brightnessMode = BrightnessUtil.getSystemBrightnessMode(getContext());
         boolean close  =  BrightnessUtil.saveBrightness(getActivity(), 0, 0);
         if(close){
+            tvChargeBtn.setStatusAnimation(BatteryStatus.BATTERY_OPEN_ACCELERATE, 1200, 99);
             tvAcceDsc.setVisibility(View.VISIBLE);
             tvAcceDsc.setText("降低屏幕亮度");
             int[] locationSrc = new int[2];

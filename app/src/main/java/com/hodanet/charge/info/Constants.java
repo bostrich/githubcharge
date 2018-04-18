@@ -20,6 +20,8 @@ public class Constants {
     public static final String UMENG_ID_SPECIAL = "special";
     public static final String UMENG_ID_DAILY = "daily";
     public static final String UMENG_ID_BANNER = "banner";
+    public static final String UMENTG_ID_SPLASH = "splash";
+    public static final String UMENTG_ID_NEWS = "news";
 
 
     public static final String UMENG_ID_INTERGRAL_WALL_LOCATION_CHECK_PWD = "check_pwd-";//查看密码页面

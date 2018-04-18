@@ -103,6 +103,7 @@ public class FoundMainFragment extends Fragment implements BaseAdapterView.AdLis
 
     @Override
     public void click(final FoundBean foundBean, View view) {
+        reportEvent("click", foundBean);
         switch(foundBean.getType()) {
             case "url":
                 Intent intent = new Intent(getContext(), WebQQActivity.class);
@@ -182,6 +183,6 @@ public class FoundMainFragment extends Fragment implements BaseAdapterView.AdLis
                 suffix2 = "Click";
                 break;
         }
-        Stats.eventToYoumeng(getContext(), "jumei" + suffix1 + suffix2, "adId", bean.getId());
+        Stats.eventToYoumeng(getContext(), "jumei" + suffix1, suffix2, bean.getId());
     }
 }

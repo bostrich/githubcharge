@@ -13,6 +13,7 @@ import com.hodanet.charge.R;
 import com.hodanet.charge.download.DownloadManager;
 import com.hodanet.charge.download.feedback.NotificationDownloadFeedback;
 import com.hodanet.charge.greendao.StandardInfo;
+import com.hodanet.charge.info.Constants;
 import com.hodanet.charge.info.DailyInfo;
 import com.hodanet.charge.info.report.BannerHotReport;
 import com.hodanet.charge.utils.DownloadUtil;
@@ -64,13 +65,17 @@ public class SurfingHotNewsTopItemAdapter extends PagerAdapter {
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Stats.eventWithMap(mContext, Constants.UMENG_ID_BANNER
+                        , Constants.Event.CLICK.getActionName(), adInfo.getName());
                 if(adInfo.getPosition() == StandardInfo.RECOMMAND) {
-                    Stats.event(mContext, "wk_wifi_info_recommand_click");
+
                 }else if(adInfo.getPosition() == StandardInfo.BANNER){
-                    Stats.event(mContext, "wk_found_banner_click");
+
                 }
                 if (adInfo.getType() == StandardInfo.TYPE_WEB) {
                     Stats.reportAdv(adInfo.getAdId(), Stats.REPORT_TYPE_CLICK, adInfo.getPosition(), 41);
+                    Stats.eventWithMap(mContext, Constants.UMENG_ID_BANNER
+                            , Constants.Event.CONTENT_SHOW.getActionName(), adInfo.getName());
                     WebHelper.launchWeb(mContext, adInfo.getName(), adInfo.getDesUrl(), false, new WebHelper.SimpleWebLoadCallBack() {
                         @Override
                         public void loadComplete(String url) {

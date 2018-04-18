@@ -16,6 +16,7 @@ import com.hodanet.charge.config.DeviceConfig;
 import com.hodanet.charge.greendao.GreenDaoManager;
 import com.hodanet.charge.greendao.StandardInfo;
 import com.hodanet.charge.greendao.gen.StandardInfoDao;
+import com.hodanet.charge.info.Constants;
 import com.hodanet.charge.utils.HttpUtils;
 import com.hodanet.charge.utils.LogUtil;
 import com.hodanet.charge.utils.SpUtil;
@@ -104,7 +105,8 @@ public class SplashAd {
                         }
                     });
                     SpUtil.saveSplashOrder(context, order);
-                    Stats.event(context, "wk_splash_image_show" , info.getName());
+                    Stats.eventWithMap(context, Constants.UMENTG_ID_SPLASH
+                            , Constants.Event.OUT_SHOW.getActionName(), info.getName());
                     Stats.reportAdv(info.getAdId(), Stats.REPORT_TYPE_EXTERNAL_SHOW, Stats.ADV_TYPE_WELCOME, Stats.LOGO_ADV);
                 }
             }else{
@@ -149,13 +151,15 @@ public class SplashAd {
      * 点击广告
      */
     public void click(){
-        //点击事件上报
-//        Stats.event(context, "wk_splash_image_click" ,info.getName());
+        //点击事件上报;
+        Stats.eventWithMap(context, Constants.UMENTG_ID_SPLASH
+                , Constants.Event.CLICK.getActionName(), info.getName());
         Stats.reportAdv(info.getAdId(), Stats.REPORT_TYPE_CLICK, Stats.ADV_TYPE_WELCOME, Stats.LOGO_ADV);
         WebLaunchUtil.launchWeb(context,info.getName(),info.getDesUrl(), true,false, new WebHelper.SimpleWebLoadCallBack(){
             @Override
             public void loadComplete(String url) {
-                Stats.event(context, "wk_splash_link_show" ,info.getName());
+                Stats.eventWithMap(context, Constants.UMENTG_ID_SPLASH
+                        , Constants.Event.CONTENT_SHOW.getActionName(), info.getName());
                 Stats.reportAdv(info.getAdId(), Stats.REPORT_TYPE_SHOW, Stats.ADV_TYPE_WELCOME, Stats.LOGO_ADV);
             }
         });

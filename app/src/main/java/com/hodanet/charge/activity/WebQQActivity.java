@@ -680,10 +680,7 @@ public class WebQQActivity extends BaseActivity {
                     webLoadCallBack.loadComplete(mUrl);
                 }
                 if(backToApp){
-                    if(source ==1)
-                        Stats.event(WebQQActivity.this,"wk_outer_wifi_new_show", "弹出框:" + position);
-                    if(source == 2)
-                        Stats.event(WebQQActivity.this,"wk_outer_wifi_new_show", "通知:" + position);
+
                 }
                 isSendLoadUrlOk = true;
             }

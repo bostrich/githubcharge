@@ -30,6 +30,7 @@ import com.hodanet.charge.model.RecommendModelView;
 import com.hodanet.charge.utils.LogUtil;
 import com.hodanet.charge.utils.ScreenUtil;
 import com.hodanet.charge.utils.SpUtil;
+import com.hodanet.charge.utils.Stats;
 import com.hodanet.charge.view.BatteryHorizontalView;
 import com.hodanet.charge.view.RecoverRotateView;
 import com.hodanet.charge.view.RecoveryDscView;
@@ -151,6 +152,10 @@ public class RecoverFragment extends Fragment {
                         battery.setChecking(true);
                         tvScore.setVisibility(View.INVISIBLE);
                         long delayTime = (long) ((Math.random() * 3 + 5) * 1000);
+                        if(!batteryRotate.isShown()){
+                            batteryRotate.setVisibility(View.VISIBLE);
+                            batteryRotate.start(delayTime);
+                        }
                         mHandler.sendEmptyMessageDelayed(CHECKD_OVER, delayTime);
                         break;
                     case CHECKD_OVER:
@@ -219,7 +224,7 @@ public class RecoverFragment extends Fragment {
                 setScore(recoveryScore, "已修复", 0);
                 tvChargeBtn.setEnabled(false);
                 batteryRotate.setVisibility(View.VISIBLE);
-                batteryRotate.start();
+                batteryRotate.start(12000);
             }
         }catch(Exception e){
             e.printStackTrace();
@@ -261,13 +266,17 @@ public class RecoverFragment extends Fragment {
     @OnClick(R.id.tv_charge_btn)
     public void onViewClicked() {
         recovered = true;
-
+        Stats.event(getContext(), "recover_click");
         ValueAnimator animator = ValueAnimator.ofFloat(0, 1);
-        animator.setDuration(5000);
+        animator.setDuration(12000);
         animator.setInterpolator(new LinearInterpolator());
         final int start = battery.getPercent();
         final int result = getBatteryRecoveryScore();
         recoveryScore = result;
+        if(!batteryRotate.isShown()){
+            batteryRotate.setVisibility(View.VISIBLE);
+        }
+        batteryRotate.start(12000);
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
@@ -278,12 +287,7 @@ public class RecoverFragment extends Fragment {
                 if(percent == 1){
                     tvChargeBtn.setProgress(0, "已修复");
                     tvChargeBtn.setEnabled(false);
-                    if(!batteryRotate.isShown()){
-                        batteryRotate.setVisibility(View.VISIBLE);
-                        batteryRotate.start();
-                    }
                 }
-
             }
         });
 
@@ -330,9 +334,10 @@ public class RecoverFragment extends Fragment {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
                     float value = (float) animation.getAnimatedValue();
-                    setScore((int) (score * value), "立即修复", 0);
+                    setScore((int) (score * value), "电池检测中...", 0);
                     if(value == 1){
                         tvChargeBtn.setEnabled(true);
+                        setScore((int) (score * value), "立即修复", 0);
                     }
                 }
             });

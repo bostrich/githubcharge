@@ -124,7 +124,6 @@ public class NewSurfingFragment extends Fragment implements View.OnClickListener
         initViews(contentView);
 //        isPrepared = true;
         getContent();
-        Stats.event(getContext(), "wk_main_tab_found_show");
         return contentView;
     }
 
@@ -299,7 +298,6 @@ public class NewSurfingFragment extends Fragment implements View.OnClickListener
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
         if(!hidden){
-            Stats.event(getContext(), "wk_main_tab_found_show");
         }
     }
 }

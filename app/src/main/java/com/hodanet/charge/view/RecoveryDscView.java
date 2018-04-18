@@ -1,8 +1,11 @@
 package com.hodanet.charge.view;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Typeface;
@@ -27,7 +30,7 @@ public class RecoveryDscView extends View{
     private Paint paintText;
     private RectF rectF;
     private float progress;
-    private Rect rectText;
+    private Rect rect;
     private String content = "";
 
 
@@ -64,7 +67,7 @@ public class RecoveryDscView extends View{
         paintText.setTypeface(Typeface.SANS_SERIF);
 
         rectF = new RectF();
-        rectText = new Rect();
+        rect = new Rect();
 
     }
 
@@ -76,18 +79,26 @@ public class RecoveryDscView extends View{
     @Override
     protected void onDraw(Canvas canvas) {
 
+
+        Bitmap bitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
+
+        Canvas canvas1 = new Canvas(bitmap);
         rectF.set(0, 0, getWidth(), getHeight());
-        canvas.drawRoundRect(rectF, getHeight() / 2, getHeight() / 2, paintBg);
-
+        canvas1.drawRoundRect(rectF,getHeight() / 2, getHeight() / 2, paintBg);
         if(progress > 0){
-            rectF.set(0, 0, (getWidth() * progress), getHeight());
-            canvas.drawRoundRect(rectF, getHeight() /2 , getHeight() / 2, paintForground);
+            rect.set(0, 0, (int) (getWidth() * progress), getHeight());
+            paintBg.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_ATOP));
+            paintBg.setColor(getResources().getColor(R.color.charge_btn_50));
+            canvas1.drawRect(rect, paintBg);
+            paintBg.setXfermode(null);
         }
+        paintBg.setColor(getResources().getColor(R.color.white));
+        canvas.drawBitmap(bitmap, 0, 0, paintBg);
 
 
-        int textWidth = getWidth() / 2;
-        paintText.getTextBounds(content, 0, content.length(), rectText);
-        canvas.drawText(content, textWidth, (getHeight() + rectText.height()) / 2, paintText);
+        Paint.FontMetricsInt fontMetrics = paintText.getFontMetricsInt();
+        int baseline = (getHeight() - fontMetrics.bottom - fontMetrics.top) / 2;
+        canvas.drawText(content, getWidth() / 2, baseline, paintText);
 
     }
 

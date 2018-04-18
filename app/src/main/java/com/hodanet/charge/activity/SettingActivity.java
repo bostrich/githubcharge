@@ -9,6 +9,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.hodanet.charge.R;
+import com.hodanet.charge.utils.Stats;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -42,6 +43,7 @@ public class SettingActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
         ButterKnife.bind(this);
+        Stats.event(this, "setting_show");
     }
 
     @OnClick({R.id.rl_back, R.id.rl_hot, R.id.rl_about})

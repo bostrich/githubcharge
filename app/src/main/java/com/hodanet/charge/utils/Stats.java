@@ -124,6 +124,7 @@ public class Stats {
         HashMap<String, String> map = new HashMap<String, String>();
         map.put(idkey, idvalue);
         MobclickAgent.onEvent(context, key, map);
+        LogUtil.i(TAG, "事件ID:" + key + " 事件类型:" + idkey + " 事件值:" + idvalue);
     }
 
 
@@ -197,5 +198,7 @@ public class Stats {
     }
 
 
+    public static void eventReportAdv(Context context, String pkgName, int actionType, int reportType) {
 
+    }
 }

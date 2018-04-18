@@ -11,8 +11,10 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.hodanet.charge.R;
 import com.hodanet.charge.config.ConsConfig;
+import com.hodanet.charge.info.Constants;
 import com.hodanet.charge.info.news.BaseNewInfo;
 import com.hodanet.charge.utils.ScreenUtil;
+import com.hodanet.charge.utils.Stats;
 import com.hodanet.charge.utils.WebHelper;
 
 import java.util.List;
@@ -126,6 +128,8 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     private void goToWeb(Context context, BaseNewInfo info, int position){
+        Stats.eventWithMap(context, Constants.UMENTG_ID_NEWS
+                , Constants.Event.CLICK.getActionName(), "charge");
         WebHelper.showAdDetail(context, info.getTitle(), info.getUrl(), new WebHelper.SimpleWebLoadCallBack(){
             @Override
             public void loadComplete(String url) {

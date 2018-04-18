@@ -126,7 +126,6 @@ public class SurfingHotNewsFragment extends BaseFragment implements View.OnClick
                             NewsInfo info = new NewsInfo();
                             info.infoType = SurfingHotNewsAdapter.NEWS_TYPE_TOP_BANNER;
                             mNewsInfo.add(0, info);
-                            Stats.event(getContext(),"wk_found_banner_show");
                         }
                         mRefreshRecyclerView.reset();
                         //tip动画
@@ -277,7 +276,6 @@ public class SurfingHotNewsFragment extends BaseFragment implements View.OnClick
 //            isFirstVisibleToUser = false;
 //            LogUtil.e("fragment", "onvisible");
 //        }
-        Stats.event(getContext(),"wk_found_hot_page_show");
         MobclickAgent.onPageStart("found_news");
     }
 

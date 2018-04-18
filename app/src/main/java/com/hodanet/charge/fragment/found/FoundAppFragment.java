@@ -26,6 +26,7 @@ import com.hodanet.charge.info.NewFoundAppInfo;
 import com.hodanet.charge.info.SpecialInfo;
 import com.hodanet.charge.info.report.BannerHotReport;
 import com.hodanet.charge.utils.DownloadUtil;
+import com.hodanet.charge.utils.Stats;
 import com.hodanet.charge.utils.WebHelper;
 import com.hodanet.charge.utils.WebLaunchUtil;
 import com.syezon.component.adapterview.ApkAdapterView;
@@ -101,6 +102,7 @@ public class FoundAppFragment extends Fragment implements BaseAdapterView.AdList
     @Override
     public void click(FoundBean foundBean, View view) {
         if(view instanceof DownloadProgressButton){
+            Stats.eventWithMap(getContext(), "jumeiApp", "download_click", foundBean.getName());
             if(DownloadUtil.checkInstall(getContext(), foundBean.getPkgName())){
                 DownloadUtil.openApp(getContext(), foundBean.getPkgName());
             }else if(DownloadUtil.checkDownLoad(getContext(), foundBean.getName())){
@@ -116,6 +118,7 @@ public class FoundAppFragment extends Fragment implements BaseAdapterView.AdList
             }
 
         }else{
+            Stats.eventWithMap(getContext(), "jumeiApp", "web_click", foundBean.getName());
             WebLaunchUtil.launchWeb(getContext(), foundBean.getName(), foundBean.getUrl()
                     , foundBean.getPkgName(), foundBean.getName(),foundBean.getApkUrl(), new WebHelper.SimpleWebLoadCallBack(){
                 @Override
@@ -138,6 +141,9 @@ public class FoundAppFragment extends Fragment implements BaseAdapterView.AdList
         info.setState(event.getState());
         info.setProgress((int) (100.0 * event.getCurrentSize() / event.getTotalSize()));
         apkAd.updateView(info);
+        if(info.getState() == DownloadEvent.DOWNLOAD_FINISH){
+            Stats.eventWithMap(getContext(), "jumeiApp", "download_finish", event.getPkgName());
+        }
     }
 
 }
