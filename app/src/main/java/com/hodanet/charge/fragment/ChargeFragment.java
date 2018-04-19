@@ -399,10 +399,22 @@ public class ChargeFragment extends Fragment {
                 //设置充电加速
                 batteryStatus.setStatus(BatteryStatus.BATTERY_OPEN_ACCELERATE);
                 refreshBatteryView();
-                //调节屏幕亮度、关闭wifi、关闭蓝牙
-                //充电加速动画
                 Stats.event(getContext(), "charge_accelerate_click");
-                tvStatus.setText("充电加速适配方案中...");
+                tvStatus.setText("适配充电加速方案中...");
+                //获取wifi，蓝牙和屏幕亮度信息
+                boolean isWifiOpen = WifiUtil.isWifiOpen(getContext());
+                boolean isBluetoothOpen = BluetoothUtil.isBluetoothOpen(getContext());
+                brightness = BrightnessUtil.getSystemBrightness(getContext());
+                brightnessMode = BrightnessUtil.getSystemBrightnessMode(getContext());
+
+
+
+                //调节屏幕亮度、关闭wifi、关闭蓝牙
+
+                //充电加速动画
+
+
+
                 boolean closeWifi = WifiUtil.closeWifi(getContext());
                 if(closeWifi){
                     tvAcceDsc.setVisibility(View.VISIBLE);
@@ -411,7 +423,7 @@ public class ChargeFragment extends Fragment {
                     tvAcceDsc.getLocationOnScreen(locationSrc);
                     int[] locationDsc = new int[2];
                     tvStatus.getLocationOnScreen(locationDsc);
-                    tvChargeBtn.setStatusAnimation(BatteryStatus.BATTERY_OPEN_ACCELERATE, 1200, 33);
+                    tvChargeBtn.setStatusAnimation(BatteryStatus.BATTERY_OPEN_ACCELERATE, 1500, 33);
                     Animation animation = new TranslateAnimation(0, 0
                             , 0, locationDsc[1] - locationSrc[1]);
                     animation.setDuration(1500);
@@ -452,7 +464,7 @@ public class ChargeFragment extends Fragment {
     private void startCloseBluetoothAnimation() {
         boolean close = BluetoothUtil.closeBluetooth(getContext());
         if(close){
-            tvChargeBtn.setStatusAnimation(BatteryStatus.BATTERY_OPEN_ACCELERATE, 1200, 66);
+            tvChargeBtn.setStatusAnimation(BatteryStatus.BATTERY_OPEN_ACCELERATE, 1500, 66);
             tvAcceDsc.setVisibility(View.VISIBLE);
             tvAcceDsc.setText("关闭蓝牙");
             int[] locationSrc = new int[2];
@@ -491,7 +503,7 @@ public class ChargeFragment extends Fragment {
         brightnessMode = BrightnessUtil.getSystemBrightnessMode(getContext());
         boolean close  =  BrightnessUtil.saveBrightness(getActivity(), 0, 0);
         if(close){
-            tvChargeBtn.setStatusAnimation(BatteryStatus.BATTERY_OPEN_ACCELERATE, 1200, 99);
+            tvChargeBtn.setStatusAnimation(BatteryStatus.BATTERY_OPEN_ACCELERATE, 1500, 99);
             tvAcceDsc.setVisibility(View.VISIBLE);
             tvAcceDsc.setText("降低屏幕亮度");
             int[] locationSrc = new int[2];

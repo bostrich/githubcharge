@@ -63,7 +63,7 @@ public class ChannelConfig {
                         }
                         if(channel.equals(AppConfig.CHANNEL)){
                             SPLASH = channelInfo.optInt("splash") == 1;
-                            SPLASH = true;
+//                            SPLASH = true;
                             isSet = true;
                             break;
                         }

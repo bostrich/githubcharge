@@ -20,4 +20,9 @@ public class WifiUtil {
         WifiManager manager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         return manager.setWifiEnabled(false);
     }
+
+    public static boolean isWifiOpen(Context context){
+        WifiManager manager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        return manager.isWifiEnabled();
+    }
 }

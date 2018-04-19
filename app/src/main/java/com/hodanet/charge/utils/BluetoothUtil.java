@@ -36,4 +36,12 @@ public class BluetoothUtil {
         return false;
     }
 
+    public static boolean isBluetoothOpen(Context context){
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2){
+            BluetoothManager manager = (BluetoothManager) context.getSystemService(Context.BLUETOOTH_SERVICE);
+            return manager.getAdapter().isEnabled();
+        }
+        return false;
+    }
+
 }
