@@ -14,6 +14,7 @@ import com.hodanet.charge.config.AppConfig;
 import com.hodanet.charge.config.ChannelConfig;
 import com.hodanet.charge.config.DeviceConfig;
 import com.hodanet.charge.model.SplashAd;
+import com.umeng.commonsdk.UMConfigure;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -34,6 +35,7 @@ public class SplashActivity extends BaseActivity {
         setContentView(R.layout.activity_splash);
         ButterKnife.bind(this);
 
+        UMConfigure.setLogEnabled(true);
         initView();
         //初始化设备及APP信息
         DeviceConfig.getDeviceConfig(this);

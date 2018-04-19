@@ -217,7 +217,7 @@ public class RecoverFragment extends Fragment {
             JSONObject obj = new JSONObject(result);
             long time = obj.optLong(RECOVERY_TIME);
             if(System.currentTimeMillis() - time > 1000 * 60 * 60 * 2){
-                mHandler.sendEmptyMessageDelayed(CHECK, 500);
+                mHandler.sendEmptyMessageDelayed(CHECK, 100);
             }else{
                 recovered = true;
                 recoveryScore = obj.optInt(RECOVERY_SCORE);

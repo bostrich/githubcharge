@@ -14,12 +14,12 @@ public class BaseFragment extends Fragment{
     @Override
     public void onResume() {
         super.onResume();
-        MobclickAgent.onPageStart(TAG);
+//        MobclickAgent.onPageStart(TAG);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        MobclickAgent.onPageEnd(TAG);
+//        MobclickAgent.onPageEnd(TAG);
     }
 }

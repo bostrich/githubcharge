@@ -43,7 +43,18 @@ android {
     }
 
     productFlavors {
-        qihu {}
+        ABC {}
+        tencent {}
+        aliyun {}
+        baidu {}
+        lenovo{}
+        meizu {}
+        anzhi {}
+        sogou {}
+        vivo {}
+        huawei {}
+
+
     }
 }
 

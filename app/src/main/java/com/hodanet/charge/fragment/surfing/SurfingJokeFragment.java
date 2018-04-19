@@ -117,7 +117,7 @@ public class SurfingJokeFragment extends BaseFragment implements View.OnClickLis
     protected void onVisible() {
         super.onVisible();
 //        Stats.event(getActivity(), "SURFING_NAVIGATION_CLICK_" + mId);
-        MobclickAgent.onPageStart("found_joke");
+//        MobclickAgent.onPageStart("found_joke");
     }
 
 
@@ -199,7 +199,7 @@ public class SurfingJokeFragment extends BaseFragment implements View.OnClickLis
 
     @Override
     protected void onInvisible() {
-        MobclickAgent.onPageEnd("found_joke");
+//        MobclickAgent.onPageEnd("found_joke");
     }
 
 

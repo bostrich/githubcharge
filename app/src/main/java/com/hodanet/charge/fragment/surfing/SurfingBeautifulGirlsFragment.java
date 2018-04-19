@@ -327,13 +327,13 @@ public class SurfingBeautifulGirlsFragment extends BaseFragment implements View.
                 mViewPager.getAdapter().notifyDataSetChanged();
             }
         }
-        MobclickAgent.onPageStart("found_girl");
+//        MobclickAgent.onPageStart("found_girl");
     }
 
     @Override
     protected void onInvisible() {
         super.onInvisible();
-        MobclickAgent.onPageEnd("found_girl");
+//        MobclickAgent.onPageEnd("found_girl");
     }
 
     public void setNext() {

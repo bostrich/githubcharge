@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.hodanet.charge.activity.Base2Activity;
 import com.hodanet.charge.activity.BaseActivity;
 import com.hodanet.charge.activity.SettingActivity;
 import com.hodanet.charge.config.ChannelConfig;
@@ -30,6 +31,7 @@ import com.hodanet.charge.utils.SpUtil;
 import com.hodanet.charge.utils.Stats;
 import com.hodanet.charge.utils.ToastUtil;
 import com.syezon.component.AdManager;
+import com.umeng.analytics.MobclickAgent;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -95,6 +97,9 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         EventBus.getDefault().register(this);
+        // SDK在统计Fragment时，需要关闭Activity自带的页面统计，
+        // 然后在每个页面中重新集成页面统计的代码(包括调用了 onResume 和 onPause 的Activity)。
+        MobclickAgent.openActivityDurationTrack(false);
 
         chargeFragment = new ChargeFragment();
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();

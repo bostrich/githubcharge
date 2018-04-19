@@ -14,6 +14,7 @@ import android.graphics.Typeface;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.animation.LinearInterpolator;
 
 import com.hodanet.charge.R;
 import com.hodanet.charge.utils.LogUtil;
@@ -42,6 +43,7 @@ public class BatteryDscView extends View {
     public static final int STATUS_OPEN_ACCELERATE = 2;
     public static final int STATUS_ACCELERATE = 3;
     private int state;
+    private boolean isAccelerate;
 
     //状态值
     private Bitmap bitmap;
@@ -125,7 +127,12 @@ public class BatteryDscView extends View {
                 content = getResources().getString(R.string.charge_btn_open_accelerate);
                 break;
             case STATUS_OPEN_ACCELERATE:
-                content = getResources().getString(R.string.charge_btn_opening);
+                if(isAccelerate){
+                    content = getResources().getString(R.string.charge_btn_opening);
+                }else{
+                    content = getResources().getString(R.string.charge_btn_closing);
+                }
+
                 break;
             case STATUS_ACCELERATE:
                 content = getResources().getString(R.string.charge_btn_accelerate_stop);
@@ -148,11 +155,13 @@ public class BatteryDscView extends View {
      * @param animationTime 动画时间
      * @param endProgress
      */
-    public void setStatusAnimation(int status, long animationTime, final float endProgress){
+    public void setStatusAnimation(int status, long animationTime, final float endProgress, boolean isAccelerate){
         if(state == STATUS_OPEN_ACCELERATE){
+            this.isAccelerate = isAccelerate;
             this.state = status;
             ValueAnimator animator = ValueAnimator.ofFloat(0, 1);
             animator.setDuration(animationTime);
+            animator.setInterpolator(new LinearInterpolator());
             final float temp = openingProgress;
             animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override

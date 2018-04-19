@@ -237,13 +237,13 @@ public class SurfingVideoFragment extends BaseFragment implements View.OnClickLi
     protected void onVisible() {
         super.onVisible();
 //        Stats.event(getActivity(), "SURFING_NAVIGATION_CLICK_" + mId);
-        MobclickAgent.onPageStart("found_video");
+//        MobclickAgent.onPageStart("found_video");
     }
 
     @Override
     protected void onInvisible() {
         super.onInvisible();
-        MobclickAgent.onPageEnd("found_video");
+//        MobclickAgent.onPageEnd("found_video");
     }
 
     private class VideoRefreshLoadListener implements RefreshRecyclerView.LoadingListener {

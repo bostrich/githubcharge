@@ -276,13 +276,13 @@ public class SurfingHotNewsFragment extends BaseFragment implements View.OnClick
 //            isFirstVisibleToUser = false;
 //            LogUtil.e("fragment", "onvisible");
 //        }
-        MobclickAgent.onPageStart("found_news");
+//        MobclickAgent.onPageStart("found_news");
     }
 
     @Override
     protected void onInvisible() {
         super.onInvisible();
-        MobclickAgent.onPageEnd("found_news");
+//        MobclickAgent.onPageEnd("found_news");
     }
 
     /**

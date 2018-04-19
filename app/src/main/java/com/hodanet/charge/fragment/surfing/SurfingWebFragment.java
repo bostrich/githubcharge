@@ -238,13 +238,13 @@ public class SurfingWebFragment extends BaseFragment implements View.OnClickList
     @Override
     protected void onVisible() {
         super.onVisible();
-        MobclickAgent.onPageStart("found_web");
+//        MobclickAgent.onPageStart("found_web");
     }
 
     @Override
     protected void onInvisible() {
         super.onInvisible();
-        MobclickAgent.onPageEnd("found_web");
+//        MobclickAgent.onPageEnd("found_web");
     }
 
     /**

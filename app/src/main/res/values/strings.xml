@@ -45,6 +45,7 @@
     <string name="charge_btn_accelerate2">充电加速中..</string>
     <string name="charge_btn_accelerate3">充电加速中...</string>
     <string name="charge_btn_opening">加速开启中...</string>
+    <string name="charge_btn_closing">加速关闭中...</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

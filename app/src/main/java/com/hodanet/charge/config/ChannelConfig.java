@@ -61,11 +61,13 @@ public class ChannelConfig {
                         if(channel.equals("tencent")){
                             defaultValue = channelInfo.optInt("splash") == 1;
                         }
-                        if(channel.equals(AppConfig.CHANNEL)){
+                        if(channel.equals(AppConfig.CHANNEL) && AppConfig.VERSION_NAME.equals(VER)){
                             SPLASH = channelInfo.optInt("splash") == 1;
 //                            SPLASH = true;
                             isSet = true;
                             break;
+                        }else{
+                            SPLASH = true;
                         }
                     }
                     if(!isSet) SPLASH = defaultValue;
